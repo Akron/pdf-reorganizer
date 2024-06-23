@@ -1,0 +1,6 @@
+run.pl
+*.pdf
+pdfjs-*
+public/build
+!public/pdf-editor.html
+!public/pdfeditor.mjs
