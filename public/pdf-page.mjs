@@ -9,9 +9,10 @@ var desiredHeight = 100;
 // Todo:
 // - on delete: No more selection (split can stay)
 
-export class NewPDFAugmentedPage {
+export class PDFPage extends HTMLElement {
 
   constructor(pagenum, parent) {
+    super();
     this.num = pagenum;
     this.deleted = false;
     this.splittedBefore = false;
@@ -21,12 +22,9 @@ export class NewPDFAugmentedPage {
     this._parent = parent;
 
     this.target = document.createElement("div");
-    // this.target.setAttribute("droppable", true);
     this.target.classList.add("droppable"); 
 
-    this.elem = document.createElement("div");
-    this.elem.appendChild(this.target)
-    this.elem.num = pagenum; // Because it doesn't extend HTMLElement!
+    this.appendChild(this.target);
 
     this.outer = document.createElement("div");
     this.outer.style.width = (desiredWidth*outputScale) + 'px';
@@ -41,7 +39,7 @@ export class NewPDFAugmentedPage {
     this.canvas = document.createElement("canvas");
     this.outer.appendChild(this.canvas);
 
-    this.elem.appendChild(this.outer);
+    this.appendChild(this.outer);
 
     
     // Drag events
@@ -207,3 +205,5 @@ export class NewPDFAugmentedPage {
     this.canvas.style.transform = 'rotate(' + this.rotation + 'deg)';
   };
 };
+
+customElements.define('pdf-page', PDFPage);

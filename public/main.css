@@ -1,4 +1,9 @@
 #pdf-arranger {
+  --dark-border-color: #555;
+  --white: #ffffff;
+  --deleted-color: grey;
+  --hover-color: #bbf;
+  --selected-color: #88f;
   display: block;
 }
 
@@ -6,7 +11,7 @@
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  border: 1px solid black;
+  border: 1px solid var(--dark-border-color);
   width: 800px;
   height: 300px;
   overflow-y: scroll;
@@ -22,7 +27,6 @@
 div.droppable {
   display: inline-block;
   width: 12px;
-  // background-color: grey;
   vertical-align: top;
   border-width: 1px;
   border-style: dashed;
@@ -43,17 +47,17 @@ div.outer {
 canvas {
   transition: transform .5s ease-out;
   box-shadow: rgba(50, 50, 93, 0.25) 0px 6px 12px -2px, rgba(0, 0, 0, 0.3) 0px 3px 7px -3px;
-  border: 1px solid #555;
+  border: 1px solid var(--dark-border-color);
 }
 
 div.outer.deleted {
   cursor: default !important;
-  background-color: grey;
-  border-color: grey;
+  background-color: var(--deleted-color);
+  border-color: var(--deleted-color);
 }
 
 div.outer:not(.deleted):not(.selected):hover {
-  background-color: #bbf;
+  background-color: var(--hover-color);
 }
 
 div.outer.deleted canvas {
@@ -73,5 +77,5 @@ div.outer.dragged {
 }
 
 div.outer.selected {
-  background-color: #88f;
+  background-color: var(--selected-color);
 }

@@ -1,7 +1,7 @@
 // Loaded via <script> tag, create shortcut to access PDF.js exports.
 var { pdfjsLib } = globalThis;
 
-import { NewPDFAugmentedPage } from './pdf-page.mjs';
+import { PDFPage } from './pdf-page.mjs';
 
 
 // The workerSrc property shall be specified.
@@ -159,13 +159,13 @@ class PDFArranger extends HTMLElement {
       instance.pdfDoc = pdf;
 
       for (var i = 0; i < instance.numPages; i++) {
-        var page  = new NewPDFAugmentedPage(i+1, instance);
+        var page  = new PDFPage(i+1, instance);
         instance.pages[i] = page;
-        instance.viewport.appendChild(page.elem);
+        instance.viewport.appendChild(page);
 
         // TODO: Remove elem and extend the page for simplicy for HTMLElement
 
-        instance.observeViewport.observe(page.elem);
+        instance.observeViewport.observe(page);
       };
     }, function (reason) {
 
