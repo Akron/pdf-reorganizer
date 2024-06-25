@@ -10,6 +10,7 @@ var desiredHeight = 100;
 // - on delete: No more selection (split can stay)
 
 export class NewPDFAugmentedPage {
+
   constructor(pagenum, parent) {
     this.num = pagenum;
     this.deleted = false;
@@ -25,6 +26,7 @@ export class NewPDFAugmentedPage {
 
     this.elem = document.createElement("div");
     this.elem.appendChild(this.target)
+    this.elem.num = pagenum; // Because it doesn't extend HTMLElement!
 
     this.outer = document.createElement("div");
     this.outer.style.width = (desiredWidth*outputScale) + 'px';
@@ -98,6 +100,11 @@ export class NewPDFAugmentedPage {
   };
 
   render(page) {
+
+    // Page already rendered
+    if (this._ref != null)
+      return;
+    
     this._ref = page;
 
     var viewportParam = {scale : 1};
@@ -138,7 +145,7 @@ export class NewPDFAugmentedPage {
 
     var renderTask = page.render(renderContext);
     renderTask.promise.then(function () {
-      console.log('Page rendered');
+      // Page rendered!
     });
   };
   

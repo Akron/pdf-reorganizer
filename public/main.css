@@ -10,7 +10,8 @@
   width: 800px;
   height: 300px;
   overflow-y: scroll;
-  css-resize: both;
+  overflow-x: hidden;
+  resize: both;
 }
 
 #pdf-arranger > nav {

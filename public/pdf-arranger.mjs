@@ -27,6 +27,7 @@ class PDFArranger extends HTMLElement {
     super();
     this.url;
     this.numpages = undefined;
+    this.pdfDoc = undefined;
 
     this.selected = new Set();
     this.pages = new Array();
@@ -82,6 +83,35 @@ class PDFArranger extends HTMLElement {
     this.delElem.addEventListener('click', this.remove.bind(this));
     this.rotateLeftElem.addEventListener('click', this.rotateLeft.bind(this));
     this.splitBeforeElem.addEventListener('click', this.splitBefore.bind(this));
+
+    this.observeViewport = new IntersectionObserver((entries,observer) => {
+      /*if (entries[0].intersectionRatio <= 0)
+        return;
+      */
+      entries.forEach(function (entry) {
+
+        if (!entry.isIntersecting)
+          return;
+        
+        var page = entry.target;
+
+        // Render the page, when it intersects with the viewport
+        instance.pdfDoc.getPage(page.num).then(function(pdfPage) {
+          instance.pages[pdfPage._pageIndex].render(pdfPage);
+        });
+
+        // Forget the page
+        observer.unobserve(page);
+      })
+    }, {
+      root: this.viewport,
+      rootMargin: '10px 10px 10px 10px'
+    });
+
+  };
+
+  disconnectedCallback() {
+    this.observeViewport.disconnect();
   };
 
   remove() {
@@ -98,12 +128,10 @@ class PDFArranger extends HTMLElement {
   
   addSelect(obj) {
     this.selected.add(obj);
-    console.log(this.selected);
   }
   
   delSelect(obj) {
     this.selected.delete(obj);
-    console.log(this.selected);
   }
 
   splitBefore() {
@@ -128,14 +156,16 @@ class PDFArranger extends HTMLElement {
       // Initialize the document length
       instance.numPages = pdf.numPages;
 
+      instance.pdfDoc = pdf;
+
       for (var i = 0; i < instance.numPages; i++) {
         var page  = new NewPDFAugmentedPage(i+1, instance);
         instance.pages[i] = page;
-        instance.viewport.append(page.elem);
+        instance.viewport.appendChild(page.elem);
 
-        pdf.getPage(i+1).then(function(pdfPage) {
-          instance.pages[pdfPage._pageIndex].render(pdfPage);
-        });
+        // TODO: Remove elem and extend the page for simplicy for HTMLElement
+
+        instance.observeViewport.observe(page.elem);
       };
     }, function (reason) {
 
