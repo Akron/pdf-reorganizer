@@ -29,15 +29,10 @@ export class PDFPage extends HTMLElement {
     this.outer = document.createElement("div");
     this.outer.style.width = (desiredWidth*outputScale) + 'px';
     this.outer.style.height = (desiredWidth*outputScale) + 'px';
-    this.outer.classList.add("outer");
+    this.outer.classList.add("outer","load");
     this.outer.setAttribute("draggable", true);
     // this.outer.innerText = this.num;
 
-    // Loader
-    var loader = document.createElement('div')
-    this.outer.appendChild(loader);
-    loader.style.margin = ((desiredWidth) - (48 / 2)) + "px";
-    
     // May be multiple canvases!
     // Currently this is the current element
     this.canvas = document.createElement("canvas");
@@ -149,9 +144,7 @@ export class PDFPage extends HTMLElement {
     renderTask.promise.then(function () {
       // Page rendered!
       canvas.style.opacity = 1;
-
-      // Remove loader
-      canvas.previousElementSibling.remove();
+      canvas.parentNode.classList.remove("load");
     });
   };
   

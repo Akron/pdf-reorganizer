@@ -2,8 +2,8 @@
   --dark-border-color: #555;
   --white: #ffffff;
   --deleted-color: grey;
-  --hover-color: #bbf;
-  --selected-color: #88f;
+  --hover-color: #49d;
+  --selected-color: #07d;
   --loader: var(--selected-color);
   display: block;
 }
@@ -50,19 +50,22 @@ div.outer {
   to {transform: rotate(360deg);}
 }
 
-/* Loader! */
-div.outer > div {
-  position: absolute;
-  width: 48px;
-  height: 48px;
-  border: 5px solid var(--loader);
-  border-bottom-color: transparent;
-  border-radius: 50%;
-  display: inline-block;
+div.outer.load::before {
+  content: '';
   box-sizing: border-box;
-  animation: rotation 1s linear infinite;
-  z-index: -1;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 20px;
+  height: 20px;
+  margin-top: -10px;
+  margin-left: -10px;
+  border-radius: 50%;
+  border-top: 2px solid var(--loader);
+  border-right: 2px solid transparent;
+  animation: rotation .6s linear infinite;
 }
+
 
 canvas {
   transition: transform .5s ease-out;
