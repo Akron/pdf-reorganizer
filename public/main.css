@@ -1,0 +1,67 @@
+#pdf-arranger {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+div.droppable {
+  display: inline-block;
+  width: 12px;
+  //background-color: grey;
+  vertical-align: top;
+  border-width: 1px;
+  border-style: dashed;
+  border-color: transparent;
+  border-radius: 6px;
+}
+
+div.outer {
+  border-radius: 6px;
+  display: inline-block;
+  margin: 2pt;
+  background-color: transparent;
+  border: 5px solid transparent;
+  cursor: pointer;
+  padding: 8px;
+}
+
+canvas {
+  transition: transform .5s ease-out;
+  box-shadow: rgba(50, 50, 93, 0.25) 0px 6px 12px -2px, rgba(0, 0, 0, 0.3) 0px 3px 7px -3px;
+  border: 1px solid #555;
+}
+
+div.outer.deleted {
+  cursor: default !important;
+  background-color: grey;
+  border-color: grey;
+}
+
+div.outer:not(.deleted):not(.selected):hover {
+  background-color: #bbf;
+}
+
+div.outer.deleted canvas {
+  opacity: .2;
+}
+
+div.outer.split-before {
+  border-left-style: dotted;
+  border-top-style: dotted;
+  border-left-color: green;
+  border-top-color: green;
+}
+
+div.outer.dragged {
+  background-color: white;
+  opacity: 0.5;
+}
+
+div.outer.selected {
+  background-color: #88f;
+}
+
+nav {
+  display: block;
+  width: 100%;
+}

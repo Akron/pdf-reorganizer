@@ -29,7 +29,7 @@ export class NewPDFAugmentedPage {
     this.outer = document.createElement("div");
     this.outer.style.width = (desiredWidth*outputScale) + 'px';
     this.outer.style.height = (desiredWidth*outputScale) + 'px';
-    this.outer.style.padding = "2pt";
+
     this.outer.classList.add("outer");
     this.outer.setAttribute("draggable", true);
     // this.outer.innerText = this.num;
@@ -37,44 +37,10 @@ export class NewPDFAugmentedPage {
     // May be multiple canvases!
     // Currently this is the current element
     this.canvas = document.createElement("canvas");
-    /*
-    this.canvasContainer = document.createElement("div");
-    this.canvasContainer.classList.add('canvas-container');   
-    
-    this.canvasContainer.appendChild(this.canvas);
-*/
     this.outer.appendChild(this.canvas);
 
     this.elem.appendChild(this.outer);
 
-/*
-    
-    // These elements should only exist once and be appended to the page in focus!
-    this.rotateLeftElem = document.createElement("div");
-    this.rotateLeftElem.setAttribute("class","rotate-left");
-    this.rotateLeftElem.innerText = 'left';
-    this.elem.appendChild(this.rotateLeftElem);
-    
-    this.rotateRightElem = document.createElement("div");
-    this.rotateRightElem.setAttribute("class","rotate-right");
-    this.rotateRightElem.innerText = 'right';
-    this.elem.appendChild(this.rotateRightElem);
-
-    this.splitElem = document.createElement("div");
-    this.splitElem.setAttribute("class","split-before");
-    this.splitElem.innerText = 'split';
-    this.elem.appendChild(this.splitElem);
-
-    this.delElem = document.createElement("div");
-    this.delElem.setAttribute("class","delete");
-    this.delElem.innerText = 'remove';
-    this.elem.appendChild(this.delElem);
-
-    this.rotateRightElem.addEventListener('click', this.rotateRight.bind(this));
-    this.rotateLeftElem.addEventListener('click', this.rotateLeft.bind(this));
-    this.splitElem.addEventListener('click', this.splitBefore.bind(this));
-    this.delElem.addEventListener('click', this.remove.bind(this));
-*/
     
     // Drag events
     this.outer.addEventListener("dragstart", (function (ev) {
@@ -102,15 +68,21 @@ export class NewPDFAugmentedPage {
 
     this.target.addEventListener("dragenter",function (ev) {
       ev.preventDefault();
-      ev.target.style.backgroundColor = "blue";
+      ev.target.style.borderColor = "#00f";
+      ev.target.style.backgroundColor = "#88f";
     });
 
     this.target.addEventListener("dragleave",function (ev) {
       ev.preventDefault();
-      ev.target.style.backgroundColor = "grey";
+      ev.target.style.borderColor = "transparent";
+      ev.target.style.backgroundColor = "transparent";
     });
 
-   
+    this.target.addEventListener("dragover", function(ev) {
+      ev.preventDefault();
+      // Set the dropEffect to move
+      ev.dataTransfer.dropEffect = "move";
+    });
     
     this.target.addEventListener("drop", function (ev) {
       ev.preventDefault();
@@ -123,15 +95,13 @@ export class NewPDFAugmentedPage {
     this.outer.addEventListener('click', (function () {
       this.swapSelected();
     }).bind(this));
-  }
+  };
 
   render(page) {
     this._ref = page;
 
     var viewportParam = {scale : 1};
     
-    // viewportParam['scale'] = 1;
-
     // Prepare canvas using PDF page dimensions
     var canvas = this.canvas;
     var context = canvas.getContext('2d');
@@ -151,6 +121,8 @@ export class NewPDFAugmentedPage {
 
     canvas.style.marginLeft = Math.floor(((desiredWidth*outputScale) - canvas.width) / 2) + "px";
     canvas.style.marginTop = Math.floor(((desiredHeight*outputScale) - canvas.height) / 2) + "px";
+
+    this.target.style.height = Math.floor(desiredHeight * outputScale) + "px";
     
     var transform = outputScale !== 1
         ? [outputScale, 0, 0, outputScale, 0, 0]
@@ -168,7 +140,7 @@ export class NewPDFAugmentedPage {
     renderTask.promise.then(function () {
       console.log('Page rendered');
     });
-  }
+  };
   
   swapSelected() {
     if (this._selected) {
@@ -176,7 +148,7 @@ export class NewPDFAugmentedPage {
     } else {
       this.selectOn();
     }
-  }
+  };
 
   selectOn() {
     if (this.deleted) return;
@@ -184,24 +156,26 @@ export class NewPDFAugmentedPage {
     this._selected = true;
     this.outer.classList.add('selected');
     this._parent.addSelect(this);
-  }
+  };
 
   selectOff() {
     if (!this._selected) return;
     this._selected = false;
     this.outer.classList.remove('selected');
     this._parent.delSelect(this);
-  }
+  };
 
   splitBefore() {
     if (this.splittedBefore) {
       this.splittedBefore = false;
       this.outer.classList.remove('split-before');
+      this.selectOff();
     } else {
       this.splittedBefore = true;
       this.outer.classList.add('split-before');
+      this.selectOff();      
     };
-  }
+  };
 
   remove() {
     if (this.deleted) {
@@ -214,7 +188,7 @@ export class NewPDFAugmentedPage {
       this.outer.setAttribute('draggable', false);
       this.selectOff();
     };
-  }
+  };
   
   rotateRight() {
     this.rotation += 90;
@@ -225,11 +199,4 @@ export class NewPDFAugmentedPage {
     this.rotation -= 90;
     this.canvas.style.transform = 'rotate(' + this.rotation + 'deg)';
   };
-
-  
-  // Load the page in the canvas
-  load () {
-  };
-}
-
-// customElements.define('pdf-page', NewPDFAugmentedPage);
+};

@@ -33,72 +33,40 @@ class PDFArranger extends HTMLElement {
     
     const shadow = this.attachShadow({ mode: "open" });
 
-    // Not optimal to have that in the shadow
-    var style = document.createElement('style');
-    style.innerHTML = `
-    #pdf-arranger {
-      display: flex;
-      flex-wrap: wrap;
-align-items: center;
-    }
-
-    div.droppable {
-      display: inline-block;
-      height: 20%;
-      width: 5px;
-      background-color: grey;
-    }
-    div.outer {
-      display: inline-block;
-      margin: 2pt;
-      background-color: transparent;
-      border: 5px solid transparent;
-      cursor: pointer;
-    }
-canvas {
-      transition: transform .5s ease-out;
-//       box-shadow: rgba(50, 50, 93, 0.25) 0px 6px 12px -2px, rgba(0, 0, 0, 0.3) 0px 3px 7px -3px;
-}
-
-    div.outer.deleted {
-      cursor: default !important;
-      background-color: grey;
-      border-color: grey;
-    }
-    div.outer.split-before {
-      border-left-style: solid !important;
-      border-left-color: red !important;
-    }
-    div.outer.dragged {
-      background-color: white;
-opacity: 0.5;
-    }
-    div.outer.selected {
-      border-style: dashed;
-      border-color: blue;
-    }
-
-div.delete, div.rotate-left {
-display: block;
-width: 100%;
-}
-`;
-
+    var css = new CSSStyleSheet();
+    fetch("main.css").then(
+      response => response.text()
+    ).then(
+      data => {
+        css.replace(data)
+      }
+    );
+    shadow.adoptedStyleSheets = [css];
+    
     this.elem = document.createElement('div');
     this.elem.setAttribute('id', 'pdf-arranger');
-    this.elem.appendChild(style);
+    // this.elem.appendChild(style);
+
+    let nav = document.createElement('nav');
     
     this.delElem = document.createElement("div");
     this.delElem.setAttribute("class","delete");
     this.delElem.innerText = 'remove';
-    this.elem.appendChild(this.delElem);
+    nav.appendChild(this.delElem);
 
     // These elements should only exist once and be appended to the page in focus!
     this.rotateLeftElem = document.createElement("div");
     this.rotateLeftElem.setAttribute("class","rotate-left");
     this.rotateLeftElem.innerText = 'left';
-    this.elem.appendChild(this.rotateLeftElem);
-    
+    nav.appendChild(this.rotateLeftElem);
+
+    // These elements should only exist once and be appended to the page in focus!
+    this.splitBeforeElem = document.createElement("div");
+    this.splitBeforeElem.setAttribute("class","split-before");
+    this.splitBeforeElem.innerText = 'split before';
+    nav.appendChild(this.splitBeforeElem);
+
+    this.elem.appendChild(nav);
     
     shadow.appendChild(this.elem);
 
@@ -114,6 +82,7 @@ width: 100%;
 
     this.delElem.addEventListener('click', this.remove.bind(this));
     this.rotateLeftElem.addEventListener('click', this.rotateLeft.bind(this));
+    this.splitBeforeElem.addEventListener('click', this.splitBefore.bind(this));
   };
 
   remove() {
@@ -138,6 +107,13 @@ width: 100%;
     console.log(this.selected);
   }
 
+  splitBefore() {
+    this.forEachSelected(function (page) {
+      page.splitBefore();
+    });
+  }
+
+  
   forEachSelected(cb) {
     this.selected.forEach(cb);
   }
