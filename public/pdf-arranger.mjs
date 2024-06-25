@@ -66,14 +66,13 @@ class PDFArranger extends HTMLElement {
     this.splitBeforeElem.innerText = 'split before';
     nav.appendChild(this.splitBeforeElem);
 
+    this.viewport = document.createElement('div');
+    this.viewport.setAttribute('id', 'pdf-viewport');
+
     this.elem.appendChild(nav);
+    this.elem.appendChild(this.viewport);
     
     shadow.appendChild(this.elem);
-
-    /*
-    this.newElem = document.createElement("div");
-    this.newElem.innerText = 'new';
-*/
   }
 
   connectedCallback () {
@@ -129,20 +128,10 @@ class PDFArranger extends HTMLElement {
       // Initialize the document length
       instance.numPages = pdf.numPages;
 
-      // Fetch the first page
-      //  pageNumber = 1;
-      /*
-      pdf.getPage(pageNumber).then(function(page) {
-        instance.pdfDoc.currentPage = page;
-
-        // Render page
-        instance.renderPage({});
-      });
-      */
       for (var i = 0; i < instance.numPages; i++) {
         var page  = new NewPDFAugmentedPage(i+1, instance);
         instance.pages[i] = page;
-        instance.elem.append(page.elem);
+        instance.viewport.append(page.elem);
 
         pdf.getPage(i+1).then(function(pdfPage) {
           instance.pages[pdfPage._pageIndex].render(pdfPage);

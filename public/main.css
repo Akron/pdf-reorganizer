@@ -1,13 +1,27 @@
 #pdf-arranger {
+  display: block;
+}
+
+#pdf-viewport {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
+  border: 1px solid black;
+  width: 800px;
+  height: 300px;
+  overflow-y: scroll;
+  css-resize: both;
+}
+
+#pdf-arranger > nav {
+  display: block;
+  width: 100%;
 }
 
 div.droppable {
   display: inline-block;
   width: 12px;
-  //background-color: grey;
+  // background-color: grey;
   vertical-align: top;
   border-width: 1px;
   border-style: dashed;
@@ -59,9 +73,4 @@ div.outer.dragged {
 
 div.outer.selected {
   background-color: #88f;
-}
-
-nav {
-  display: block;
-  width: 100%;
 }
