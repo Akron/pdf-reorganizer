@@ -144,6 +144,7 @@ export class PDFPage extends HTMLElement {
     var renderTask = page.render(renderContext);
     renderTask.promise.then(function () {
       // Page rendered!
+      canvas.style.opacity = 1;
     });
   };
   
