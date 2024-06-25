@@ -13,26 +13,18 @@
   flex-wrap: wrap;
   align-items: center;
   border: 1px solid var(--dark-border-color);
-  width: 800px;
-  height: 300px;
+  width: 600px;
+  height: 400px;
   overflow-y: scroll;
   overflow-x: hidden;
   resize: both;
+  min-width: 300px;
+  min-height: 200px;
 }
 
 #pdf-arranger > nav {
   display: block;
   width: 100%;
-}
-
-div.droppable {
-  display: inline-block;
-  width: 12px;
-  vertical-align: top;
-  border-width: 1px;
-  border-style: dashed;
-  border-color: transparent;
-  border-radius: 6px;
 }
 
 div.outer {
@@ -44,7 +36,35 @@ div.outer {
   border: 5px solid transparent;
   cursor: pointer;
   padding: 8px;
+  z-index: 1;
 }
+
+div.outer canvas {
+  position: relative;
+}
+
+div.outer::after {
+  position: absolute;
+  top: 0;
+  z-index:5;
+  width: 20px;
+  height:20px;
+  background-color: red;
+  top: 50%;
+}
+
+div.outer.drag-left::after {
+  content: "";
+  left: 0;
+  margin-left: -17px;
+}
+
+div.outer.drag-right::after {
+  content: "";
+  right: 0;
+  margin-right: -17px;
+}
+
 
 @keyframes rotation {
   to {transform: rotate(360deg);}
@@ -73,6 +93,7 @@ canvas {
   border: 1px solid var(--dark-border-color);
   opacity: 0;
   transition:opacity 1000ms;
+  z-index: -1;
 }
 
 div.outer.deleted {

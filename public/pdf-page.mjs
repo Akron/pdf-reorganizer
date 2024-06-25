@@ -1,8 +1,10 @@
 // Support HiDPI-screens.
-var outputScale = window.devicePixelRatio || 1;
+const outputScale = window.devicePixelRatio || 1;
 
-var desiredWidth = 100;
-var desiredHeight = 100;
+const desiredWidth = 100;
+const desiredHeight = 100;
+
+var dropTarget = null;
 
 // Requires a ref to _parent to inform the arranger on selected pages (for example).
 
@@ -21,11 +23,6 @@ export class PDFPage extends HTMLElement {
     this._ref = null;
     this._parent = parent;
 
-    this.target = document.createElement("div");
-    this.target.classList.add("droppable"); 
-
-    this.appendChild(this.target);
-
     this.outer = document.createElement("div");
     this.outer.style.width = (desiredWidth*outputScale) + 'px';
     this.outer.style.height = (desiredWidth*outputScale) + 'px';
@@ -33,9 +30,12 @@ export class PDFPage extends HTMLElement {
     this.outer.setAttribute("draggable", true);
     // this.outer.innerText = this.num;
 
-    // May be multiple canvases!
-    // Currently this is the current element
+    this.outer.setAttribute("droppable", true);
+
     this.canvas = document.createElement("canvas");
+    this.canvas.setAttribute('droppable',false);
+
+
     this.outer.appendChild(this.canvas);
 
     this.appendChild(this.outer);
@@ -63,33 +63,89 @@ export class PDFPage extends HTMLElement {
       this._parent.forEachSelected(function (obj) {
         obj.outer.classList.remove("dragged");
       });
+      if (dropTarget != null) {
+        dropTarget.classList.remove('drag-left','drag-right');
+        dropTarget = null;
+      }
     }).bind(this));
 
-    this.target.addEventListener("dragenter",function (ev) {
+    /*
+    this.outer.addEventListener("dragenter",function (ev) {
       ev.preventDefault();
       ev.target.style.borderColor = "#00f";
       ev.target.style.backgroundColor = "#88f";
     });
+*/
 
-    this.target.addEventListener("dragleave",function (ev) {
+    this.outer.addEventListener("dragleave",function (ev) {
       ev.preventDefault();
-      ev.target.style.borderColor = "transparent";
-      ev.target.style.backgroundColor = "transparent";
+/*
+      var target = ev.target;
+
+      if (target.tagName == "CANVAS")
+        target = target.parentNode;
+
+      if (target.tagName != "DIV")
+        return;
+*/
+      if (dropTarget != null) {
+        dropTarget.classList.remove('drag-left','drag-right');
+        dropTarget = null;
+      };
+
+      this.classList.remove("drag-left","drag-right");
     });
 
-    this.target.addEventListener("dragover", function(ev) {
+    this.outer.addEventListener("dragover", function(ev) {
       ev.preventDefault();
       // Set the dropEffect to move
       ev.dataTransfer.dropEffect = "move";
+     
+      var rect = this.getBoundingClientRect();
+      var x = ev.clientX - rect.left; //x position within the element.
+
+      if (x < ((desiredWidth*outputScale) / 2)) {
+        this.classList.add("drag-left");
+        this.classList.remove("drag-right");
+      } else {
+        this.classList.remove("drag-left");
+        this.classList.add("drag-right");
+      };
+
+      if (dropTarget != null && dropTarget != this) {
+        dropTarget.classList.remove('drag-left','drag-right');
+        dropTarget = null;
+      };
+      dropTarget = this
     });
+
     
-    this.target.addEventListener("drop", function (ev) {
+    this.outer.addEventListener("drop", function (ev) {
       ev.preventDefault();
       // const data = ev.dataTransfer.getData("text/plain");
       // ev.target.appendChild(document.getElementById(data));
       // this.backgroundColor = "yellow";
+
+      /*
+      var target = ev.target;
+
+      if (target.tagName == "CANVAS")
+        target = target.parentNode;
+
+      if (target.tagName != "DIV")
+        return;
+*/
+
+      if (dropTarget != null) {
+        dropTarget.classList.remove('drag-left','drag-right');
+        dropTarget = null;
+      }
+
+      this.classList.remove("drag-left","drag-right");
+
       console.log("drop");
     });
+    
 
     this.outer.addEventListener('click', (function () {
       this.swapSelected();
@@ -126,8 +182,6 @@ export class PDFPage extends HTMLElement {
     canvas.style.marginLeft = Math.floor(((desiredWidth*outputScale) - canvas.width) / 2) + "px";
     canvas.style.marginTop = Math.floor(((desiredHeight*outputScale) - canvas.height) / 2) + "px";
 
-    this.target.style.height = Math.floor(desiredHeight * outputScale) + "px";
-    
     var transform = outputScale !== 1
         ? [outputScale, 0, 0, outputScale, 0, 0]
         : null;
