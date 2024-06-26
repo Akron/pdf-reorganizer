@@ -55,7 +55,22 @@ export class PDFPage extends HTMLElement {
         obj.outer.classList.add("dragged");
       });
       
+      // create drag image
+      var newCanvas = document.createElement('canvas');
+      var context = newCanvas.getContext('2d');
+
+      // Setting img src
+      // img.src = 'https://www.w3schools.com/css/paris.jpg'
+
+      // set dimensions
+      newCanvas.width = this.canvas.width * 0.5;
+      newCanvas.height = this.canvas.height * 0.5;
+
+      // apply the old canvas to the new one
+      context.drawImage(this.canvas, 0, 0, newCanvas.width, newCanvas.height); 
+      
       ev.dataTransfer.dropEffect = "move";
+      ev.dataTransfer.setDragImage(newCanvas, -15, -15);
       console.log("start dragging");
     }).bind(this));
 
@@ -124,17 +139,6 @@ export class PDFPage extends HTMLElement {
       ev.preventDefault();
       // const data = ev.dataTransfer.getData("text/plain");
       // ev.target.appendChild(document.getElementById(data));
-      // this.backgroundColor = "yellow";
-
-      /*
-      var target = ev.target;
-
-      if (target.tagName == "CANVAS")
-        target = target.parentNode;
-
-      if (target.tagName != "DIV")
-        return;
-*/
 
       if (dropTarget != null) {
         dropTarget.classList.remove('drag-left','drag-right');

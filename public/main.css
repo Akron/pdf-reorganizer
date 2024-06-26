@@ -1,9 +1,10 @@
 #pdf-arranger {
   --dark-border-color: #555;
   --white: #ffffff;
-  --deleted-color: grey;
-  --hover-color: #49d;
+  --deleted-color: #777;
+  --hover-color: #aaa; // #49d;
   --selected-color: #07d;
+  --dragged-color: #7cd;
   --loader: var(--selected-color);
   display: block;
 }
@@ -46,23 +47,28 @@ div.outer canvas {
 div.outer::after {
   position: absolute;
   top: 0;
-  z-index:5;
   width: 20px;
-  height:20px;
-  background-color: red;
+  height:100px;
+  margin-top:-50px;
+  border-radius: 10px;
+  background-color: var(--selected-color);
   top: 50%;
+}
+
+div.outer.drag-left, div.outer.drag-right {
+  z-index:5;
 }
 
 div.outer.drag-left::after {
   content: "";
   left: 0;
-  margin-left: -17px;
+  margin-left: -18px;
 }
 
 div.outer.drag-right::after {
   content: "";
   right: 0;
-  margin-right: -17px;
+  margin-right: -18px;
 }
 
 
@@ -117,11 +123,11 @@ div.outer.split-before {
   border-top-color: green;
 }
 
-div.outer.dragged {
-  background-color: white;
-  opacity: 0.5;
-}
-
 div.outer.selected {
   background-color: var(--selected-color);
 }
+
+div.outer.dragged {
+  background-color: var(--dragged-color);
+}
+
