@@ -1,14 +1,14 @@
 // Loaded via <script> tag, create shortcut to access PDF.js exports.
 var { pdfjsLib } = globalThis;
 
-import { PDFPage } from './pdf-page.mjs';
+import { PDFPage } from 'pdf-page';
 
 
 // The workerSrc property shall be specified.
 pdfjsLib.GlobalWorkerOptions.workerSrc = 'build/pdf.worker.mjs';
 
 
-class PDFArranger extends HTMLElement {
+export class PDFArranger extends HTMLElement {
 
   static get observedAttributes() {
     return ['url'];
