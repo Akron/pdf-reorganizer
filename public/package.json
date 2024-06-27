@@ -12,5 +12,25 @@
   },
   "type": "module",
   "main": "pdf-arranger.js",
-  "module": "pdf-arranger.js"
+  "module": "pdf-arranger.js",
+  "name": "pdf-arranger",
+  "version": "0.1.0",
+  "description": "Web Component for PDF arrangement",
+  "dependencies": {
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Akron/pdf-arranger.git"
+  },
+  "keywords": [
+    "pdf",
+    "webcomponent",
+    "dms"
+  ],
+  "author": "Nils Diewald",
+  "license": "",
+  "bugs": {
+    "url": "https://github.com/Akron/pdf-arranger/issues"
+  },
+  "homepage": "https://github.com/Akron/pdf-arranger#readme"
 }
