@@ -35,9 +35,15 @@ export class PDFPage extends HTMLElement {
     this.canvas = document.createElement("canvas");
     this.canvas.setAttribute('droppable',false);
 
-
     this.outer.appendChild(this.canvas);
 
+    // Caption
+    let caption = document.createElement("div");
+    caption.classList.add('caption');
+    caption.setAttribute('data-num', this.num);
+
+    this.outer.appendChild(caption);
+    
     this.appendChild(this.outer);
 
     
@@ -56,8 +62,8 @@ export class PDFPage extends HTMLElement {
       });
       
       // create drag image
-      var newCanvas = document.createElement('canvas');
-      var context = newCanvas.getContext('2d');
+      let newCanvas = document.createElement('canvas');
+      let context = newCanvas.getContext('2d');
 
       // Setting img src
       // img.src = 'https://www.w3schools.com/css/paris.jpg'
@@ -116,8 +122,8 @@ export class PDFPage extends HTMLElement {
       // Set the dropEffect to move
       ev.dataTransfer.dropEffect = "move";
      
-      var rect = this.getBoundingClientRect();
-      var x = ev.clientX - rect.left; //x position within the element.
+      let rect = this.getBoundingClientRect();
+      let x = ev.clientX - rect.left; //x position within the element.
 
       if (x < ((desiredWidth*outputScale) / 2)) {
         this.classList.add("drag-left");
@@ -164,13 +170,13 @@ export class PDFPage extends HTMLElement {
     
     this._ref = page;
 
-    var viewportParam = {scale : 1};
+    let viewportParam = {scale : 1};
     
     // Prepare canvas using PDF page dimensions
-    var canvas = this.canvas;
-    var context = canvas.getContext('2d');
+    let canvas = this.canvas;
+    let context = canvas.getContext('2d');
 
-    var viewport = page.getViewport(viewportParam);
+    let viewport = page.getViewport(viewportParam);
 
     if (viewport.width > viewport.height) {
       viewportParam['scale'] = desiredWidth / viewport.width;
@@ -186,19 +192,19 @@ export class PDFPage extends HTMLElement {
     canvas.style.marginLeft = Math.floor(((desiredWidth*outputScale) - canvas.width) / 2) + "px";
     canvas.style.marginTop = Math.floor(((desiredHeight*outputScale) - canvas.height) / 2) + "px";
 
-    var transform = outputScale !== 1
+    let transform = outputScale !== 1
         ? [outputScale, 0, 0, outputScale, 0, 0]
         : null;
 
     // Render PDF page into canvas context
-    var renderContext = {
+    let renderContext = {
       canvasContext: context,
       viewport: viewport,
       transform : transform,
       background: 'rgba(0,0,0,0)',
     };
 
-    var renderTask = page.render(renderContext);
+    let renderTask = page.render(renderContext);
     renderTask.promise.then(function () {
       // Page rendered!
       // canvas.style.opacity = 1;

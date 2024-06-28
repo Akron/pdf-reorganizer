@@ -3,9 +3,10 @@
   --white: #ffffff;
   --deleted-color: #777;
   --hover-color: #aaa; // #49d;
-  --selected-color: #07d;
+  --selected-bg-color: #07d;
+  --selected-color: var(--white);
   --dragged-color: #7cd;
-  --loader: var(--selected-color);
+  --loader: var(--selected-bg-color);
   display: block;
 }
 
@@ -37,11 +38,26 @@ div.outer {
   border: 5px solid transparent;
   cursor: pointer;
   padding: 8px;
+  padding-bottom: 18pt;
   z-index: 1;
+  color: var(--dark-border-color);
 }
 
 div.outer canvas {
   position: relative;
+}
+
+div.outer div.caption {
+  position: absolute;
+  text-align: center;
+  width: 100%;
+  bottom: 0;
+  left: 0;
+  font-size: 75%;
+}
+
+div.outer div.caption::after {
+  content: "[" attr(data-num) "]";
 }
 
 div.outer::after {
@@ -51,7 +67,7 @@ div.outer::after {
   height:100px;
   margin-top:-50px;
   border-radius: 10px;
-  background-color: var(--selected-color);
+  background-color: var(--selected-bg-color);
   top: 50%;
 }
 
@@ -126,7 +142,9 @@ div.outer.split-before {
 }
 
 div.outer.selected {
-  background-color: var(--selected-color);
+  background-color: var(--selected-bg-color);
+  color: var(--selected-color);
+
 }
 
 div.outer.dragged {
