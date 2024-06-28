@@ -8,21 +8,18 @@ import { PDFPage } from 'pdf-page';
 pdfjsLib.GlobalWorkerOptions.workerSrc = 'build/pdf.worker.mjs';
 
 
+/**
+ * @class PDFArranger extends an HTMLElement
+ * that allows to rearrange, split, and
+ * modify PDFs.
+ *
+ * @exports
+ */
 export class PDFArranger extends HTMLElement {
 
-  static get observedAttributes() {
-    return ['url'];
-  }
-
-    // attribute change
-  attributeChangedCallback(property, oldValue, newValue) {
-    if (oldValue === newValue)
-      return;
-
-    // Overload attributes, e.g. from the element attribute list
-    this[property] = newValue;
-  }
-  
+  /**
+   * @constructor
+   */
   constructor(numpages) {
     super();
     this.url;
@@ -107,23 +104,53 @@ export class PDFArranger extends HTMLElement {
       root: this.viewport,
       rootMargin: '10px 10px 10px 10px'
     });
-
   };
 
   disconnectedCallback() {
     this.observeViewport.disconnect();
   };
 
-  remove() {
-    this.forEachSelected(function (page) {
-      page.remove();
-    });
+    static get observedAttributes() {
+    return ['url'];
   }
 
+  // attribute change
+  attributeChangedCallback(property, oldValue, newValue) {
+    if (oldValue === newValue)
+      return;
+
+    // Overload attributes, e.g. from the element attribute list
+    this[property] = newValue;
+  }
+
+  /**
+   * Removes all selected pages from the
+   * PDF.
+   *
+   * @return {number} The number of deleted pages.
+   */
+  remove() {
+    var i = 0;
+    this.forEachSelected(function (page) {
+      page.remove();
+      i++;
+    });
+    return i;
+  }
+
+  /**
+   * Rotates all selected pages from the
+   * PDF 90 degrees to the left.
+   *
+   * @return {number} The number of rotated pages.
+   */
   rotateLeft() {
+    var i = 0;
     this.forEachSelected(function (page) {
       page.rotateLeft();
+      i++;
     });
+    return i;
   }
   
   addSelect(obj) {
