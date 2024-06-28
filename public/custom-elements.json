@@ -1,0 +1,296 @@
+{
+  "schemaVersion": "1.0.0",
+  "readme": "",
+  "modules": [
+    {
+      "kind": "javascript-module",
+      "path": "pdf-arranger.js",
+      "declarations": [
+        {
+          "kind": "class",
+          "description": "",
+          "name": "PDFArranger",
+          "members": [
+            {
+              "kind": "method",
+              "name": "remove",
+              "description": "Removes all selected pages from the\nPDF.",
+              "return": {
+                "type": {
+                  "text": "number"
+                }
+              }
+            },
+            {
+              "kind": "method",
+              "name": "rotateLeft"
+            },
+            {
+              "kind": "method",
+              "name": "addSelect",
+              "parameters": [
+                {
+                  "name": "obj"
+                }
+              ]
+            },
+            {
+              "kind": "method",
+              "name": "delSelect",
+              "parameters": [
+                {
+                  "name": "obj"
+                }
+              ]
+            },
+            {
+              "kind": "method",
+              "name": "splitBefore"
+            },
+            {
+              "kind": "method",
+              "name": "forEachSelected",
+              "parameters": [
+                {
+                  "name": "cb"
+                }
+              ]
+            },
+            {
+              "kind": "method",
+              "name": "loadDocument",
+              "parameters": [
+                {
+                  "name": "url"
+                }
+              ]
+            },
+            {
+              "kind": "field",
+              "name": "numpages",
+              "default": "undefined"
+            },
+            {
+              "kind": "field",
+              "name": "pdfDoc",
+              "default": "undefined"
+            },
+            {
+              "kind": "field",
+              "name": "selected",
+              "default": "new Set()"
+            },
+            {
+              "kind": "field",
+              "name": "pages",
+              "default": "new Array()"
+            },
+            {
+              "kind": "field",
+              "name": "adoptedStyleSheets",
+              "type": {
+                "text": "array"
+              },
+              "default": "[css]"
+            },
+            {
+              "kind": "field",
+              "name": "elem"
+            },
+            {
+              "kind": "field",
+              "name": "delElem"
+            },
+            {
+              "kind": "field",
+              "name": "innerText",
+              "type": {
+                "text": "string"
+              },
+              "default": "'split before'"
+            },
+            {
+              "kind": "field",
+              "name": "rotateLeftElem"
+            },
+            {
+              "kind": "field",
+              "name": "splitBeforeElem"
+            },
+            {
+              "kind": "field",
+              "name": "viewport"
+            }
+          ],
+          "attributes": [
+            {
+              "name": "url"
+            }
+          ],
+          "superclass": {
+            "name": "HTMLElement"
+          },
+          "tagName": "pdf-arranger",
+          "customElement": true
+        }
+      ],
+      "exports": [
+        {
+          "kind": "js",
+          "name": "PDFArranger",
+          "declaration": {
+            "name": "PDFArranger",
+            "module": "pdf-arranger.js"
+          }
+        },
+        {
+          "kind": "custom-element-definition",
+          "name": "pdf-arranger",
+          "declaration": {
+            "name": "PDFArranger",
+            "module": "pdf-arranger.js"
+          }
+        }
+      ]
+    },
+    {
+      "kind": "javascript-module",
+      "path": "pdf-page.js",
+      "declarations": [
+        {
+          "kind": "class",
+          "description": "",
+          "name": "PDFPage",
+          "members": [
+            {
+              "kind": "method",
+              "name": "render",
+              "parameters": [
+                {
+                  "name": "page"
+                }
+              ]
+            },
+            {
+              "kind": "method",
+              "name": "swapSelected"
+            },
+            {
+              "kind": "method",
+              "name": "selectOn"
+            },
+            {
+              "kind": "method",
+              "name": "selectOff"
+            },
+            {
+              "kind": "method",
+              "name": "splitBefore"
+            },
+            {
+              "kind": "method",
+              "name": "remove"
+            },
+            {
+              "kind": "method",
+              "name": "rotateRight"
+            },
+            {
+              "kind": "method",
+              "name": "rotateLeft"
+            },
+            {
+              "kind": "field",
+              "name": "num",
+              "default": "pagenum"
+            },
+            {
+              "kind": "field",
+              "name": "deleted",
+              "type": {
+                "text": "boolean"
+              },
+              "default": "false"
+            },
+            {
+              "kind": "field",
+              "name": "splittedBefore",
+              "type": {
+                "text": "boolean"
+              },
+              "default": "false"
+            },
+            {
+              "kind": "field",
+              "name": "rotation",
+              "type": {
+                "text": "number"
+              },
+              "default": "0"
+            },
+            {
+              "kind": "field",
+              "name": "_selected",
+              "type": {
+                "text": "boolean"
+              },
+              "default": "false"
+            },
+            {
+              "kind": "field",
+              "name": "_ref",
+              "type": {
+                "text": "null"
+              },
+              "default": "null"
+            },
+            {
+              "kind": "field",
+              "name": "_parent",
+              "default": "parent"
+            },
+            {
+              "kind": "field",
+              "name": "outer"
+            },
+            {
+              "kind": "field",
+              "name": "width"
+            },
+            {
+              "kind": "field",
+              "name": "height"
+            },
+            {
+              "kind": "field",
+              "name": "canvas"
+            }
+          ],
+          "superclass": {
+            "name": "HTMLElement"
+          },
+          "tagName": "pdf-page",
+          "customElement": true
+        }
+      ],
+      "exports": [
+        {
+          "kind": "js",
+          "name": "PDFPage",
+          "declaration": {
+            "name": "PDFPage",
+            "module": "pdf-page.js"
+          }
+        },
+        {
+          "kind": "custom-element-definition",
+          "name": "pdf-page",
+          "declaration": {
+            "name": "PDFPage",
+            "module": "pdf-page.js"
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,6 +1,7 @@
 {
   "scripts": {
-    "test": "node --experimental-modules --experimental-vm-modules node_modules/jest/bin/jest.js"
+    "test": "node --experimental-modules --experimental-vm-modules node_modules/jest/bin/jest.js",
+    "analyze-custom-elements": "npx @custom-elements-manifest/analyzer analyze"
   },
   "devDependencies": {
     "jest": "^29.7.0",
@@ -28,6 +29,7 @@
     "dms"
   ],
   "author": "Nils Diewald",
+  "customElements": "./custom-elements.json",
   "license": "",
   "bugs": {
     "url": "https://github.com/Akron/pdf-arranger/issues"
