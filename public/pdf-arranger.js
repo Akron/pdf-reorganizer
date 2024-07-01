@@ -167,6 +167,19 @@ export class PDFArranger extends HTMLElement {
     });
   }
 
+  /**
+   * Move all selected pages in front of a target page.
+   */
+  moveBefore(obj) {
+    obj.before(...this.selected)
+  }
+
+  /**
+   * Move all selected behind of a target page.
+   */
+  moveAfter(obj) {
+    obj.after(...this.selected)
+  }
   
   forEachSelected(cb) {
     this.selected.forEach(cb);

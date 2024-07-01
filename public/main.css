@@ -41,7 +41,8 @@ div.outer {
   padding-bottom: 18pt;
   z-index: 1;
   color: var(--dark-border-color);
-  margin: 3px; // Relevant for drag target
+  /* Relevant for drag target */
+  margin: 3px;
 }
 
 div.outer canvas {

@@ -28,7 +28,6 @@ export class PDFPage extends HTMLElement {
     this.outer.style.height = (desiredWidth*outputScale) + 'px';
     this.outer.classList.add("outer","load");
     this.outer.setAttribute("draggable", true);
-    // this.outer.innerText = this.num;
 
     this.outer.setAttribute("droppable", true);
 
@@ -46,6 +45,7 @@ export class PDFPage extends HTMLElement {
     
     this.appendChild(this.outer);
 
+    var instance = this;
     
     // Drag events
     this.outer.addEventListener("dragstart", (function (ev) {
@@ -64,9 +64,6 @@ export class PDFPage extends HTMLElement {
       // create drag image
       let newCanvas = document.createElement('canvas');
       let context = newCanvas.getContext('2d');
-
-      // Setting img src
-      // img.src = 'https://www.w3schools.com/css/paris.jpg'
 
       // set dimensions
       newCanvas.width = this.canvas.width * 0.5;
@@ -100,15 +97,6 @@ export class PDFPage extends HTMLElement {
 
     this.outer.addEventListener("dragleave",function (ev) {
       ev.preventDefault();
-/*
-      var target = ev.target;
-
-      if (target.tagName == "CANVAS")
-        target = target.parentNode;
-
-      if (target.tagName != "DIV")
-        return;
-*/
       if (dropTarget != null) {
         dropTarget.classList.remove('drag-left','drag-right');
         dropTarget = null;
@@ -121,11 +109,8 @@ export class PDFPage extends HTMLElement {
       ev.preventDefault();
       // Set the dropEffect to move
       ev.dataTransfer.dropEffect = "move";
-     
-      let rect = this.getBoundingClientRect();
-      let x = ev.clientX - rect.left; //x position within the element.
 
-      if (x < ((desiredWidth*outputScale) / 2)) {
+      if (_mouseBefore(this, ev)) {
         this.classList.add("drag-left");
         this.classList.remove("drag-right");
       } else {
@@ -153,9 +138,19 @@ export class PDFPage extends HTMLElement {
 
       this.classList.remove("drag-left","drag-right");
 
-      console.log("drop");
+      var target = this;
+      
+      while (target.tagName != 'PDF-PAGE')
+        target = target.parentNode;
+      
+      if (_mouseBefore(this, ev)) {
+        instance._parent.moveBefore(target);
+      } else {
+        instance._parent.moveAfter(target);
+      };
+      
+      // this._ref.moveSelected()
     });
-    
 
     this.outer.addEventListener('click', (function () {
       this.swapSelected();
@@ -269,6 +264,19 @@ export class PDFPage extends HTMLElement {
     this.rotation -= 90;
     this.canvas.style.transform = 'rotate(' + this.rotation + 'deg)';
   };
+};
+
+/**
+ * Check if the pointer is on the left (true)
+ * side of an object.
+ */
+function _mouseBefore (obj, ev) {
+  let rect = obj.getBoundingClientRect();
+  let x = ev.clientX - rect.left; //x position within the element.
+  
+  if (x < ((desiredWidth*outputScale) / 2))
+    return true;
+  return false;
 };
 
 customElements.define('pdf-page', PDFPage);
