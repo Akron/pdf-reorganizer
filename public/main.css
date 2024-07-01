@@ -15,11 +15,12 @@
   flex-wrap: wrap;
   align-items: center;
   border: 1px solid var(--dark-border-color);
-  width: 600px;
-  height: 400px;
   overflow-y: scroll;
   overflow-x: hidden;
   resize: both;
+
+  width: 600px;
+  height: 400px;
   min-width: 300px;
   min-height: 200px;
 }
@@ -33,7 +34,6 @@ div.outer {
   position: relative;
   border-radius: 6px;
   display: inline-block;
-  margin: 2pt;
   background-color: transparent;
   border: 5px solid transparent;
   cursor: pointer;
@@ -41,6 +41,7 @@ div.outer {
   padding-bottom: 18pt;
   z-index: 1;
   color: var(--dark-border-color);
+  margin: 3px; // Relevant for drag target
 }
 
 div.outer canvas {
@@ -63,10 +64,10 @@ div.outer div.caption::after {
 div.outer::after {
   position: absolute;
   top: 0;
-  width: 20px;
-  height:100px;
-  margin-top:-50px;
-  border-radius: 10px;
+  width: 10px;
+  height:200px;
+  margin-top:-100px;
+  border-radius: 5px;
   background-color: var(--selected-bg-color);
   top: 50%;
 }
@@ -78,13 +79,13 @@ div.outer.drag-left, div.outer.drag-right {
 div.outer.drag-left::after {
   content: "";
   left: 0;
-  margin-left: -18px;
+  margin-left: -13px;
 }
 
 div.outer.drag-right::after {
   content: "";
   right: 0;
-  margin-right: -18px;
+  margin-right: -13px;
 }
 
 
