@@ -123,6 +123,21 @@ export class PDFArranger extends HTMLElement {
     this[property] = newValue;
   }
 
+  _selectedSort () {
+    if (this.selected.size < 2)
+      return this.selected;
+      
+    let nodeList = Array.from(this.viewport.childNodes);
+    let selList = Array.from(this.selected);
+    
+    selList.sort(function(a, b) {
+      return nodeList.indexOf(a) - nodeList.indexOf(b);
+    });
+
+    return selList;
+  }
+
+  
   /**
    * Removes all selected pages from the
    * PDF.
@@ -170,15 +185,15 @@ export class PDFArranger extends HTMLElement {
   /**
    * Move all selected pages in front of a target page.
    */
-  moveBefore(obj) {
-    obj.before(...this.selected)
+  moveBefore(obj) {    
+    obj.before(...this._selectedSort())
   }
 
   /**
    * Move all selected behind of a target page.
    */
   moveAfter(obj) {
-    obj.after(...this.selected)
+    obj.after(...this._selectedSort())
   }
   
   forEachSelected(cb) {
@@ -213,7 +228,6 @@ export class PDFArranger extends HTMLElement {
       console.error(reason);
     });
   }
-
 };
 
 customElements.define('pdf-arranger', PDFArranger);
