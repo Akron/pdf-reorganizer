@@ -11,6 +11,9 @@
     "transform": {},
     "testEnvironment": "jsdom"
   },
+  "engines": {
+    "node": ">=22.0"
+  },
   "type": "module",
   "main": "pdf-arranger.js",
   "module": "pdf-arranger.js",
@@ -18,6 +21,9 @@
   "version": "0.1.0",
   "description": "Web Component for PDF arrangement",
   "dependencies": {
+  },
+  "imports": {
+    "pdf-page": "./pdf-page.js"
   },
   "repository": {
     "type": "git",

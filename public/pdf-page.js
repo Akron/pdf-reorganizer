@@ -6,12 +6,13 @@ const desiredHeight = 100;
 
 var dropTarget = null;
 
-// Requires a ref to _parent to inform the arranger on selected pages (for example).
 
-// Todo:
-// - on delete: No more selection (split can stay)
+// - Change selectOn/selectOff to select(true) and select(false)
 
-export class PDFPage extends HTMLElement {
+/**
+ * A PDFPage represents a single page of a PDF file.
+ */
+export default class PDFPage extends HTMLElement {
 
   constructor(pagenum, parent) {
     super();
@@ -20,7 +21,7 @@ export class PDFPage extends HTMLElement {
     this.splittedBefore = false;
     this.rotation = 0;
     this._selected = false;
-    this._ref = null;
+    this._pdfjsref = null;
     this._parent = parent;
 
     this.outer = document.createElement("div");
@@ -28,32 +29,32 @@ export class PDFPage extends HTMLElement {
     this.outer.style.height = (desiredWidth*outputScale) + 'px';
     this.outer.classList.add("outer","load");
     this.outer.setAttribute("draggable", true);
-
     this.outer.setAttribute("droppable", true);
 
+    // Canvas
     this.canvas = document.createElement("canvas");
     this.canvas.setAttribute('droppable',false);
-
     this.outer.appendChild(this.canvas);
 
     // Caption
     let caption = document.createElement("div");
     caption.classList.add('caption');
     caption.setAttribute('data-num', this.num);
-
     this.outer.appendChild(caption);
     
     this.appendChild(this.outer);
 
+    // Establish event listeners
+
     var instance = this;
     
-    // Drag events
+    // Dragstart
     this.outer.addEventListener("dragstart", (function (ev) {
-      // ev.preventDefault();
 
       // TODO:
       // - Check if the object is selected
-      // - Check, if multiple objects are selected. -> make all "dragged
+      // - Check, if multiple objects are selected.
+      //   -> make all "dragged
 
       this.selectOn();
 
@@ -70,13 +71,16 @@ export class PDFPage extends HTMLElement {
       newCanvas.height = this.canvas.height * 0.5;
 
       // apply the old canvas to the new one
-      context.drawImage(this.canvas, 0, 0, newCanvas.width, newCanvas.height); 
+      context.drawImage(
+        this.canvas, 0, 0, newCanvas.width, newCanvas.height
+      ); 
       
       ev.dataTransfer.dropEffect = "move";
       ev.dataTransfer.setDragImage(newCanvas, -15, -15);
       console.log("start dragging");
     }).bind(this));
 
+    // Dragend
     this.outer.addEventListener("dragend", (function (ev) {     
       this._parent.forEachSelected(function (obj) {
         obj.outer.classList.remove("dragged");
@@ -87,15 +91,8 @@ export class PDFPage extends HTMLElement {
       }
     }).bind(this));
 
-    /*
-    this.outer.addEventListener("dragenter",function (ev) {
-      ev.preventDefault();
-      ev.target.style.borderColor = "#00f";
-      ev.target.style.backgroundColor = "#88f";
-    });
-*/
-
-    this.outer.addEventListener("dragleave",function (ev) {
+    // Dragleave
+    this.outer.addEventListener("dragleave", function (ev) {
       ev.preventDefault();
       if (dropTarget != null) {
         dropTarget.classList.remove('drag-left','drag-right');
@@ -105,17 +102,19 @@ export class PDFPage extends HTMLElement {
       this.classList.remove("drag-left","drag-right");
     });
 
-    this.outer.addEventListener("dragover", function(ev) {
+    // Dragover
+    this.outer.addEventListener("dragover", function (ev) {
       ev.preventDefault();
       // Set the dropEffect to move
       ev.dataTransfer.dropEffect = "move";
 
-      if (_mouseBefore(this, ev)) {
-        this.classList.add("drag-left");
-        this.classList.remove("drag-right");
+      let cl = this.classList;
+      if (_pointerBefore(this, ev)) {
+        cl.add("drag-left");
+        cl.remove("drag-right");
       } else {
-        this.classList.remove("drag-left");
-        this.classList.add("drag-right");
+        cl.remove("drag-left");
+        cl.add("drag-right");
       };
 
       if (dropTarget != null && dropTarget != this) {
@@ -125,11 +124,11 @@ export class PDFPage extends HTMLElement {
       dropTarget = this
     });
 
-    
+    // Drop
     this.outer.addEventListener("drop", function (ev) {
       ev.preventDefault();
-      // const data = ev.dataTransfer.getData("text/plain");
-      // ev.target.appendChild(document.getElementById(data));
+
+      // Currently no "dataTransfer" is used
 
       if (dropTarget != null) {
         dropTarget.classList.remove('drag-left','drag-right');
@@ -143,35 +142,34 @@ export class PDFPage extends HTMLElement {
       while (target.tagName != 'PDF-PAGE')
         target = target.parentNode;
       
-      if (_mouseBefore(this, ev)) {
+      if (_pointerBefore(this, ev)) {
         instance._parent.moveBefore(target);
       } else {
         instance._parent.moveAfter(target);
       };
-      
-      // this._ref.moveSelected()
     });
 
+    // Click
     this.outer.addEventListener('click', (function () {
       this.swapSelected();
     }).bind(this));
   };
 
-  render(page) {
+  // Let pdfjs render the page
+  render(pdfpage) {
 
     // Page already rendered
-    if (this._ref != null)
+    if (this._pdfjsref != null)
       return;
     
-    this._ref = page;
+    this._pdfjsref = pdfpage;
 
     let viewportParam = {scale : 1};
     
     // Prepare canvas using PDF page dimensions
     let canvas = this.canvas;
     let context = canvas.getContext('2d');
-
-    let viewport = page.getViewport(viewportParam);
+    let viewport = pdfpage.getViewport(viewportParam);
 
     if (viewport.width > viewport.height) {
       viewportParam['scale'] = desiredWidth / viewport.width;
@@ -179,13 +177,17 @@ export class PDFPage extends HTMLElement {
       viewportParam['scale'] = desiredHeight / viewport.height;
     };
 
-    viewport = page.getViewport(viewportParam);
+    // Reload viewport with new dimensions
+    viewport = pdfpage.getViewport(viewportParam);
 
     canvas.height = Math.floor(viewport.height * outputScale);
     canvas.width = Math.floor(viewport.width * outputScale);
 
-    canvas.style.marginLeft = Math.floor(((desiredWidth*outputScale) - canvas.width) / 2) + "px";
-    canvas.style.marginTop = Math.floor(((desiredHeight*outputScale) - canvas.height) / 2) + "px";
+    // Center the canvas
+    canvas.style.marginLeft =
+      Math.floor(((desiredWidth*outputScale) - canvas.width) / 2) + "px";
+    canvas.style.marginTop =
+      Math.floor(((desiredHeight*outputScale) - canvas.height) / 2) + "px";
 
     let transform = outputScale !== 1
         ? [outputScale, 0, 0, outputScale, 0, 0]
@@ -199,14 +201,17 @@ export class PDFPage extends HTMLElement {
       background: 'rgba(0,0,0,0)',
     };
 
-    let renderTask = page.render(renderContext);
+    let renderTask = pdfpage.render(renderContext);
     renderTask.promise.then(function () {
       // Page rendered!
-      // canvas.style.opacity = 1;
       canvas.parentNode.classList.remove("load");
     });
   };
-  
+
+  /**
+   * Remove page from selection, if selected.
+   * Otherwise select.
+   */
   swapSelected() {
     if (this._selected) {
       this.selectOff();
@@ -215,19 +220,27 @@ export class PDFPage extends HTMLElement {
     }
   };
 
+  /**
+   * Add page to selection.
+   */
   selectOn() {
     if (this.deleted) return;
     if (this._selected) return;
     this._selected = true;
     this.outer.classList.add('selected');
-    this._parent.addSelect(this);
+    if (this._parent)
+      this._parent.addSelect(this);
   };
 
+  /**
+   * Remove page from selection.
+   */
   selectOff() {
     if (!this._selected) return;
     this._selected = false;
     this.outer.classList.remove('selected');
-    this._parent.delSelect(this);
+    if (this._parent)
+      this._parent.delSelect(this);
   };
 
   splitBefore() {
@@ -242,17 +255,14 @@ export class PDFPage extends HTMLElement {
     };
   };
 
+  /**
+   * Mark page as removed from PDF
+   */
   remove() {
-    if (this.deleted) {
-      this.deleted = false;
-      this.outer.classList.remove('deleted');
-      this.outer.setAttribute('draggable', true);
-    } else {
-      this.deleted = true;
-      this.outer.classList.add('deleted');
-      this.outer.setAttribute('draggable', false);
-      this.selectOff();
-    };
+    this.deleted = true;
+    this.outer.classList.add('deleted');
+    this.outer.setAttribute('draggable', false);
+    this.selectOff();
   };
   
   rotateRight() {
@@ -270,7 +280,7 @@ export class PDFPage extends HTMLElement {
  * Check if the pointer is on the left (true)
  * side of an object.
  */
-function _mouseBefore (obj, ev) {
+function _pointerBefore (obj, ev) {
   let rect = obj.getBoundingClientRect();
   let x = ev.clientX - rect.left; //x position within the element.
   

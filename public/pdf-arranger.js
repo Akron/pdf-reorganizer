@@ -1,7 +1,7 @@
 // Loaded via <script> tag, create shortcut to access PDF.js exports.
 var { pdfjsLib } = globalThis;
 
-import { PDFPage } from 'pdf-page';
+import PDFPage from './pdf-page.js';
 
 
 // The workerSrc property shall be specified.
@@ -15,7 +15,7 @@ pdfjsLib.GlobalWorkerOptions.workerSrc = 'build/pdf.worker.mjs';
  *
  * @exports
  */
-export class PDFArranger extends HTMLElement {
+export default class PDFArranger extends HTMLElement {
 
   /**
    * @constructor
@@ -27,11 +27,11 @@ export class PDFArranger extends HTMLElement {
     this.pdfDoc = undefined;
 
     this.selected = new Set();
-    this.pages = new Array();
+    this.pages = new Array(); // Todo: Probably unimportant
     
     const shadow = this.attachShadow({ mode: "open" });
 
-    var css = new CSSStyleSheet();
+    const css = new CSSStyleSheet();
     fetch("main.css").then(
       response => response.text()
     ).then(
@@ -41,8 +41,8 @@ export class PDFArranger extends HTMLElement {
     );
     shadow.adoptedStyleSheets = [css];
     
-    this.elem = document.createElement('div');
-    this.elem.setAttribute('id', 'pdf-arranger');
+    let elem = document.createElement('div');
+    elem.setAttribute('id', 'pdf-arranger');
     // this.elem.appendChild(style);
 
     let nav = document.createElement('nav');
@@ -67,10 +67,10 @@ export class PDFArranger extends HTMLElement {
     this.viewport = document.createElement('div');
     this.viewport.setAttribute('id', 'pdf-viewport');
 
-    this.elem.appendChild(nav);
-    this.elem.appendChild(this.viewport);
+    elem.appendChild(nav);
+    elem.appendChild(this.viewport);
     
-    shadow.appendChild(this.elem);
+    shadow.appendChild(elem);
   }
 
   connectedCallback () {
@@ -81,11 +81,9 @@ export class PDFArranger extends HTMLElement {
     this.rotateLeftElem.addEventListener('click', this.rotateLeft.bind(this));
     this.splitBeforeElem.addEventListener('click', this.splitBefore.bind(this));
 
+    // Lazy loading
     this.observeViewport = new IntersectionObserver((entries,observer) => {
-      /*if (entries[0].intersectionRatio <= 0)
-        return;
-      */
-      entries.forEach(function (entry) {
+      entries.forEach(entry => {
 
         if (!entry.isIntersecting)
           return;
@@ -93,7 +91,7 @@ export class PDFArranger extends HTMLElement {
         var page = entry.target;
 
         // Render the page, when it intersects with the viewport
-        instance.pdfDoc.getPage(page.num).then(function(pdfPage) {
+        instance.pdfDoc.getPage(page.num).then((pdfPage) => {
           instance.pages[pdfPage._pageIndex].render(pdfPage);
         });
 
@@ -109,8 +107,8 @@ export class PDFArranger extends HTMLElement {
   disconnectedCallback() {
     this.observeViewport.disconnect();
   };
-
-    static get observedAttributes() {
+  
+  static get observedAttributes() {
     return ['url'];
   }
 
@@ -123,6 +121,10 @@ export class PDFArranger extends HTMLElement {
     this[property] = newValue;
   }
 
+  /**
+   * Return selected elements in order of appearance
+   * in the viewport.
+   */
   _selectedSort () {
     if (this.selected.size < 2)
       return this.selected;
@@ -146,11 +148,10 @@ export class PDFArranger extends HTMLElement {
    */
   remove() {
     var i = 0;
-    this.forEachSelected(function (page) {
+    return this.forEachSelected((page) => {
       page.remove();
       i++;
     });
-    return i;
   }
 
   /**
@@ -161,11 +162,10 @@ export class PDFArranger extends HTMLElement {
    */
   rotateLeft() {
     var i = 0;
-    this.forEachSelected(function (page) {
+    return this.forEachSelected((page) => {
       page.rotateLeft();
       i++;
     });
-    return i;
   }
   
   addSelect(obj) {
@@ -195,7 +195,10 @@ export class PDFArranger extends HTMLElement {
   moveAfter(obj) {
     obj.after(...this._selectedSort())
   }
-  
+
+  /**
+   * Helper function to iterate through all selected objects.
+   */
   forEachSelected(cb) {
     this.selected.forEach(cb);
   }
