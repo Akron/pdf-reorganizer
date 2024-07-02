@@ -64,6 +64,12 @@ export default class PDFArranger extends HTMLElement {
     this.splitBeforeElem.innerText = 'split before';
     nav.appendChild(this.splitBeforeElem);
 
+    this.processElem = document.createElement("div");
+    this.processElem.setAttribute("class","process");
+    this.processElem.innerText = 'process';
+    nav.appendChild(this.processElem);
+
+    
     this.viewport = document.createElement('div');
     this.viewport.setAttribute('id', 'pdf-viewport');
 
@@ -80,6 +86,10 @@ export default class PDFArranger extends HTMLElement {
     this.delElem.addEventListener('click', this.remove.bind(this));
     this.rotateLeftElem.addEventListener('click', this.rotateLeft.bind(this));
     this.splitBeforeElem.addEventListener('click', this.splitBefore.bind(this));
+
+    this.processElem.addEventListener('click', (function() {
+      window.alert(this.process());
+    }).bind(this));
 
     // Lazy loading
     this.observeViewport = new IntersectionObserver((entries,observer) => {
@@ -230,6 +240,23 @@ export default class PDFArranger extends HTMLElement {
       // PDF loading error
       console.error(reason);
     });
+  }
+
+  process () {
+    let nodeList = this.viewport.childNodes;
+    let x = new Array();
+    nodeList.forEach((page) => {
+      if (page.deleted)
+        return;
+
+      let val = page.num + "";
+      
+      if (page.rotation != 0 && (page.rotation % 360) != 0)
+        val += '@' + (page.rotation % 360);
+        
+      x.push(val);
+    });
+    return x.join(',');
   }
 };
 

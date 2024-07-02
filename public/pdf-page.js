@@ -21,8 +21,8 @@ export default class PDFPage extends HTMLElement {
     this.splittedBefore = false;
     this.rotation = 0;
     this._selected = false;
-    this._pdfjsref = null;
-    this._parent = parent;
+    this._pdfjsref = null; // The PDF.js-page
+    this._parent = parent; // The arranger
 
     this.style.width = (desiredWidth*outputScale) + 'px';
     this.style.height = (desiredWidth*outputScale) + 'px';
