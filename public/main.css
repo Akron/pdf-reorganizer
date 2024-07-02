@@ -31,7 +31,7 @@
   width: 100%;
 }
 
-div.outer {
+pdf-page {
   position: relative;
   border-radius: 6px;
   display: inline-block;
@@ -46,11 +46,11 @@ div.outer {
   margin: 3px;
 }
 
-div.outer canvas {
+pdf-page canvas {
   position: relative;
 }
 
-div.outer div.caption {
+pdf-page div.caption {
   position: absolute;
   text-align: center;
   width: 100%;
@@ -59,11 +59,11 @@ div.outer div.caption {
   font-size: 75%;
 }
 
-div.outer div.caption::after {
+pdf-page div.caption::after {
   content: "[" attr(data-num) "]";
 }
 
-div.outer::after {
+pdf-page::after {
   position: absolute;
   top: 0;
   width: 10px;
@@ -74,17 +74,18 @@ div.outer::after {
   top: 50%;
 }
 
-div.outer.drag-left, div.outer.drag-right {
+pdf-page.drag-left,
+pdf-page.drag-right {
   z-index:5;
 }
 
-div.outer.drag-left::after {
+pdf-page.drag-left::after {
   content: "";
   left: 0;
   margin-left: -13px;
 }
 
-div.outer.drag-right::after {
+pdf-page.drag-right::after {
   content: "";
   right: 0;
   margin-right: -13px;
@@ -95,7 +96,7 @@ div.outer.drag-right::after {
   to {transform: rotate(360deg);}
 }
 
-div.outer.load::before {
+pdf-page.load::before {
   content: '';
   box-sizing: border-box;
   position: absolute;
@@ -119,38 +120,38 @@ canvas {
   z-index: -1;
 }
 
-div.outer.load > canvas {
+pdf-page.load > canvas {
   opacity: 0;
 }
 
-div.outer.deleted {
+pdf-page.deleted {
   cursor: default !important;
   background-color: var(--deleted-color);
   border-color: var(--deleted-color);
 }
 
-div.outer:not(.deleted):not(.selected):hover {
+pdf-page:not(.deleted):not(.selected):hover {
   background-color: var(--hover-color);
 }
 
-div.outer.deleted canvas {
+pdf-page.deleted canvas {
   opacity: .2;
 }
 
-div.outer.split-before {
+pdf-page.split-before {
   border-left-style: dotted;
   border-top-style: dotted;
   border-left-color: green;
   border-top-color: green;
 }
 
-div.outer.selected {
+pdf-page.selected {
   background-color: var(--selected-bg-color);
   color: var(--selected-color);
 
 }
 
-div.outer.dragged {
+pdf-page.dragged {
   background-color: var(--dragged-color);
 }
 
