@@ -20,7 +20,7 @@ export default class PDFArranger extends HTMLElement {
   /**
    * @constructor
    */
-  constructor(numpages) {
+  constructor() {
     super();
     this.url;
     this.numpages = undefined;
@@ -29,18 +29,8 @@ export default class PDFArranger extends HTMLElement {
     this.selected = new Set();
     this.pages = new Array(); // Todo: Probably unimportant
     
-    const shadow = this.attachShadow({ mode: "open" });
-
-    const css = new CSSStyleSheet();
-    fetch("main.css").then(
-      response => response.text()
-    ).then(
-      data => {
-        css.replace(data)
-      }
-    );
-    shadow.adoptedStyleSheets = [css];
-    
+    this.shadow = this.attachShadow({ mode: "open" });
+   
     let elem = document.createElement('div');
     elem.setAttribute('id', 'pdf-arranger');
     // this.elem.appendChild(style);
@@ -68,7 +58,6 @@ export default class PDFArranger extends HTMLElement {
     this.processElem.setAttribute("class","process");
     this.processElem.innerText = 'process';
     nav.appendChild(this.processElem);
-
     
     this.viewport = document.createElement('div');
     this.viewport.setAttribute('id', 'pdf-viewport');
@@ -76,11 +65,12 @@ export default class PDFArranger extends HTMLElement {
     elem.appendChild(nav);
     elem.appendChild(this.viewport);
     
-    shadow.appendChild(elem);
+    this.shadow.appendChild(elem);
   }
 
   connectedCallback () {
     let instance = this;
+    this.loadCSS("main.css");
     this.loadDocument(this.url);
 
     this.delElem.addEventListener('click', this.remove.bind(this));
@@ -90,7 +80,7 @@ export default class PDFArranger extends HTMLElement {
     this.processElem.addEventListener('click', (function() {
       window.alert(this.process());
     }).bind(this));
-
+    
     // Lazy loading
     this.observeViewport = new IntersectionObserver((entries,observer) => {
       entries.forEach(entry => {
@@ -158,7 +148,7 @@ export default class PDFArranger extends HTMLElement {
    */
   remove() {
     var i = 0;
-    return this.forEachSelected((page) => {
+    return this._forEachSelected((page) => {
       page.remove();
       i++;
     });
@@ -172,7 +162,7 @@ export default class PDFArranger extends HTMLElement {
    */
   rotateLeft() {
     var i = 0;
-    return this.forEachSelected((page) => {
+    return this._forEachSelected((page) => {
       page.rotateLeft();
       i++;
     });
@@ -187,7 +177,7 @@ export default class PDFArranger extends HTMLElement {
   }
 
   splitBefore() {
-    this.forEachSelected(function (page) {
+    this._forEachSelected(function (page) {
       page.splitBefore();
     });
   }
@@ -209,8 +199,25 @@ export default class PDFArranger extends HTMLElement {
   /**
    * Helper function to iterate through all selected objects.
    */
-  forEachSelected(cb) {
+  _forEachSelected(cb) {
     this.selected.forEach(cb);
+  }
+
+  /**
+   * Load CSS file and add it to the shadow dom.
+   */
+  loadCSS(url) {
+    const shadow = this.shadow;
+
+    fetch(url).then(
+      response => response.text()
+    ).then(
+      data => {
+        const css = new CSSStyleSheet();
+        css.replace(data)
+        shadow.adoptedStyleSheets = [css];
+      }
+    );
   }
 
   loadDocument (url) {
@@ -242,15 +249,22 @@ export default class PDFArranger extends HTMLElement {
     });
   }
 
+  /**
+   * Create a JSON array representing the modified document(s)
+   * to generate.
+   */
   process () {
     let nodeList = this.viewport.childNodes;
     let x = new Array();
     nodeList.forEach((page) => {
+
+      // Skip deleted pages
       if (page.deleted)
         return;
 
       let val = page.num + "";
-      
+
+      // Normalize page rotation
       if (page.rotation != 0 && (page.rotation % 360) != 0)
         val += '@' + (page.rotation % 360);
         

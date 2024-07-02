@@ -1,6 +1,9 @@
 import './build/pdf.mjs';
 import PDFPage from './pdf-page.js';
-import './pdf-arranger.js';
+import PDFArranger from './pdf-arranger.js';
+import fetch from 'node-fetch';
+
+globalThis.fetch = fetch;
 
 test('adds 1 + 2 to equal 3', () => {
   expect(4).toBe(4);
@@ -110,4 +113,10 @@ test('PDF Page - Remove', () => {
   // Unable to select when deleted
   page.swapSelected();
   expect(page._selected).toBe(false);
+});
+
+test('PDF Arranger - Construction', () => {
+  let arranger = new PDFArranger(20);
+
+  expect(arranger.selected.size).toBe(0);
 });
