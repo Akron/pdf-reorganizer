@@ -13,7 +13,8 @@
 #pdf-viewport {
   display: flex;
   flex-wrap: wrap;
-  align-items: center;
+  align-items: start;
+  align-content: start;
   border: 1px solid var(--dark-border-color);
   overflow-y: scroll;
   overflow-x: hidden;
