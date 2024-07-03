@@ -23,6 +23,7 @@ export default class PDFArranger extends HTMLElement {
   constructor() {
     super();
     this.url;
+    this.css;
     this.numpages = undefined;
     this.pdfDoc = undefined;
 
@@ -70,7 +71,7 @@ export default class PDFArranger extends HTMLElement {
 
   connectedCallback () {
     let instance = this;
-    this.loadCSS("main.css");
+    this.loadCSS(this.css);
     this.loadDocument(this.url);
 
     this.delElem.addEventListener('click', this.remove.bind(this));
@@ -109,7 +110,7 @@ export default class PDFArranger extends HTMLElement {
   };
   
   static get observedAttributes() {
-    return ['url'];
+    return ['url','css'];
   }
 
   // attribute change
@@ -148,7 +149,7 @@ export default class PDFArranger extends HTMLElement {
    */
   remove() {
     var i = 0;
-    return this._forEachSelected((page) => {
+    return this.forEachSelected((page) => {
       page.remove();
       i++;
     });
@@ -162,7 +163,7 @@ export default class PDFArranger extends HTMLElement {
    */
   rotateLeft() {
     var i = 0;
-    return this._forEachSelected((page) => {
+    return this.forEachSelected((page) => {
       page.rotateLeft();
       i++;
     });
@@ -177,7 +178,7 @@ export default class PDFArranger extends HTMLElement {
   }
 
   splitBefore() {
-    this._forEachSelected(function (page) {
+    this.forEachSelected(function (page) {
       page.splitBefore();
     });
   }
@@ -199,7 +200,7 @@ export default class PDFArranger extends HTMLElement {
   /**
    * Helper function to iterate through all selected objects.
    */
-  _forEachSelected(cb) {
+  forEachSelected(cb) {
     this.selected.forEach(cb);
   }
 
@@ -208,12 +209,12 @@ export default class PDFArranger extends HTMLElement {
    */
   loadCSS(url) {
     const shadow = this.shadow;
+    const css = new CSSStyleSheet();
 
     fetch(url).then(
       response => response.text()
     ).then(
       data => {
-        const css = new CSSStyleSheet();
         css.replace(data)
         shadow.adoptedStyleSheets = [css];
       }
@@ -265,8 +266,8 @@ export default class PDFArranger extends HTMLElement {
       let val = page.num + "";
 
       // Normalize page rotation
-      if (page.rotation != 0 && (page.rotation % 360) != 0)
-        val += '@' + (page.rotation % 360);
+      if (page.rotation != 0)
+        val += '@' + page.rotation;
         
       x.push(val);
     });

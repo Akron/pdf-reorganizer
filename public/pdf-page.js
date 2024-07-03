@@ -19,7 +19,7 @@ export default class PDFPage extends HTMLElement {
     this.num = pagenum;
     this.deleted = false;
     this.splittedBefore = false;
-    this.rotation = 0;
+    this._rotation = 0;
     this._selected = false;
     this._pdfjsref = null; // The PDF.js-page
     this._parent = parent; // The arranger
@@ -138,7 +138,8 @@ export default class PDFPage extends HTMLElement {
       
       while (target.tagName != 'PDF-PAGE')
         target = target.parentNode;
-      
+
+      // TODO: Instance may not be required!
       if (_pointerBefore(this, ev)) {
         instance._parent.moveBefore(target);
       } else {
@@ -261,16 +262,43 @@ export default class PDFPage extends HTMLElement {
     this.setAttribute('draggable', false);
     this.selectOff();
   };
-  
+
+  /**
+   * Rotate a page to the right.
+   */
   rotateRight() {
-    this.rotation += 90;
-    this.canvas.style.transform = 'rotate(' + this.rotation + 'deg)';
+    this._rotation += 90;
+    this.canvas.style.transform = 'rotate(' + this._rotation + 'deg)';
   };
   
+  /**
+   * Rotate a page to the left.
+   */
   rotateLeft() {
-    this.rotation -= 90;
-    this.canvas.style.transform = 'rotate(' + this.rotation + 'deg)';
+    this._rotation -= 90;
+    this.canvas.style.transform = 'rotate(' + this._rotation + 'deg)';
   };
+
+  /**
+   * Degree of rotation.
+   */
+  get rotation() {
+    let deg = this._rotation % 360;
+
+    if (deg > 0)
+      return deg;
+
+    switch (deg) {
+    case -90:
+      return 270;
+    case -180:
+      return 180;
+    case -270:
+      return 90;
+    }
+
+    return 0;
+  }
 };
 
 /**
