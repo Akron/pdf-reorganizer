@@ -1,6 +1,7 @@
 sandbox
 *.pl
 *.pdf
+templates
 pdfjs-*
 public/build
 !public/pdf-editor.html

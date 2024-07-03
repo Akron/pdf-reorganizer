@@ -3,9 +3,8 @@ var { pdfjsLib } = globalThis;
 
 import PDFPage from './pdf-page.js';
 
-
 // The workerSrc property shall be specified.
-pdfjsLib.GlobalWorkerOptions.workerSrc = 'build/pdf.worker.mjs';
+pdfjsLib.GlobalWorkerOptions.workerSrc = '/build/pdf.worker.mjs';
 
 
 /**
@@ -79,7 +78,7 @@ export default class PDFArranger extends HTMLElement {
     this.splitBeforeElem.addEventListener('click', this.splitBefore.bind(this));
 
     this.processElem.addEventListener('click', (function() {
-      window.alert(this.process());
+      window.alert(JSON.stringify(this.process()));
     }).bind(this));
     
     // Lazy loading
@@ -256,7 +255,8 @@ export default class PDFArranger extends HTMLElement {
    */
   process () {
     let nodeList = this.viewport.childNodes;
-    let x = new Array();
+    let alldocs = new Array();
+    let splitdocs = new Array();
     nodeList.forEach((page) => {
 
       // Skip deleted pages
@@ -268,10 +268,16 @@ export default class PDFArranger extends HTMLElement {
       // Normalize page rotation
       if (page.rotation != 0)
         val += '@' + page.rotation;
-        
-      x.push(val);
+
+      if (page.splittedBefore) {
+        alldocs.push(splitdocs);
+        splitdocs = new Array();
+      };
+      
+      splitdocs.push(val);
     });
-    return x.join(',');
+    alldocs.push(splitdocs);
+    return alldocs;
   }
 };
 
