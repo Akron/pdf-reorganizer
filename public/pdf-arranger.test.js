@@ -115,6 +115,71 @@ test('PDF Page - Remove', () => {
   expect(page._selected).toBe(false);
 });
 
+test('PDF Page - Rotate', () => {
+  let page = new PDFPage(4, null);
+  expect(page.rotation).toBe(0);
+
+  page.rotateRight();
+  expect(page._rotation).toBe(90);
+  expect(page.rotation).toBe(90);
+
+  page.rotateRight();
+  expect(page._rotation).toBe(180);
+  expect(page.rotation).toBe(180);
+
+  page.rotateRight();
+  expect(page._rotation).toBe(270);
+  expect(page.rotation).toBe(270);
+
+  page.rotateRight();
+  expect(page._rotation).toBe(360);
+  expect(page.rotation).toBe(0);
+
+  page.rotateRight();
+  expect(page._rotation).toBe(450);
+  expect(page.rotation).toBe(90);
+
+  page.rotateLeft();
+  expect(page._rotation).toBe(360);
+  expect(page.rotation).toBe(0);
+
+  page.rotateLeft();
+  expect(page._rotation).toBe(270);
+  expect(page.rotation).toBe(270);
+
+  page.rotateLeft();
+  expect(page._rotation).toBe(180);
+  expect(page.rotation).toBe(180);
+
+  page.rotateLeft();
+  expect(page._rotation).toBe(90);
+  expect(page.rotation).toBe(90);
+
+  page.rotateLeft();
+  expect(page._rotation).toBe(0);
+  expect(page.rotation).toBe(0);
+
+  page.rotateLeft();
+  expect(page._rotation).toBe(-90);
+  expect(page.rotation).toBe(270);
+
+  page.rotateLeft();
+  expect(page._rotation).toBe(-180);
+  expect(page.rotation).toBe(180);
+
+  page.rotateLeft();
+  expect(page._rotation).toBe(-270);
+  expect(page.rotation).toBe(90);
+
+  page.rotateLeft();
+  expect(page._rotation).toBe(-360);
+  expect(page.rotation).toBe(0);
+
+  page.rotateLeft();
+  expect(page._rotation).toBe(-450);
+  expect(page.rotation).toBe(270);
+});
+
 test('PDF Arranger - Construction', () => {
   let arranger = new PDFArranger(20);
 
