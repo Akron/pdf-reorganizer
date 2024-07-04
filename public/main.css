@@ -1,4 +1,4 @@
-#pdf-arranger {
+:root {
   --dark-border-color: #555;
   --white: #ffffff;
   --deleted-color: #777;
@@ -7,6 +7,9 @@
   --selected-color: var(--white);
   --dragged-color: #7cd;
   --loader: var(--selected-bg-color);
+}
+
+pdf-arranger {
   display: block;
 }
 
@@ -26,9 +29,10 @@
   min-height: 200px;
 }
 
-#pdf-arranger > nav {
+pdf-arranger nav {
   display: block;
   width: 100%;
+  
 }
 
 pdf-page {

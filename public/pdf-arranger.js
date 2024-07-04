@@ -23,6 +23,7 @@ export default class PDFArranger extends HTMLElement {
     super();
     this.url;
     this.css;
+    this.onprocess;
     this.numpages = undefined;
     this.pdfDoc = undefined;
 
@@ -31,10 +32,6 @@ export default class PDFArranger extends HTMLElement {
     
     this.shadow = this.attachShadow({ mode: "open" });
    
-    let elem = document.createElement('div');
-    elem.setAttribute('id', 'pdf-arranger');
-    // this.elem.appendChild(style);
-
     let nav = document.createElement('nav');
     
     this.delElem = document.createElement("div");
@@ -62,10 +59,8 @@ export default class PDFArranger extends HTMLElement {
     this.viewport = document.createElement('div');
     this.viewport.setAttribute('id', 'pdf-viewport');
 
-    elem.appendChild(nav);
-    elem.appendChild(this.viewport);
-    
-    this.shadow.appendChild(elem);
+    this.shadow.appendChild(nav);
+    this.shadow.appendChild(this.viewport);    
   }
 
   connectedCallback () {
@@ -73,12 +68,18 @@ export default class PDFArranger extends HTMLElement {
     this.loadCSS(this.css);
     this.loadDocument(this.url);
 
+    if (this.onprocess != null) {
+      this.addEventListener("processed", eval(this.onprocess))
+    };
+
     this.delElem.addEventListener('click', this.remove.bind(this));
     this.rotateLeftElem.addEventListener('click', this.rotateLeft.bind(this));
     this.splitBeforeElem.addEventListener('click', this.splitBefore.bind(this));
 
     this.processElem.addEventListener('click', (function() {
-      window.alert(JSON.stringify(this.process()));
+      // window.alert(JSON.stringify(
+      this.process();
+      //));
     }).bind(this));
     
     // Lazy loading
@@ -109,7 +110,7 @@ export default class PDFArranger extends HTMLElement {
   };
   
   static get observedAttributes() {
-    return ['url','css'];
+    return ['url','css','onprocess'];
   }
 
   // attribute change
@@ -176,6 +177,12 @@ export default class PDFArranger extends HTMLElement {
     this.selected.delete(obj);
   }
 
+  delSelectAll() {
+    this.forEachSelected(function (page) {
+      page.selectOff();
+    });
+  }
+  
   splitBefore() {
     this.forEachSelected(function (page) {
       page.splitBefore();
@@ -220,6 +227,9 @@ export default class PDFArranger extends HTMLElement {
     );
   }
 
+  /**
+   * Load a PDF document (either from url or Int array)
+   */
   loadDocument (url) {
     let instance = this;
 
@@ -277,6 +287,13 @@ export default class PDFArranger extends HTMLElement {
       splitdocs.push(val);
     });
     alldocs.push(splitdocs);
+
+    this.dispatchEvent(new CustomEvent("processed", {
+      detail: {
+        directive: alldocs
+      }
+    }));
+    
     return alldocs;
   }
 };

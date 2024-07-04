@@ -148,7 +148,10 @@ export default class PDFPage extends HTMLElement {
     });
 
     // Click
-    this.addEventListener('click', (function () {
+    this.addEventListener('click', (function (ev) {
+      if (!ev.ctrlKey) {
+        this._parent.delSelectAll();
+      }
       this.swapSelected();
     }).bind(this));
   };
@@ -196,7 +199,7 @@ export default class PDFPage extends HTMLElement {
       canvasContext: context,
       viewport: viewport,
       transform : transform,
-      background: 'rgba(0,0,0,0)',
+      // background: 'rgba(0,0,0,0)',
     };
 
     let renderTask = pdfpage.render(renderContext);
