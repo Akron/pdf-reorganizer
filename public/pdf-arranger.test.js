@@ -185,3 +185,9 @@ test('PDF Arranger - Construction', () => {
 
   expect(arranger.selected.size).toBe(0);
 });
+
+test('PDF Arranger - Elements', () => {
+  let arranger = new PDFArranger();
+
+  expect(arranger.selected.size).toBe(0);
+});
