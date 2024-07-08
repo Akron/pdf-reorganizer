@@ -29,17 +29,18 @@ export default class PDFPage extends HTMLElement {
     this.classList.add("load");
     this.setAttribute("draggable", true);
     this.setAttribute("droppable", true);
-
+    
     // Canvas
     this.canvas = document.createElement("canvas");
     this.canvas.setAttribute('droppable',false);
-    this.appendChild(this.canvas);
 
-    // Caption
-    let caption = document.createElement("div");
-    caption.classList.add('caption');
-    caption.setAttribute('data-num', this.num);
-    this.appendChild(caption);
+    // container
+    let container = document.createElement("div");
+    container.classList.add('container');
+    container.setAttribute('droppable',false);
+    container.setAttribute('data-num', this.num);
+    container.appendChild(this.canvas);
+    this.appendChild(container);
     
     // Establish event listeners
 
@@ -203,10 +204,10 @@ export default class PDFPage extends HTMLElement {
     };
 
     let renderTask = pdfpage.render(renderContext);
-    renderTask.promise.then(function () {
+    renderTask.promise.then((function () {
       // Page rendered!
-      canvas.parentNode.classList.remove("load");
-    });
+      this.classList.remove("load");
+    }).bind(this));
   };
 
   /**

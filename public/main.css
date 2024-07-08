@@ -2,9 +2,11 @@
   --dark-border-color: #555;
   --white: #ffffff;
   --deleted-color: #777;
-  --hover-color: #aaa; // #49d;
+  --hover-color: #aaa;  /* #49d; */
   --selected-bg-color: #07d;
   --selected-color: var(--white);
+  --split-before-border-color: #696;
+  --split-before-color: #6b6;
   --dragged-color: #7cd;
   --loader: var(--selected-bg-color);
 }
@@ -22,7 +24,6 @@ pdf-arranger {
   overflow-y: scroll;
   overflow-x: hidden;
   resize: both;
-
   width: 600px;
   height: 400px;
   min-width: 300px;
@@ -54,16 +55,13 @@ pdf-page canvas {
   position: relative;
 }
 
-pdf-page div.caption {
+pdf-page div.container::after {
   position: absolute;
   text-align: center;
   width: 100%;
   bottom: 0;
   left: 0;
   font-size: 75%;
-}
-
-pdf-page div.caption::after {
   content: "[" attr(data-num) "]";
 }
 
@@ -124,7 +122,7 @@ canvas {
   z-index: -1;
 }
 
-pdf-page.load > canvas {
+pdf-page.load canvas {
   opacity: 0;
 }
 
@@ -142,17 +140,22 @@ pdf-page.deleted canvas {
   opacity: .2;
 }
 
-pdf-page.split-before {
-  border-left-style: dotted;
-  border-top-style: dotted;
-  border-left-color: green;
-  border-top-color: green;
+pdf-page.split-before div.container::before {
+  position: absolute;
+  content: '';
+  top:0;
+  left:0;
+  border: 1px solid var(--split-before-border-color);
+  transform: rotate(45deg);
+  background-color: var(--split-before-color);
+  width: 16px;
+  height: 16px;
+  border-radius: 10px;
 }
 
 pdf-page.selected {
   background-color: var(--selected-bg-color);
   color: var(--selected-color);
-
 }
 
 pdf-page.dragged {

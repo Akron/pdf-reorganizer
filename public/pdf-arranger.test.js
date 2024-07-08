@@ -5,10 +5,6 @@ import fetch from 'node-fetch';
 
 globalThis.fetch = fetch;
 
-test('adds 1 + 2 to equal 3', () => {
-  expect(4).toBe(4);
-});
-
 test('PDF Page - Construct', () => {
   let page = new PDFPage(4, null);
   expect(page.num).toBe(4);
@@ -23,22 +19,17 @@ test('PDF Page - Element', () => {
   let page = new PDFPage(4, null);
   expect(page.tagName).toBe('PDF-PAGE');
 
-  expect(page.children.length).toBe(2);
-  expect(page.firstChild.tagName).toBe("CANVAS");
-  expect(page.lastChild.tagName).toBe("DIV");
+  expect(page.children.length).toBe(1);
+  expect(page.firstChild.tagName).toBe("DIV");
   expect(page.classList.contains("load")).toBe(true);
   expect(page.hasAttribute("draggable")).toBe(true);
   expect(page.hasAttribute("droppable")).toBe(true);
 
+  expect(page.firstChild.getAttribute('data-num')).toBe("4");
+
   // Test canvas
   let canvas = page.firstChild;
   expect(canvas.getAttribute("droppable")).toEqual("false");
-  
-  
-  // Test caption
-  let caption = page.lastChild;
-  expect(caption.classList.contains("caption")).toBe(true);
-  expect(caption.getAttribute('data-num')).toBe("4");
 });
 
 test('PDF Page - Swap selection', () => {
@@ -189,5 +180,10 @@ test('PDF Arranger - Construction', () => {
 test('PDF Arranger - Elements', () => {
   let arranger = new PDFArranger();
 
-  expect(arranger.selected.size).toBe(0);
+  expect(arranger.children.length).toBe(0);
+
+  let s = arranger.shadow;
+  expect(s.firstChild.tagName).toBe("NAV");
+  expect(s.lastChild.tagName).toBe("DIV");
+  expect(s.lastChild.getAttribute('id')).toBe("pdf-viewport");
 });

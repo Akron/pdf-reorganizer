@@ -59,6 +59,8 @@ export default class PDFArranger extends HTMLElement {
     this.viewport = document.createElement('div');
     this.viewport.setAttribute('id', 'pdf-viewport');
 
+    // Magnifier
+    
     this.shadow.appendChild(nav);
     this.shadow.appendChild(this.viewport);    
   }
@@ -77,9 +79,7 @@ export default class PDFArranger extends HTMLElement {
     this.splitBeforeElem.addEventListener('click', this.splitBefore.bind(this));
 
     this.processElem.addEventListener('click', (function() {
-      // window.alert(JSON.stringify(
       this.process();
-      //));
     }).bind(this));
     
     // Lazy loading
