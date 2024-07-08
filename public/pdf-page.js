@@ -45,6 +45,14 @@ export default class PDFPage extends HTMLElement {
     // Establish event listeners
 
     var instance = this;
+
+    /*
+    container.addEventListener('click', function (ev) {
+      ev.cancelBubble = true;
+      ev.stopPropagation();
+      window.alert("split");
+    });
+*/
     
     // Dragstart
     this.addEventListener("dragstart", (function (ev) {
@@ -147,7 +155,7 @@ export default class PDFPage extends HTMLElement {
         instance._parent.moveAfter(target);
       };
     });
-
+    
     // Click
     this.addEventListener('click', (function (ev) {
       if (!ev.ctrlKey) {
@@ -226,7 +234,10 @@ export default class PDFPage extends HTMLElement {
    * Add page to selection.
    */
   selectOn() {
-    if (this.deleted) return;
+    if (this.deleted) {
+      this.unremove();
+      return;
+    };
     if (this._selected) return;
     this._selected = true;
     this.classList.add('selected');
@@ -267,6 +278,18 @@ export default class PDFPage extends HTMLElement {
     this.selectOff();
   };
 
+  /**
+   * Unremove page
+   */
+  unremove() {
+    if (!this.deleted)
+      return;
+    this.deleted = false;
+    this.classList.remove('deleted');
+    this.setAttribute('draggable', true);
+    this.selectOff();
+  };
+  
   /**
    * Rotate a page to the right.
    */

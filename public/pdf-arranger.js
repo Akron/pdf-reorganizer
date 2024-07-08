@@ -103,6 +103,13 @@ export default class PDFArranger extends HTMLElement {
       root: this.viewport,
       rootMargin: '10px 10px 10px 10px'
     });
+
+    document.addEventListener("keydown", (function(ev) {
+      var letter = String.fromCharCode(ev.which); 
+      if (event.keyCode == 46){
+        this.remove();
+      };
+    }).bind(this));
   };
 
   disconnectedCallback() {

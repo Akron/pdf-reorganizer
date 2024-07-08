@@ -9,6 +9,7 @@
   --split-before-color: #6b6;
   --dragged-color: #7cd;
   --loader: var(--selected-bg-color);
+  font-family: tahoma, verdana, arial;
 }
 
 pdf-arranger {
@@ -30,10 +31,18 @@ pdf-arranger {
   min-height: 200px;
 }
 
-pdf-arranger nav {
+nav {
   display: block;
   width: 100%;
-  
+}
+
+nav > div {
+  display: inline-block;
+}
+
+nav > div + div::before {
+  content: "|";
+  padding: 0 4pt;
 }
 
 pdf-page {
@@ -55,8 +64,15 @@ pdf-page canvas {
   position: relative;
 }
 
+pdf-page div.container {
+  z-index: 4;
+  pointer-events: none;
+}
+
 pdf-page div.container::after {
   position: absolute;
+  pointer-events: all;
+  z-index: 5;
   text-align: center;
   width: 100%;
   bottom: 0;
