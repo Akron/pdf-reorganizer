@@ -182,6 +182,13 @@ export default class PDFArranger extends HTMLElement {
       page.selectOff();
     });
   }
+
+  delSelectAllExceptFor(obj) {
+    this.forEachSelected(function (page) {
+      if (page !== obj)
+        page.selectOff();
+    });
+  }
   
   splitBefore() {
     this.forEachSelected(function (page) {

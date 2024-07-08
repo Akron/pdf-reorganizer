@@ -151,8 +151,8 @@ export default class PDFPage extends HTMLElement {
     // Click
     this.addEventListener('click', (function (ev) {
       if (!ev.ctrlKey) {
-        this._parent.delSelectAll();
-      }
+        this._parent.delSelectAllExceptFor(this);
+      };
       this.swapSelected();
     }).bind(this));
   };
