@@ -1,4 +1,4 @@
-import './build/pdf.mjs';
+import 'pdfjs-dist';
 import PDFPage from './pdf-page.js';
 import PDFArranger from './pdf-arranger.js';
 import fetch from 'node-fetch';

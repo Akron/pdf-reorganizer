@@ -175,28 +175,51 @@ export default class PDFArranger extends HTMLElement {
       i++;
     });
   }
-  
-  addSelect(obj) {
-    this.selected.add(obj);
+
+  /**
+   * Add a single page to the selection.
+   *
+   * @param page The PDFPage object.
+   */
+  addSelect(page) {
+    this.selected.add(page);
   }
   
-  delSelect(obj) {
-    this.selected.delete(obj);
+  /**
+   * Remove a single page from the selection.
+   *
+   * @param page The PDFPage object.
+   */
+  delSelect(page) {
+    this.selected.delete(page);
   }
 
+  /**
+   * Remove all pages from the selection,
+   * i.e. clear the selection.
+   */
   delSelectAll() {
     this.forEachSelected(function (page) {
       page.selectOff();
     });
   }
 
-  delSelectAllExceptFor(obj) {
-    this.forEachSelected(function (page) {
-      if (page !== obj)
-        page.selectOff();
+  /**
+   * Remove all pages from the selection,
+   * except for one single page.
+   *
+   * @param page Single page to be excluded from clearance.
+   */
+  delSelectAllExceptFor(page) {
+    this.forEachSelected(function (page1) {
+      if (page1 !== page)
+        page1.selectOff();
     });
   }
-  
+
+  /**
+   * Add splits before all pages in the selection.
+   */
   splitBefore() {
     this.forEachSelected(function (page) {
       page.splitBefore();
@@ -205,20 +228,26 @@ export default class PDFArranger extends HTMLElement {
 
   /**
    * Move all selected pages in front of a target page.
+   *
+   * @param page The target page.
    */
-  moveBefore(obj) {    
-    obj.before(...this._selectedSort())
+  moveBefore(page) {
+    page.before(...this._selectedSort())
   }
 
   /**
-   * Move all selected behind of a target page.
+   * Move all selected behind a target page.
+   *
+   * @param page The target page.
    */
-  moveAfter(obj) {
-    obj.after(...this._selectedSort())
+  moveAfter(page) {
+    page.after(...this._selectedSort())
   }
 
   /**
    * Helper function to iterate through all selected objects.
+   *
+   * @param cb Callback function.
    */
   forEachSelected(cb) {
     this.selected.forEach(cb);
@@ -226,6 +255,8 @@ export default class PDFArranger extends HTMLElement {
 
   /**
    * Load CSS file and add it to the shadow dom.
+   *
+   * @param url URL of the CSS file.
    */
   loadCSS(url) {
     const shadow = this.shadow;
@@ -242,7 +273,9 @@ export default class PDFArranger extends HTMLElement {
   }
 
   /**
-   * Load a PDF document (either from url or Int array)
+   * Load a PDF document.
+   *
+   * @param url URL or Int array representing the document.
    */
   loadDocument (url) {
     let instance = this;
@@ -261,9 +294,6 @@ export default class PDFArranger extends HTMLElement {
         var page  = new PDFPage(i+1, instance);
         instance.pages[i] = page;
         instance.viewport.appendChild(page);
-
-        // TODO: Remove elem and extend the page for simplicy for HTMLElement
-
         instance.observeViewport.observe(page);
       };
     }, function (reason) {
@@ -276,6 +306,9 @@ export default class PDFArranger extends HTMLElement {
   /**
    * Create a JSON array representing the modified document(s)
    * to generate.
+   * This dispatches a custom event `processed` on the PDFArranger
+   * object that has a `detail` objects containing a `directive`
+   * object representing the JSON object.
    */
   process () {
     let nodeList = this.viewport.childNodes;
