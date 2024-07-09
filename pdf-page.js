@@ -11,9 +11,17 @@ var dropTarget = null;
 
 /**
  * A PDFPage represents a single page of a PDF file.
+ *
+ * @exports
  */
 export default class PDFPage extends HTMLElement {
 
+  /**
+   * @constructor
+   *
+   * @param pagenum Number of the page.
+   * @param parent PDFArranger that arranges this page.
+   */
   constructor(pagenum, parent) {
     super();
     this.num = pagenum;
@@ -45,14 +53,6 @@ export default class PDFPage extends HTMLElement {
     // Establish event listeners
 
     var instance = this;
-
-    /*
-    container.addEventListener('click', function (ev) {
-      ev.cancelBubble = true;
-      ev.stopPropagation();
-      window.alert("split");
-    });
-*/
     
     // Dragstart
     this.addEventListener("dragstart", (function (ev) {
@@ -165,7 +165,11 @@ export default class PDFPage extends HTMLElement {
     }).bind(this));
   };
 
-  // Let pdfjs render the page
+  /**
+   * Renders the referenced PDF page using PDF.js.
+   *
+   * @param pdfpage The PDF.js-page.
+   */
   render(pdfpage) {
 
     // Page already rendered
@@ -256,6 +260,9 @@ export default class PDFPage extends HTMLElement {
       this._parent.delSelect(this);
   };
 
+  /**
+   * Mark page as a document splitter.
+   */
   splitBefore() {
     if (this.splittedBefore) {
       this.splittedBefore = false;
@@ -269,7 +276,7 @@ export default class PDFPage extends HTMLElement {
   };
 
   /**
-   * Mark page as removed from PDF
+   * Mark page as removed from PDF.
    */
   remove() {
     this.deleted = true;
@@ -281,7 +288,7 @@ export default class PDFPage extends HTMLElement {
   };
 
   /**
-   * Unremove page
+   * Unremove page.
    */
   unremove() {
     if (!this.deleted)
@@ -293,7 +300,7 @@ export default class PDFPage extends HTMLElement {
   };
   
   /**
-   * Rotate a page to the right.
+   * Rotate page to the right.
    */
   rotateRight() {
     this._rotation += 90;
@@ -301,7 +308,7 @@ export default class PDFPage extends HTMLElement {
   };
   
   /**
-   * Rotate a page to the left.
+   * Rotate page to the left.
    */
   rotateLeft() {
     this._rotation -= 90;
@@ -333,6 +340,9 @@ export default class PDFPage extends HTMLElement {
 /**
  * Check if the pointer is on the left (true)
  * side of an object.
+ *
+ * @param obj The reference object.
+ * @param ev The pointer event.
  */
 function _pointerBefore (obj, ev) {
   let rect = obj.getBoundingClientRect();

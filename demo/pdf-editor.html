@@ -1,21 +1,33 @@
 <!DOCTYPE html>
 <html>
   <head>
-   <!--
-  <script type="importmap">
-{
-  "imports": {
-    "pdf-page": "./pdf-page.js"
-  }
+    <style>
+pdf-arranger {
+/*
+  --dark-border-color: #555;
+  --white: #ffffff;
+  --deleted-color: #777;
+  --hover-color: #aaa;
+  --selected-bg-color: #07d;
+  --selected-color: var(--white);
+  --split-before-border-color: #696;
+  --split-before-color: red;
+  --dragged-color: #7cd;
+  --loader: var(--selected-bg-color);
+  --viewport-width: 100%;
+  --viewport-height: 200px;
+  */
+  font-family: tahoma, verdana, arial;
 }
-  </script>
-  -->
-  <link rel="stylesheet" href="/main.css" />
-  <script src="build/pdf.mjs" type="module"></script>
-  <script src="pdf-arranger.js" type="module"></script>
+    </style>
+
+    <link rel="stylesheet" href="/pdf-arranger.css" />
+    <script type="module">
+      import '/pdf-arranger.js';
+    </script>
   </head>
 
   <body style="background-color: #ccc;">
-    <pdf-arranger url="bahnunterlagen-2014.pdf" css="main.css"></pdf-arranger>
+    <pdf-arranger url="example.pdf" css="/pdf-arranger.css"></pdf-arranger>
   </body>
 </html>

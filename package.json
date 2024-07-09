@@ -9,12 +9,16 @@
   "scripts": {
     "test": "node --experimental-modules --experimental-vm-modules --experimental-fetch node_modules/jest/bin/jest.js",
     "analyze-custom-elements": "npx @custom-elements-manifest/analyzer analyze",
-    "switch-latest": "nvm use node"
+    "switch-latest": "nvm use node",
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
   },
   "devDependencies": {
     "jest": "^29.7.0",
     "jest-environment-jsdom": "^29.7.0",
-    "node-fetch": "^3.3.2"
+    "node-fetch": "^3.3.2",
+    "vite": "^5.3.1"
   },
   "jest": {
     "transform": {},
