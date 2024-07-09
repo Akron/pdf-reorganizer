@@ -3,6 +3,7 @@ sandbox
 *.pdf
 templates
 pdfjs-*
+public/upload.js
 public/build
 !public/pdf-editor.html
 !public/pdfeditor.mjs

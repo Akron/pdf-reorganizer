@@ -81,7 +81,7 @@ export default class PDFArranger extends HTMLElement {
     this.processElem.addEventListener('click', (function() {
       this.process();
     }).bind(this));
-    
+
     // Lazy loading
     this.observeViewport = new IntersectionObserver((entries,observer) => {
       entries.forEach(entry => {

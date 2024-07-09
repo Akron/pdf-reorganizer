@@ -9,6 +9,8 @@
   --split-before-color: #6b6;
   --dragged-color: #7cd;
   --loader: var(--selected-bg-color);
+  --viewport-width: 100%;
+  --viewport-height: 200px;
   font-family: tahoma, verdana, arial;
 }
 
@@ -25,8 +27,8 @@ pdf-arranger {
   overflow-y: scroll;
   overflow-x: hidden;
   resize: both;
-  width: 600px;
-  height: 400px;
+  width: var(--viewport-width);
+  height: var(--viewport-height);
   min-width: 300px;
   min-height: 200px;
 }
@@ -38,6 +40,11 @@ nav {
 
 nav > div {
   display: inline-block;
+  cursor: pointer;
+}
+
+nav > div:hover {
+  background-color: var(--selected-bg-color);
 }
 
 nav > div + div::before {
@@ -64,15 +71,17 @@ pdf-page canvas {
   position: relative;
 }
 
+/*
 pdf-page div.container {
   z-index: 4;
   pointer-events: none;
 }
+*/
 
 pdf-page div.container::after {
   position: absolute;
-  pointer-events: all;
-  z-index: 5;
+  /*pointer-events: all;
+  z-index: 5;*/
   text-align: center;
   width: 100%;
   bottom: 0;
@@ -143,7 +152,9 @@ pdf-page.load canvas {
 }
 
 pdf-page.deleted {
+  /*
   cursor: default !important;
+*/
   background-color: var(--deleted-color);
   border-color: var(--deleted-color);
 }

@@ -275,6 +275,8 @@ export default class PDFPage extends HTMLElement {
     this.deleted = true;
     this.classList.add('deleted');
     this.setAttribute('draggable', false);
+    this.splittedBefore = false;
+    this.classList.remove('split-before');
     this.selectOff();
   };
 
