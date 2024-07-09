@@ -4,6 +4,16 @@ sandbox
 templates
 pdfjs-*
 public
+!demo/example.pdf
 node_modules/
 package-lock.json
 todo.org
+\#*\#
+*.tar.gz
+*~
+*.sqlite
+*.log
+*.db
+*.old
+.*
+!.gitignore

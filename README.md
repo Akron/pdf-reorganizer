@@ -8,10 +8,12 @@ Web Component for PDF arrangements
 
 <html>
   <head>
-    <script type="module" src="./pdf-arranger">
+    <script type="module">
+      import 'pdf-arranger';
+    </script>
   </head>
   <body>
-    <pdf-arranger></pdf-arranger>
+    <pdf-arranger url="example.pdf"></pdf-arranger>
   </body>
 </html>
 ```

@@ -1,6 +1,6 @@
 {
   "name": "pdf-arranger",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "author": "Nils Diewald",
   "description": "Web Component for PDF arrangements",
   "type": "module",
@@ -10,9 +10,7 @@
     "test": "node --experimental-modules --experimental-vm-modules --experimental-fetch node_modules/jest/bin/jest.js",
     "analyze-custom-elements": "npx @custom-elements-manifest/analyzer analyze",
     "switch-latest": "nvm use node",
-    "dev": "vite",
-    "build": "vite build",
-    "preview": "vite preview"
+    "dev": "vite"
   },
   "devDependencies": {
     "jest": "^29.7.0",
