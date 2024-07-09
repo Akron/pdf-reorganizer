@@ -3,9 +3,7 @@ sandbox
 *.pdf
 templates
 pdfjs-*
-public/upload.js
-public/build
-!public/pdf-editor.html
-!public/pdfeditor.mjs
-public/node_modules/
-public/package-lock.json
+public
+node_modules/
+package-lock.json
+todo.org

@@ -1,4 +1,11 @@
 {
+  "name": "pdf-arranger",
+  "version": "0.1.0",
+  "author": "Nils Diewald",
+  "description": "Web Component for PDF arrangements",
+  "type": "module",
+  "main": "pdf-arranger.js",
+  "module": "pdf-arranger.js",
   "scripts": {
     "test": "node --experimental-modules --experimental-vm-modules --experimental-fetch node_modules/jest/bin/jest.js",
     "analyze-custom-elements": "npx @custom-elements-manifest/analyzer analyze",
@@ -16,13 +23,8 @@
   "engines": {
     "node": ">=22.0"
   },
-  "type": "module",
-  "main": "pdf-arranger.js",
-  "module": "pdf-arranger.js",
-  "name": "pdf-arranger",
-  "version": "0.1.0",
-  "description": "Web Component for PDF arrangement",
   "dependencies": {
+    "pdfjs-dist": "^4.4.168"
   },
   "imports": {
     "pdf-page": "./pdf-page.js"
@@ -33,10 +35,9 @@
   },
   "keywords": [
     "pdf",
-    "webcomponent",
+    "web component",
     "dms"
   ],
-  "author": "Nils Diewald",
   "customElements": "./custom-elements.json",
   "license": "",
   "bugs": {
