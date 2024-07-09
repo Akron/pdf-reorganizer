@@ -1,4 +1,4 @@
-# pdf-arranger
+# pdf-reorganizer
 
 Web Component for PDF arrangements
 
@@ -9,11 +9,11 @@ Web Component for PDF arrangements
 <html>
   <head>
     <script type="module">
-      import 'pdf-arranger';
+      import 'pdf-reorganizer';
     </script>
   </head>
   <body>
-    <pdf-arranger url="example.pdf"></pdf-arranger>
+    <pdf-reorganizer url="example.pdf"></pdf-reorganizer>
   </body>
 </html>
 ```

@@ -8,13 +8,13 @@ pdfjsLib.GlobalWorkerOptions.workerSrc = "pdfjs-dist/build/pdf.worker.mjs";
 
 
 /**
- * @class PDFArranger extends an HTMLElement
+ * @class PDFReorganizer extends an HTMLElement
  * that allows to rearrange, split, and
  * modify PDFs.
  *
  * @exports
  */
-export default class PDFArranger extends HTMLElement {
+export default class PDFReorganizer extends HTMLElement {
 
   /**
    * @constructor
@@ -306,7 +306,7 @@ export default class PDFArranger extends HTMLElement {
   /**
    * Create a JSON array representing the modified document(s)
    * to generate.
-   * This dispatches a custom event `processed` on the PDFArranger
+   * This dispatches a custom event `processed` on the PDFReorganizer
    * object that has a `detail` objects containing a `directive`
    * object representing the JSON object.
    */
@@ -361,7 +361,7 @@ export default class PDFArranger extends HTMLElement {
   --viewport-height: 200px;
 }
 
-pdf-arranger {
+pdf-reorganizer {
   display: block;
 }
 
@@ -532,4 +532,4 @@ pdf-page.dragged {
   }
 };
 
-customElements.define('pdf-arranger', PDFArranger);
+customElements.define('pdf-reorganizer', PDFReorganizer);

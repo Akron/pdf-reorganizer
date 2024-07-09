@@ -1,6 +1,6 @@
 import 'pdfjs-dist';
 import PDFPage from './pdf-page.js';
-import PDFArranger from './pdf-arranger.js';
+import PDFReorganizer from './pdf-reorganizer.js';
 import fetch from 'node-fetch';
 
 globalThis.fetch = fetch;
@@ -171,18 +171,18 @@ test('PDF Page - Rotate', () => {
   expect(page.rotation).toBe(270);
 });
 
-test('PDF Arranger - Construction', () => {
-  let arranger = new PDFArranger(20);
+test('PDF Reorganizer - Construction', () => {
+  let reorganizer = new PDFReorganizer(20);
 
-  expect(arranger.selected.size).toBe(0);
+  expect(reorganizer.selected.size).toBe(0);
 });
 
-test('PDF Arranger - Elements', () => {
-  let arranger = new PDFArranger();
+test('PDF Reorganizer - Elements', () => {
+  let reorganizer = new PDFReorganizer();
 
-  expect(arranger.children.length).toBe(0);
+  expect(reorganizer.children.length).toBe(0);
 
-  let s = arranger.shadow;
+  let s = reorganizer.shadow;
   expect(s.firstChild.tagName).toBe("NAV");
   expect(s.lastChild.tagName).toBe("DIV");
   expect(s.lastChild.getAttribute('id')).toBe("pdf-viewport");

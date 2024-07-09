@@ -4,245 +4,6 @@
   "modules": [
     {
       "kind": "javascript-module",
-      "path": "pdf-arranger.js",
-      "declarations": [
-        {
-          "kind": "class",
-          "description": "",
-          "name": "PDFArranger",
-          "members": [
-            {
-              "kind": "method",
-              "name": "_selectedSort",
-              "description": "Return selected elements in order of appearance\nin the viewport."
-            },
-            {
-              "kind": "method",
-              "name": "remove",
-              "description": "Removes all selected pages from the\nPDF.",
-              "return": {
-                "type": {
-                  "text": "number"
-                }
-              }
-            },
-            {
-              "kind": "method",
-              "name": "rotateLeft",
-              "description": "Rotates all selected pages from the\nPDF 90 degrees to the left.",
-              "return": {
-                "type": {
-                  "text": "number"
-                }
-              }
-            },
-            {
-              "kind": "method",
-              "name": "addSelect",
-              "parameters": [
-                {
-                  "name": "page",
-                  "description": "The PDFPage object."
-                }
-              ],
-              "description": "Add a single page to the selection."
-            },
-            {
-              "kind": "method",
-              "name": "delSelect",
-              "parameters": [
-                {
-                  "name": "page",
-                  "description": "The PDFPage object."
-                }
-              ],
-              "description": "Remove a single page from the selection."
-            },
-            {
-              "kind": "method",
-              "name": "delSelectAll",
-              "description": "Remove all pages from the selection,\ni.e. clear the selection."
-            },
-            {
-              "kind": "method",
-              "name": "delSelectAllExceptFor",
-              "parameters": [
-                {
-                  "name": "page",
-                  "description": "Single page to be excluded from clearance."
-                }
-              ],
-              "description": "Remove all pages from the selection,\nexcept for one single page."
-            },
-            {
-              "kind": "method",
-              "name": "splitBefore",
-              "description": "Add splits before all pages in the selection."
-            },
-            {
-              "kind": "method",
-              "name": "moveBefore",
-              "parameters": [
-                {
-                  "name": "page",
-                  "description": "The target page."
-                }
-              ],
-              "description": "Move all selected pages in front of a target page."
-            },
-            {
-              "kind": "method",
-              "name": "moveAfter",
-              "parameters": [
-                {
-                  "name": "page",
-                  "description": "The target page."
-                }
-              ],
-              "description": "Move all selected behind a target page."
-            },
-            {
-              "kind": "method",
-              "name": "forEachSelected",
-              "parameters": [
-                {
-                  "name": "cb",
-                  "description": "Callback function."
-                }
-              ],
-              "description": "Helper function to iterate through all selected objects."
-            },
-            {
-              "kind": "method",
-              "name": "loadCSS",
-              "parameters": [
-                {
-                  "name": "url",
-                  "description": "URL of the CSS file."
-                }
-              ],
-              "description": "Load CSS file and add it to the shadow dom."
-            },
-            {
-              "kind": "method",
-              "name": "loadDocument",
-              "parameters": [
-                {
-                  "name": "url",
-                  "description": "URL or Int array representing the document."
-                }
-              ],
-              "description": "Load a PDF document."
-            },
-            {
-              "kind": "method",
-              "name": "process",
-              "description": "Create a JSON array representing the modified document(s)\nto generate.\nThis dispatches a custom event `processed` on the PDFArranger\nobject that has a `detail` objects containing a `directive`\nobject representing the JSON object."
-            },
-            {
-              "kind": "method",
-              "name": "embedCSS"
-            },
-            {
-              "kind": "field",
-              "name": "numpages",
-              "default": "undefined"
-            },
-            {
-              "kind": "field",
-              "name": "pdfDoc",
-              "default": "undefined"
-            },
-            {
-              "kind": "field",
-              "name": "selected",
-              "default": "new Set()"
-            },
-            {
-              "kind": "field",
-              "name": "pages",
-              "default": "new Array()"
-            },
-            {
-              "kind": "field",
-              "name": "shadow"
-            },
-            {
-              "kind": "field",
-              "name": "delElem"
-            },
-            {
-              "kind": "field",
-              "name": "innerText",
-              "type": {
-                "text": "string"
-              },
-              "default": "'process'"
-            },
-            {
-              "kind": "field",
-              "name": "rotateLeftElem"
-            },
-            {
-              "kind": "field",
-              "name": "splitBeforeElem"
-            },
-            {
-              "kind": "field",
-              "name": "processElem"
-            },
-            {
-              "kind": "field",
-              "name": "viewport"
-            }
-          ],
-          "events": [
-            {
-              "name": "processed",
-              "type": {
-                "text": "CustomEvent"
-              }
-            }
-          ],
-          "attributes": [
-            {
-              "name": "url"
-            },
-            {
-              "name": "css"
-            },
-            {
-              "name": "onprocess"
-            }
-          ],
-          "superclass": {
-            "name": "HTMLElement"
-          },
-          "tagName": "pdf-arranger",
-          "customElement": true
-        }
-      ],
-      "exports": [
-        {
-          "kind": "js",
-          "name": "default",
-          "declaration": {
-            "name": "PDFArranger",
-            "module": "pdf-arranger.js"
-          }
-        },
-        {
-          "kind": "custom-element-definition",
-          "name": "pdf-arranger",
-          "declaration": {
-            "name": "PDFArranger",
-            "module": "pdf-arranger.js"
-          }
-        }
-      ]
-    },
-    {
-      "kind": "javascript-module",
       "path": "pdf-page.js",
       "declarations": [
         {
@@ -392,6 +153,245 @@
           "declaration": {
             "name": "PDFPage",
             "module": "pdf-page.js"
+          }
+        }
+      ]
+    },
+    {
+      "kind": "javascript-module",
+      "path": "pdf-reorganizer.js",
+      "declarations": [
+        {
+          "kind": "class",
+          "description": "",
+          "name": "PDFReorganizer",
+          "members": [
+            {
+              "kind": "method",
+              "name": "_selectedSort",
+              "description": "Return selected elements in order of appearance\nin the viewport."
+            },
+            {
+              "kind": "method",
+              "name": "remove",
+              "description": "Removes all selected pages from the\nPDF.",
+              "return": {
+                "type": {
+                  "text": "number"
+                }
+              }
+            },
+            {
+              "kind": "method",
+              "name": "rotateLeft",
+              "description": "Rotates all selected pages from the\nPDF 90 degrees to the left.",
+              "return": {
+                "type": {
+                  "text": "number"
+                }
+              }
+            },
+            {
+              "kind": "method",
+              "name": "addSelect",
+              "parameters": [
+                {
+                  "name": "page",
+                  "description": "The PDFPage object."
+                }
+              ],
+              "description": "Add a single page to the selection."
+            },
+            {
+              "kind": "method",
+              "name": "delSelect",
+              "parameters": [
+                {
+                  "name": "page",
+                  "description": "The PDFPage object."
+                }
+              ],
+              "description": "Remove a single page from the selection."
+            },
+            {
+              "kind": "method",
+              "name": "delSelectAll",
+              "description": "Remove all pages from the selection,\ni.e. clear the selection."
+            },
+            {
+              "kind": "method",
+              "name": "delSelectAllExceptFor",
+              "parameters": [
+                {
+                  "name": "page",
+                  "description": "Single page to be excluded from clearance."
+                }
+              ],
+              "description": "Remove all pages from the selection,\nexcept for one single page."
+            },
+            {
+              "kind": "method",
+              "name": "splitBefore",
+              "description": "Add splits before all pages in the selection."
+            },
+            {
+              "kind": "method",
+              "name": "moveBefore",
+              "parameters": [
+                {
+                  "name": "page",
+                  "description": "The target page."
+                }
+              ],
+              "description": "Move all selected pages in front of a target page."
+            },
+            {
+              "kind": "method",
+              "name": "moveAfter",
+              "parameters": [
+                {
+                  "name": "page",
+                  "description": "The target page."
+                }
+              ],
+              "description": "Move all selected behind a target page."
+            },
+            {
+              "kind": "method",
+              "name": "forEachSelected",
+              "parameters": [
+                {
+                  "name": "cb",
+                  "description": "Callback function."
+                }
+              ],
+              "description": "Helper function to iterate through all selected objects."
+            },
+            {
+              "kind": "method",
+              "name": "loadCSS",
+              "parameters": [
+                {
+                  "name": "url",
+                  "description": "URL of the CSS file."
+                }
+              ],
+              "description": "Load CSS file and add it to the shadow dom."
+            },
+            {
+              "kind": "method",
+              "name": "loadDocument",
+              "parameters": [
+                {
+                  "name": "url",
+                  "description": "URL or Int array representing the document."
+                }
+              ],
+              "description": "Load a PDF document."
+            },
+            {
+              "kind": "method",
+              "name": "process",
+              "description": "Create a JSON array representing the modified document(s)\nto generate.\nThis dispatches a custom event `processed` on the PDFReorganizer\nobject that has a `detail` objects containing a `directive`\nobject representing the JSON object."
+            },
+            {
+              "kind": "method",
+              "name": "embedCSS"
+            },
+            {
+              "kind": "field",
+              "name": "numpages",
+              "default": "undefined"
+            },
+            {
+              "kind": "field",
+              "name": "pdfDoc",
+              "default": "undefined"
+            },
+            {
+              "kind": "field",
+              "name": "selected",
+              "default": "new Set()"
+            },
+            {
+              "kind": "field",
+              "name": "pages",
+              "default": "new Array()"
+            },
+            {
+              "kind": "field",
+              "name": "shadow"
+            },
+            {
+              "kind": "field",
+              "name": "delElem"
+            },
+            {
+              "kind": "field",
+              "name": "innerText",
+              "type": {
+                "text": "string"
+              },
+              "default": "'process'"
+            },
+            {
+              "kind": "field",
+              "name": "rotateLeftElem"
+            },
+            {
+              "kind": "field",
+              "name": "splitBeforeElem"
+            },
+            {
+              "kind": "field",
+              "name": "processElem"
+            },
+            {
+              "kind": "field",
+              "name": "viewport"
+            }
+          ],
+          "events": [
+            {
+              "name": "processed",
+              "type": {
+                "text": "CustomEvent"
+              }
+            }
+          ],
+          "attributes": [
+            {
+              "name": "url"
+            },
+            {
+              "name": "css"
+            },
+            {
+              "name": "onprocess"
+            }
+          ],
+          "superclass": {
+            "name": "HTMLElement"
+          },
+          "tagName": "pdf-reorganizer",
+          "customElement": true
+        }
+      ],
+      "exports": [
+        {
+          "kind": "js",
+          "name": "default",
+          "declaration": {
+            "name": "PDFReorganizer",
+            "module": "pdf-reorganizer.js"
+          }
+        },
+        {
+          "kind": "custom-element-definition",
+          "name": "pdf-reorganizer",
+          "declaration": {
+            "name": "PDFReorganizer",
+            "module": "pdf-reorganizer.js"
           }
         }
       ]

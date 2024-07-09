@@ -20,7 +20,7 @@ export default class PDFPage extends HTMLElement {
    * @constructor
    *
    * @param pagenum Number of the page.
-   * @param parent PDFArranger that arranges this page.
+   * @param parent PDFReorganizer that arranges this page.
    */
   constructor(pagenum, parent) {
     super();
@@ -30,7 +30,7 @@ export default class PDFPage extends HTMLElement {
     this._rotation = 0;
     this._selected = false;
     this._pdfjsref = null; // The PDF.js-page
-    this._parent = parent; // The arranger
+    this._parent = parent; // The reorganizer
 
     this.style.width = (desiredWidth*outputScale) + 'px';
     this.style.height = (desiredWidth*outputScale) + 'px';

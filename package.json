@@ -1,11 +1,11 @@
 {
-  "name": "pdf-arranger",
-  "version": "0.1.1",
+  "name": "pdf-reorganizer",
+  "version": "0.1.2",
   "author": "Nils Diewald",
-  "description": "Web Component for PDF arrangements",
+  "description": "Web Component for PDF reorganization",
   "type": "module",
-  "main": "pdf-arranger.js",
-  "module": "pdf-arranger.js",
+  "main": "pdf-reorganizer.js",
+  "module": "pdf-reorganizer.js",
   "scripts": {
     "test": "node --experimental-modules --experimental-vm-modules --experimental-fetch node_modules/jest/bin/jest.js",
     "analyze-custom-elements": "npx @custom-elements-manifest/analyzer analyze",
@@ -33,7 +33,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/Akron/pdf-arranger.git"
+    "url": "git+https://github.com/Akron/pdf-reorganizer.git"
   },
   "keywords": [
     "pdf",
@@ -43,7 +43,7 @@
   "customElements": "./custom-elements.json",
   "license": "",
   "bugs": {
-    "url": "https://github.com/Akron/pdf-arranger/issues"
+    "url": "https://github.com/Akron/pdf-reorganizer/issues"
   },
-  "homepage": "https://github.com/Akron/pdf-arranger#readme"
+  "homepage": "https://github.com/Akron/pdf-reorganizer#readme"
 }
