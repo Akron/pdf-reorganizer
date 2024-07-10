@@ -28,7 +28,7 @@ export default class PDFReorganizer extends HTMLElement {
     this.pdfDoc = undefined;
 
     this.selected = new Set();
-    this.pages = new Array(); // Todo: Probably unimportant
+    // this.pages = new Array(); // Todo: Probably unimportant
     
     this.shadow = this.attachShadow({ mode: "open" });
    
@@ -104,7 +104,8 @@ export default class PDFReorganizer extends HTMLElement {
 
         // Render the page, when it intersects with the viewport
         instance.pdfDoc.getPage(page.num).then((pdfPage) => {
-          instance.pages[pdfPage._pageIndex].render(pdfPage);
+          // instance.pages[pdfPage._pageIndex].render(pdfPage);
+          page.render(pdfPage);
         });
 
         // Forget the page
@@ -336,7 +337,7 @@ export default class PDFReorganizer extends HTMLElement {
 
       for (var i = 0; i < instance.numPages; i++) {
         var page  = new PDFPage(i+1, instance);
-        instance.pages[i] = page;
+        // instance.pages[i] = page;
         instance.viewport.appendChild(page);
         instance.observeViewport.observe(page);
       };
@@ -401,6 +402,8 @@ export default class PDFReorganizer extends HTMLElement {
   --pdfro-split-before-color: #6b6;
   --pdfro-dragged-color: #7cd;
   --pdfro-loader: var(--pdfro-selected-bg-color);
+  --pdfro-viewport-height: 300px;
+  --pdfro-viewport-width: 300px;
 }
 
 pdf-reorganizer {
@@ -409,10 +412,18 @@ pdf-reorganizer {
 
 #pdf-viewport {
   margin-top: 12pt;
+  border: 1px solid var(--pdfro-main-color);
   display: flex;
   flex-wrap: wrap;
   align-items: start;
   align-content: start;
+  min-width: 300px;
+  min-height: 200px;
+  overflow-y: scroll;
+  overflow-x: hidden;
+  resize: both;
+  height: var(--pdfro-viewport-height);
+  width: var(--pdfro-viewport-width);
 }
 
 nav {
@@ -471,7 +482,7 @@ pdf-page::after {
   position: absolute;
   top: 0;
   width: 10px;
-  height:200px;
+  height: 200px;
   margin-top:-100px;
   border-radius: 5px;
   background-color: var(--pdfro-selected-bg-color);

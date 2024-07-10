@@ -187,3 +187,14 @@ test('PDF Reorganizer - Elements', () => {
   expect(s.lastChild.tagName).toBe("DIV");
   expect(s.lastChild.getAttribute('id')).toBe("pdf-viewport");
 });
+
+test('PDF Reorganizer - Elements', () => {
+  let reorganizer = new PDFReorganizer();
+
+  expect(reorganizer.children.length).toBe(0);
+
+  let s = reorganizer.shadow;
+  expect(s.firstChild.tagName).toBe("NAV");
+  expect(s.lastChild.tagName).toBe("DIV");
+  expect(s.lastChild.getAttribute('id')).toBe("pdf-viewport");
+});
