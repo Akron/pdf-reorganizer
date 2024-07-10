@@ -33,17 +33,6 @@ export default class PDFReorganizer extends HTMLElement {
     this.shadow = this.attachShadow({ mode: "open" });
    
     let nav = document.createElement('nav');
-    
-    this.delElem = document.createElement("div");
-    this.delElem.setAttribute("class","delete");
-    this.delElem.innerText = 'remove';
-    nav.appendChild(this.delElem);
-
-    // These elements should only exist once and be appended to the page in focus!
-    this.rotateLeftElem = document.createElement("div");
-    this.rotateLeftElem.setAttribute("class","rotate-left");
-    this.rotateLeftElem.innerText = 'left';
-    nav.appendChild(this.rotateLeftElem);
 
     // These elements should only exist once and be appended to the page in focus!
     this.splitBeforeElem = document.createElement("div");
@@ -51,6 +40,21 @@ export default class PDFReorganizer extends HTMLElement {
     this.splitBeforeElem.innerText = 'split before';
     nav.appendChild(this.splitBeforeElem);
 
+    this.rotateLeftElem = document.createElement("div");
+    this.rotateLeftElem.setAttribute("class","rotate-left");
+    this.rotateLeftElem.innerText = 'left';
+    nav.appendChild(this.rotateLeftElem);
+
+    this.rotateRightElem = document.createElement("div");
+    this.rotateRightElem.setAttribute("class","rotate-right");
+    this.rotateRightElem.innerText = 'right';
+    nav.appendChild(this.rotateRightElem);
+
+    this.delElem = document.createElement("div");
+    this.delElem.setAttribute("class","delete");
+    this.delElem.innerText = 'remove';
+    nav.appendChild(this.delElem);
+    
     this.processElem = document.createElement("div");
     this.processElem.setAttribute("class","process");
     this.processElem.innerText = 'process';
@@ -76,6 +80,7 @@ export default class PDFReorganizer extends HTMLElement {
 
     this.delElem.addEventListener('click', this.remove.bind(this));
     this.rotateLeftElem.addEventListener('click', this.rotateLeft.bind(this));
+    this.rotateRightElem.addEventListener('click', this.rotateRight.bind(this));
     this.splitBeforeElem.addEventListener('click', this.splitBefore.bind(this));
 
     this.processElem.addEventListener('click', (function() {
@@ -172,6 +177,20 @@ export default class PDFReorganizer extends HTMLElement {
     var i = 0;
     return this.forEachSelected((page) => {
       page.rotateLeft();
+      i++;
+    });
+  }
+
+  /**
+   * Rotates all selected pages from the
+   * PDF 90 degrees to the right.
+   *
+   * @return {number} The number of rotated pages.
+   */
+  rotateRight() {
+    var i = 0;
+    return this.forEachSelected((page) => {
+      page.rotateRight();
       i++;
     });
   }
