@@ -347,18 +347,16 @@ export default class PDFReorganizer extends HTMLElement {
   embedCSS() {
     const cssData = `
 :host {
-  --dark-border-color: #555;
-  --white: #ffffff;
-  --deleted-color: #777;
-  --hover-color: #aaa;  /* #49d; */
-  --selected-bg-color: #07d;
-  --selected-color: var(--white);
-  --split-before-border-color: #696;
-  --split-before-color: #6b6;
-  --dragged-color: #7cd;
-  --loader: var(--selected-bg-color);
-  --viewport-width: 100%;
-  --viewport-height: 200px;
+  --pdfro-main-color: #555;
+  --pdfro-white: #ffffff;
+  --pdfro-deleted-color: #777;
+  --pdfro-hover-color: #aaa;  /* #49d; */
+  --pdfro-selected-bg-color: #07d;
+  --pdfro-selected-color: var(--pdfro-white);
+  --pdfro-split-before-border-color: #696;
+  --pdfro-split-before-color: #6b6;
+  --pdfro-dragged-color: #7cd;
+  --pdfro-loader: var(--pdfro-selected-bg-color);
 }
 
 pdf-reorganizer {
@@ -366,21 +364,16 @@ pdf-reorganizer {
 }
 
 #pdf-viewport {
+  margin-top: 12pt;
   display: flex;
   flex-wrap: wrap;
   align-items: start;
   align-content: start;
-  border: 1px solid var(--dark-border-color);
-  overflow-y: scroll;
-  overflow-x: hidden;
-  resize: both;
-  width: var(--viewport-width);
-  height: var(--viewport-height);
-  min-width: 300px;
-  min-height: 200px;
 }
 
 nav {
+  position: fixed;
+  z-index: 5;
   display: block;
   width: 100%;
 }
@@ -391,7 +384,7 @@ nav > div {
 }
 
 nav > div:hover {
-  background-color: var(--selected-bg-color);
+  background-color: var(--pdfro-selected-bg-color);
 }
 
 nav > div + div::before {
@@ -409,7 +402,7 @@ pdf-page {
   padding: 8px;
   padding-bottom: 18pt;
   z-index: 1;
-  color: var(--dark-border-color);
+  color: var(--pdfro-main-color);
   /* Relevant for drag target */
   margin: 3px;
 }
@@ -437,7 +430,7 @@ pdf-page::after {
   height:200px;
   margin-top:-100px;
   border-radius: 5px;
-  background-color: var(--selected-bg-color);
+  background-color: var(--pdfro-selected-bg-color);
   top: 50%;
 }
 
@@ -474,7 +467,7 @@ pdf-page.load::before {
   margin-top: -10px;
   margin-left: -10px;
   border-radius: 50%;
-  border-top: 2px solid var(--loader);
+  border-top: 2px solid var(--pdfro-loader);
   border-right: 2px solid transparent;
   animation: rotation .6s linear infinite;
 }
@@ -482,7 +475,7 @@ pdf-page.load::before {
 canvas {
   opacity: 1;
   box-shadow: rgba(50, 50, 93, 0.25) 0px 6px 12px -2px, rgba(0, 0, 0, 0.3) 0px 3px 7px -3px;
-  border: 1px solid var(--dark-border-color);
+  border: 1px solid var(--pdfro-main-color);
   transition: transform .5s ease-out, opacity 1000ms ease;
   z-index: -1;
 }
@@ -492,12 +485,12 @@ pdf-page.load canvas {
 }
 
 pdf-page.deleted {
-  background-color: var(--deleted-color);
-  border-color: var(--deleted-color);
+  background-color: var(--pdfro-deleted-color);
+  border-color: var(--pdfro-deleted-color);
 }
 
 pdf-page:not(.deleted):not(.selected):hover {
-  background-color: var(--hover-color);
+  background-color: var(--pdfro-hover-color);
 }
 
 pdf-page.deleted canvas {
@@ -509,21 +502,21 @@ pdf-page.split-before div.container::before {
   content: '';
   top:0;
   left:0;
-  border: 1px solid var(--split-before-border-color);
+  border: 1px solid var(--pdfro-split-before-border-color);
   transform: rotate(45deg);
-  background-color: var(--split-before-color);
+  background-color: var(--pdfro-split-before-color);
   width: 16px;
   height: 16px;
   border-radius: 10px;
 }
 
 pdf-page.selected {
-  background-color: var(--selected-bg-color);
-  color: var(--selected-color);
+  background-color: var(--pdfro-selected-bg-color);
+  color: var(--pdfro-selected-color);
 }
 
 pdf-page.dragged {
-  background-color: var(--dragged-color);
+  background-color: var(--pdfro-dragged-color);
 }
 `;
     const css = new CSSStyleSheet();
