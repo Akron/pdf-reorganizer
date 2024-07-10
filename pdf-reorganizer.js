@@ -50,6 +50,11 @@ export default class PDFReorganizer extends HTMLElement {
     this.rotateRightElem.innerText = 'right';
     nav.appendChild(this.rotateRightElem);
 
+    this.selElem = document.createElement("div");
+    this.selElem.setAttribute("class","selectall");
+    this.selElem.innerText = 'select all';
+    nav.appendChild(this.selElem);
+
     this.delElem = document.createElement("div");
     this.delElem.setAttribute("class","delete");
     this.delElem.innerText = 'remove';
@@ -82,6 +87,7 @@ export default class PDFReorganizer extends HTMLElement {
     this.rotateLeftElem.addEventListener('click', this.rotateLeft.bind(this));
     this.rotateRightElem.addEventListener('click', this.rotateRight.bind(this));
     this.splitBeforeElem.addEventListener('click', this.splitBefore.bind(this));
+    this.selElem.addEventListener('click', this.selectAll.bind(this));
 
     this.processElem.addEventListener('click', (function() {
       this.process();
@@ -195,6 +201,25 @@ export default class PDFReorganizer extends HTMLElement {
     });
   }
 
+  /**
+   * Select all pages.
+   *
+   * @return {number} The number of selected pages.
+   */
+  selectAll() {
+    var i = 0;
+
+    let nodeList = this.viewport.childNodes;
+    nodeList.forEach((page) => {
+      if (page.deleted)
+        return;
+      page.selectOn();
+      i++;
+    });
+
+    return i;
+  }
+  
   /**
    * Add a single page to the selection.
    *
