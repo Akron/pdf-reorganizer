@@ -319,4 +319,30 @@ describe('PDF Reorganizer', () => {
 
     expect(JSON.stringify(reorganizer.process())).toEqual('[[]]');
   });
+
+  it('should move pages before/after', async () => {
+    let reorganizer = new PDFReorganizer();
+    expect(reorganizer.children.length).toBe(0);
+    
+    // Async testing
+    const result = await reorganizer.loadDocument(examplepdf);
+    expect(result).toBe(8);
+
+    let page = reorganizer.getPage(3); // 4
+    page.selectOn();
+    page = reorganizer.getPage(6); // 7
+    page.selectOn();
+    expect(reorganizer.selected.size).toBe(2);
+
+    reorganizer.moveBefore(reorganizer.getPage(2)); // 3
+    
+    expect(JSON.stringify(reorganizer.process())).toEqual('[["1","2","4","7","3","5","6","8"]]');
+
+    // still selected
+    expect(reorganizer.selected.size).toBe(2);
+
+    reorganizer.moveAfter(reorganizer.getPage(5)); // 3
+
+    expect(JSON.stringify(reorganizer.process())).toEqual('[["1","2","3","5","4","7","6","8"]]');
+  });
 });

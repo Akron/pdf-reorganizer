@@ -307,7 +307,6 @@ export default class PDFPage extends HTMLElement {
   rotateRight() {
     this._rotation += 90;
     this.canvas.style.transform = 'rotate(' + this._rotation + 'deg)';
-    return this._rotation;
   };
   
   /**
@@ -316,7 +315,6 @@ export default class PDFPage extends HTMLElement {
   rotateLeft() {
     this._rotation -= 90;
     this.canvas.style.transform = 'rotate(' + this._rotation + 'deg)';
-    return this._rotation;
   };
 
   /**

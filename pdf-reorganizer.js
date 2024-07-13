@@ -159,15 +159,6 @@ export default class PDFReorganizer extends HTMLElement {
 
     return selList;
   }
-
-  reset () {
-    // Remove all pages from the observer
-    if (this.pdfDoc != undefined)
-      this.pdfDoc.close().then()
-    // Remove all pages from the viewport
-    // Clear numpages, pdfDoc, selected, viewport content
-  }
-
   
   /**
    * Removes all selected pages from the
@@ -341,6 +332,21 @@ export default class PDFReorganizer extends HTMLElement {
    */
   loadDocument (url) {
     this.url = url;
+
+    /* Clear possible data */
+    this.delSelectAll()
+
+    // Maybe there is a file already loaded
+    if (this.pdfDoc != undefined)
+      this.pdfDoc.close();
+
+    this.observeViewport?.disconnect();
+
+// TODO: Remove all children from the viewport!
+    
+    this.numPages = 0;
+    /* End cleaning */
+
     let instance = this;
    
     // Asynchronous download of PDF
