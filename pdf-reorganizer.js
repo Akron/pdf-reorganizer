@@ -24,11 +24,10 @@ export default class PDFReorganizer extends HTMLElement {
     this.url;
     this.css;
     this.onprocess;
-    this.numpages = undefined;
+    this.numPages = 0;
     this.pdfDoc = undefined;
 
     this.selected = new Set();
-    // this.pages = new Array(); // Todo: Probably unimportant
     
     this.shadow = this.attachShadow({ mode: "open" });
    
@@ -77,7 +76,9 @@ export default class PDFReorganizer extends HTMLElement {
   connectedCallback () {
     let instance = this;
     this.embedCSS();
-    this.loadDocument(this.url);
+
+    if (this.url != undefined)
+      this.loadDocument(this.url);
 
     if (this.onprocess != null) {
       this.addEventListener("processed", eval(this.onprocess))
@@ -159,6 +160,14 @@ export default class PDFReorganizer extends HTMLElement {
     return selList;
   }
 
+  reset () {
+    // Remove all pages from the observer
+    if (this.pdfDoc != undefined)
+      this.pdfDoc.close().then()
+    // Remove all pages from the viewport
+    // Clear numpages, pdfDoc, selected, viewport content
+  }
+
   
   /**
    * Removes all selected pages from the
@@ -208,7 +217,7 @@ export default class PDFReorganizer extends HTMLElement {
    * @return {number} The number of selected pages.
    */
   selectAll() {
-    var i = 0;
+    let i = 0;
 
     let nodeList = this.viewport.childNodes;
     nodeList.forEach((page) => {
@@ -244,9 +253,12 @@ export default class PDFReorganizer extends HTMLElement {
    * i.e. clear the selection.
    */
   delSelectAll() {
+    let i = 0;
     this.forEachSelected(function (page) {
       page.selectOff();
+      i++;
     });
+    return i;
   }
 
   /**
@@ -323,28 +335,33 @@ export default class PDFReorganizer extends HTMLElement {
    * @param url URL or Int array representing the document.
    */
   loadDocument (url) {
+    this.url = url;
     let instance = this;
-
+   
     // Asynchronous download of PDF
-    var loadingTask = pdfjsLib.getDocument(this.url);
-
-    loadingTask.promise.then(function(pdf) {
+    let loadingTask = pdfjsLib.getDocument(this.url);
+   
+    return loadingTask.promise.then(function(pdf) {
 
       // Initialize the document length
       instance.numPages = pdf.numPages;
 
       instance.pdfDoc = pdf;
-
+     
+      let page;
       for (var i = 0; i < instance.numPages; i++) {
-        var page  = new PDFPage(i+1, instance);
-        // instance.pages[i] = page;
+        page  = new PDFPage(i+1, instance);
+        //// instance.pages[i] = page;
         instance.viewport.appendChild(page);
-        instance.observeViewport.observe(page);
+        instance.observeViewport?.observe(page);
       };
-    }, function (reason) {
 
+      return instance.numPages;
+      
+    }, function (reason) {     
       // PDF loading error
       console.error(reason);
+      return 0;
     });
   }
 
@@ -395,15 +412,15 @@ export default class PDFReorganizer extends HTMLElement {
   --pdfro-main-color: #555;
   --pdfro-white: #ffffff;
   --pdfro-deleted-color: #777;
-  --pdfro-hover-color: #aaa;  /* #49d; */
+  --pdfro-hover-color: #aaa;
   --pdfro-selected-bg-color: #07d;
   --pdfro-selected-color: var(--pdfro-white);
   --pdfro-split-before-border-color: #696;
   --pdfro-split-before-color: #6b6;
-  --pdfro-dragged-color: #7cd;
+  --pdfro-dragged-color: #7bf;
   --pdfro-loader: var(--pdfro-selected-bg-color);
-  --pdfro-viewport-height: 300px;
-  --pdfro-viewport-width: 300px;
+  --pdfro-viewport-height: 244px;
+  --pdfro-viewport-width: 232px;
 }
 
 pdf-reorganizer {
@@ -411,14 +428,17 @@ pdf-reorganizer {
 }
 
 #pdf-viewport {
-  margin-top: 12pt;
   border: 1px solid var(--pdfro-main-color);
+  padding: 10px; /* Make the dragger visible */
+  padding-top: 20px; /* Make the nav visible */
   display: flex;
   flex-wrap: wrap;
   align-items: start;
   align-content: start;
-  min-width: 300px;
-  min-height: 200px;
+/* from page: desired width + 2 * padding (8px) + 2 * border (5px) + 2x margin (3px) */
+  min-width: 232px;
+/* as above, + bottom padding 12px */
+  min-height: 244px;
   overflow-y: scroll;
   overflow-x: hidden;
   resize: both;
@@ -455,7 +475,7 @@ pdf-page {
   border: 5px solid transparent;
   cursor: pointer;
   padding: 8px;
-  padding-bottom: 18pt;
+  padding-bottom: 20px;
   z-index: 1;
   color: var(--pdfro-main-color);
   /* Relevant for drag target */

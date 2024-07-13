@@ -26,3 +26,4 @@ Web Component for PDF arrangements
 - Copy instead of moving
 - Move/Copy without dragging and dropping
 - Add files per drag and drop
+- Allow arrow keys to move selector.

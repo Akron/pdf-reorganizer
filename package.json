@@ -7,20 +7,14 @@
   "main": "pdf-reorganizer.js",
   "module": "pdf-reorganizer.js",
   "scripts": {
-    "test": "node --experimental-modules --experimental-vm-modules --experimental-fetch node_modules/jest/bin/jest.js",
+    "test": "vitest --silent=false",
     "analyze-custom-elements": "npx @custom-elements-manifest/analyzer analyze",
     "switch-latest": "nvm use node",
     "dev": "vite"
   },
   "devDependencies": {
-    "jest": "^29.7.0",
-    "jest-environment-jsdom": "^29.7.0",
-    "node-fetch": "^3.3.2",
-    "vite": "^5.3.1"
-  },
-  "jest": {
-    "transform": {},
-    "testEnvironment": "jsdom"
+    "vite": "^5.3.1",
+    "vitest": "^2.0.2"
   },
   "engines": {
     "node": ">=22.0"
