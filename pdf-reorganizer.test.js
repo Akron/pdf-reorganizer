@@ -178,6 +178,7 @@ describe('PDF Page', () => {
 
 describe('PDF Reorganizer', () => {
   let examplepdf = "file:" + resolve(__dirname, "demo/example.pdf");
+  let examplepdf2 = "file:" + resolve(__dirname, "demo/example2.pdf");
   
   it('should be constructible', () => {
     let reorganizer = new PDFReorganizer(20);
@@ -344,5 +345,22 @@ describe('PDF Reorganizer', () => {
     reorganizer.moveAfter(reorganizer.getPage(5)); // 3
 
     expect(JSON.stringify(reorganizer.process())).toEqual('[["1","2","3","5","4","7","6","8"]]');
+  });
+
+  it('should reload for a new document', async () => {
+    let reorganizer = new PDFReorganizer();
+    expect(reorganizer.children.length).toBe(0);
+    
+    // Async testing
+    let result = await reorganizer.loadDocument(examplepdf);
+    expect(result).toBe(8);
+
+    expect(reorganizer.viewport.children.length).toBe(8);
+
+    result = await reorganizer.loadDocument(examplepdf2);
+    expect(result).toBe(7);
+
+    expect(reorganizer.viewport.children.length).toBe(7);
+
   });
 });

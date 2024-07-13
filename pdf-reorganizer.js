@@ -332,22 +332,27 @@ export default class PDFReorganizer extends HTMLElement {
    */
   loadDocument (url) {
     this.url = url;
-
+    let instance = this;
+    
     /* Clear possible data */
     this.delSelectAll()
 
+    // Remove all pages from the viewport
+    while (this.viewport.lastChild) {
+      this.viewport.removeChild(this.viewport.lastChild);
+    }
+    
     // Maybe there is a file already loaded
-    if (this.pdfDoc != undefined)
-      this.pdfDoc.close();
-
-    this.observeViewport?.disconnect();
-
-// TODO: Remove all children from the viewport!
+    if (this.pdfDoc != undefined) {
+      this.pdfDoc.cleanup().then(() => {
+        instance.pdfDoc.destroy();
+        this.observeViewport?.disconnect();
+      });
+    };
     
     this.numPages = 0;
     /* End cleaning */
 
-    let instance = this;
    
     // Asynchronous download of PDF
     let loadingTask = pdfjsLib.getDocument(this.url);

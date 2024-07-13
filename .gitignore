@@ -4,7 +4,7 @@ sandbox
 templates
 pdfjs-*
 public
-!demo/example.pdf
+!demo/example*.pdf
 node_modules/
 package-lock.json
 todo.org
