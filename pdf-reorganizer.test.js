@@ -206,7 +206,7 @@ describe('PDF Reorganizer', () => {
     expect(result).toBe(8);
   });
 
-  it('should select all pages', async () => {
+  it('should (de)select all pages', async () => {
     let reorganizer = new PDFReorganizer();
     // expect.assertions(3);
     expect(reorganizer.children.length).toBe(0);
@@ -224,5 +224,99 @@ describe('PDF Reorganizer', () => {
     expect(reorganizer.delSelectAll()).toBe(8);
 
     expect(reorganizer.selected.size).toBe(0);
+  });
+
+  it('should process all pages', async () => {
+    let reorganizer = new PDFReorganizer();
+    // expect.assertions(3);
+    expect(reorganizer.children.length).toBe(0);
+    
+    // Async testing
+    const result = await reorganizer.loadDocument(examplepdf);
+    expect(result).toBe(8);
+
+    expect(JSON.stringify(reorganizer.process())).toEqual('[["1","2","3","4","5","6","7","8"]]');
+  });
+
+  it('should splitBefore pages', async () => {
+    let reorganizer = new PDFReorganizer();
+    // expect.assertions(3);
+    expect(reorganizer.children.length).toBe(0);
+    
+    // Async testing
+    const result = await reorganizer.loadDocument(examplepdf);
+    expect(result).toBe(8);
+
+    let page = reorganizer.getPage(3);
+
+    expect(page.splitBefore()).toBeTruthy();
+
+    page = reorganizer.getPage(6);
+
+    expect(page.splitBefore()).toBeTruthy();
+
+    expect(JSON.stringify(reorganizer.process())).toEqual('[["1","2","3"],["4","5","6"],["7","8"]]');
+
+    expect(reorganizer.selectAll()).toBe(8);
+
+    expect(reorganizer.splitBefore()).toBe(6);
+
+    expect(JSON.stringify(reorganizer.process())).toEqual('[["1"],["2"],["3","4"],["5"],["6","7"],["8"]]');
+  });
+
+  it('should rotate pages', async () => {
+    let reorganizer = new PDFReorganizer();
+    // expect.assertions(3);
+    expect(reorganizer.children.length).toBe(0);
+    
+    // Async testing
+    const result = await reorganizer.loadDocument(examplepdf);
+    expect(result).toBe(8);
+
+    let page = reorganizer.getPage(3);
+
+    page.rotateLeft();
+
+    page = reorganizer.getPage(6);
+
+    page.rotateRight()
+
+    expect(JSON.stringify(reorganizer.process())).toEqual('[["1","2","3","4@270","5","6","7@90","8"]]');
+
+    expect(reorganizer.selectAll()).toBe(8);
+
+    expect(reorganizer.rotateLeft()).toBe(8);
+
+    expect(JSON.stringify(reorganizer.process())).toEqual('[["1@270","2@270","3@270","4@180","5@270","6@270","7","8@270"]]');
+
+    expect(reorganizer.rotateRight()).toBe(8);
+
+    expect(JSON.stringify(reorganizer.process())).toEqual('[["1","2","3","4@270","5","6","7@90","8"]]');
+  });
+
+  it('should remove pages', async () => {
+    let reorganizer = new PDFReorganizer();
+    // expect.assertions(3);
+    expect(reorganizer.children.length).toBe(0);
+    
+    // Async testing
+    const result = await reorganizer.loadDocument(examplepdf);
+    expect(result).toBe(8);
+
+    let page = reorganizer.getPage(3);
+
+    page.remove();
+
+    page = reorganizer.getPage(6);
+
+    page.remove()
+
+    expect(JSON.stringify(reorganizer.process())).toEqual('[["1","2","3","5","6","8"]]');
+
+    expect(reorganizer.selectAll()).toBe(6);
+
+    expect(reorganizer.remove()).toBe(6);
+
+    expect(JSON.stringify(reorganizer.process())).toEqual('[[]]');
   });
 });

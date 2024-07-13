@@ -268,11 +268,13 @@ export default class PDFPage extends HTMLElement {
       this.splittedBefore = false;
       this.classList.remove('split-before');
       this.selectOff();
-    } else {
-      this.splittedBefore = true;
-      this.classList.add('split-before');
-      this.selectOff();      
+      return false;
     };
+
+    this.splittedBefore = true;
+    this.classList.add('split-before');
+    this.selectOff();
+    return true;
   };
 
   /**
@@ -305,6 +307,7 @@ export default class PDFPage extends HTMLElement {
   rotateRight() {
     this._rotation += 90;
     this.canvas.style.transform = 'rotate(' + this._rotation + 'deg)';
+    return this._rotation;
   };
   
   /**
@@ -313,6 +316,7 @@ export default class PDFPage extends HTMLElement {
   rotateLeft() {
     this._rotation -= 90;
     this.canvas.style.transform = 'rotate(' + this._rotation + 'deg)';
+    return this._rotation;
   };
 
   /**

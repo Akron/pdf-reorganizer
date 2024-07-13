@@ -176,11 +176,12 @@ export default class PDFReorganizer extends HTMLElement {
    * @return {number} The number of deleted pages.
    */
   remove() {
-    var i = 0;
-    return this.forEachSelected((page) => {
+    let i = 0;
+    this.forEachSelected((page) => {
       page.remove();
       i++;
     });
+    return i;
   }
 
   /**
@@ -190,11 +191,12 @@ export default class PDFReorganizer extends HTMLElement {
    * @return {number} The number of rotated pages.
    */
   rotateLeft() {
-    var i = 0;
-    return this.forEachSelected((page) => {
+    let i = 0;
+    this.forEachSelected((page) => {
       page.rotateLeft();
       i++;
     });
+    return i;
   }
 
   /**
@@ -204,11 +206,12 @@ export default class PDFReorganizer extends HTMLElement {
    * @return {number} The number of rotated pages.
    */
   rotateRight() {
-    var i = 0;
-    return this.forEachSelected((page) => {
+    let i = 0;
+    this.forEachSelected((page) => {
       page.rotateRight();
       i++;
     });
+    return i;
   }
 
   /**
@@ -233,7 +236,7 @@ export default class PDFReorganizer extends HTMLElement {
   /**
    * Add a single page to the selection.
    *
-   * @param page The PDFPage object.
+   * @param {page} The PDFPage object.
    */
   addSelect(page) {
     this.selected.add(page);
@@ -242,7 +245,7 @@ export default class PDFReorganizer extends HTMLElement {
   /**
    * Remove a single page from the selection.
    *
-   * @param page The PDFPage object.
+   * @param {page} The PDFPage object.
    */
   delSelect(page) {
     this.selected.delete(page);
@@ -265,7 +268,7 @@ export default class PDFReorganizer extends HTMLElement {
    * Remove all pages from the selection,
    * except for one single page.
    *
-   * @param page Single page to be excluded from clearance.
+   * @param {page} Single page to be excluded from clearance.
    */
   delSelectAllExceptFor(page) {
     this.forEachSelected(function (page1) {
@@ -278,15 +281,17 @@ export default class PDFReorganizer extends HTMLElement {
    * Add splits before all pages in the selection.
    */
   splitBefore() {
+    let i = 0;
     this.forEachSelected(function (page) {
-      page.splitBefore();
+      i = page.splitBefore() ? i+1 : i;
     });
+    return i;
   }
 
   /**
    * Move all selected pages in front of a target page.
    *
-   * @param page The target page.
+   * @param {page} The target page.
    */
   moveBefore(page) {
     page.before(...this._selectedSort())
@@ -295,7 +300,7 @@ export default class PDFReorganizer extends HTMLElement {
   /**
    * Move all selected behind a target page.
    *
-   * @param page The target page.
+   * @param {page} The target page.
    */
   moveAfter(page) {
     page.after(...this._selectedSort())
@@ -304,7 +309,7 @@ export default class PDFReorganizer extends HTMLElement {
   /**
    * Helper function to iterate through all selected objects.
    *
-   * @param cb Callback function.
+   * @param {cb} Callback function.
    */
   forEachSelected(cb) {
     this.selected.forEach(cb);
@@ -313,7 +318,7 @@ export default class PDFReorganizer extends HTMLElement {
   /**
    * Load CSS file and add it to the shadow dom.
    *
-   * @param url URL of the CSS file.
+   * @param {url} URL of the CSS file.
    */
   loadCSS(url) {
     const shadow = this.shadow;
@@ -332,7 +337,7 @@ export default class PDFReorganizer extends HTMLElement {
   /**
    * Load a PDF document.
    *
-   * @param url URL or Int array representing the document.
+   * @param {url} URL or Int array representing the document.
    */
   loadDocument (url) {
     this.url = url;
@@ -366,6 +371,18 @@ export default class PDFReorganizer extends HTMLElement {
   }
 
   /**
+   * Get a page at a certain index position. Includes deleted pages.
+   * But respects order.
+   *
+   * @param {idx} The position of the page in the list.
+   *
+   * @return {PDFPage} The page at the certain page index in the list.
+   */
+  getPage(idx) {
+    return this.viewport.childNodes[idx];
+  }
+  
+  /**
    * Create a JSON array representing the modified document(s)
    * to generate.
    * This dispatches a custom event `processed` on the PDFReorganizer
@@ -388,7 +405,7 @@ export default class PDFReorganizer extends HTMLElement {
       if (page.rotation != 0)
         val += '@' + page.rotation;
 
-      if (page.splittedBefore) {
+      if (page.splittedBefore && splitdocs.length > 0) {
         alldocs.push(splitdocs);
         splitdocs = new Array();
       };
