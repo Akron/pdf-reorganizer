@@ -335,12 +335,14 @@ export default class PDFReorganizer extends HTMLElement {
     let instance = this;
     
     /* Clear possible data */
-    this.delSelectAll()
+    this.delSelectAll();
 
     // Remove all pages from the viewport
     while (this.viewport.lastChild) {
       this.viewport.removeChild(this.viewport.lastChild);
-    }
+    };
+
+    this.viewport.scrollTop = 0;
     
     // Maybe there is a file already loaded
     if (this.pdfDoc != undefined) {
