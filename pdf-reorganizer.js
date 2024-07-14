@@ -569,10 +569,10 @@ pdf-reorganizer {
   flex-wrap: wrap;
   align-items: start;
   align-content: start;
-/* from page: desired width + 2 * padding (8px) + 2 * border (3px) + 2x margin (3px) */
-  min-width: 228px;
+/* from page: desired width + 2 * padding (8px) + 2 * border (5px) + 2x margin (3px) */
+  min-width: 232px;
 /* as above, + bottom padding 12px */
-  min-height: 240px;
+  min-height: 244px;
   overflow-y: scroll;
   overflow-x: hidden;
   resize: both;
@@ -603,10 +603,10 @@ nav > div + div::before {
 
 pdf-page {
   position: relative;
-  border-radius: 8px;
+  border-radius: 6px;
   display: inline-block;
   background-color: transparent;
-  border: 3px solid transparent;
+  border: 5px solid transparent;
   cursor: pointer;
   padding: 8px;
   padding-bottom: 20px;
@@ -703,8 +703,8 @@ pdf-page:not(.deleted):not(.selected):hover {
 }
 
 pdf-page.cursor {
-  border-color: var(--pdfro-hover-color);
-  border-style: dashed;
+  outline-offset: 1px;
+  outline: 3px dashed var(--pdfro-hover-color);
 }
 
 pdf-page.deleted canvas {
