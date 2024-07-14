@@ -137,6 +137,7 @@ export default class PDFReorganizer extends HTMLElement {
 
         if (this.cursor == null) {
           this.cursor = this.viewport.lastChild;
+          this.cursor.classList.add('move');
           return;
         };
 
@@ -160,6 +161,7 @@ export default class PDFReorganizer extends HTMLElement {
         };
 
         this.cursor = prev;
+        this.cursor.classList.add('move');
         break;
 
       // Move up
@@ -171,6 +173,7 @@ export default class PDFReorganizer extends HTMLElement {
 
         if (this.cursor == null) {
           this.cursor = this.viewport.firstChild;
+          this.cursor.classList.add('move');
           return;
         };
 
@@ -194,6 +197,7 @@ export default class PDFReorganizer extends HTMLElement {
         };
 
         this.cursor = next;
+        this.cursor.classList.add('move');
         break;
 
       // Move down
@@ -362,7 +366,7 @@ export default class PDFReorganizer extends HTMLElement {
     if (this._cursor === page)
       return;
     if (this._cursor != null)
-      this._cursor.classList.remove("cursor");
+      this._cursor.classList.remove("cursor","move");
     this._cursor = page;
     if (page !== null)
       this._cursor.classList.add("cursor");
@@ -707,7 +711,7 @@ pdf-page:not(.deleted):not(.selected):hover {
   background-color: var(--pdfro-hover-color);
 }
 
-pdf-page.cursor {
+pdf-page.cursor.move {
   outline-offset: 1px;
   outline: 3px dashed var(--pdfro-hover-color);
 }
