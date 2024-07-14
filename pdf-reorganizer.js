@@ -123,6 +123,7 @@ export default class PDFReorganizer extends HTMLElement {
       // delete
       switch (ev.key) {
       case "Delete": // 46
+        ev.preventDefault();
         this.remove();
         break;
 
@@ -134,7 +135,13 @@ export default class PDFReorganizer extends HTMLElement {
        */ 
       // Move left
       case "ArrowLeft": // 37:
+        ev.preventDefault();
 
+        if (ev.ctrlKey) {
+          this.rotateLeft();
+          return;
+        };
+        
         if (this.cursor == null) {
           this.cursor = this.viewport.lastChild;
           this.cursor.classList.add('move');
@@ -171,6 +178,12 @@ export default class PDFReorganizer extends HTMLElement {
       // Move right
       case "ArrowRight": // 39
 
+        if (ev.ctrlKey) {
+          this.rotateRight();
+          return;
+        };
+        
+        ev.preventDefault();
         if (this.cursor == null) {
           this.cursor = this.viewport.firstChild;
           this.cursor.classList.add('move');
@@ -206,8 +219,10 @@ export default class PDFReorganizer extends HTMLElement {
 
       // Space
       case " ":
-        if (this.cursor != null)
+        if (this.cursor != null) {
+          ev.preventDefault();
           this.cursor.swapSelected();
+        };
         break;
 
       default:
