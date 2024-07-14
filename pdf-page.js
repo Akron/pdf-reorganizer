@@ -161,6 +161,9 @@ export default class PDFPage extends HTMLElement {
       if (!ev.ctrlKey) {
         this._parent.delSelectAllExceptFor(this);
       };
+      // Remember this page as cursor
+      if (!this.deleted)
+        this._parent.cursor = this;
       this.swapSelected();
     }).bind(this));
   };
@@ -281,6 +284,8 @@ export default class PDFPage extends HTMLElement {
    * Mark page as removed from PDF.
    */
   remove() {
+    if (this._parent.cursor === this)
+      this._parent.cursor = null;
     this.deleted = true;
     this.classList.add('deleted');
     this.setAttribute('draggable', false);

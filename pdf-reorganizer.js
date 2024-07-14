@@ -118,9 +118,91 @@ export default class PDFReorganizer extends HTMLElement {
     });
 
     document.addEventListener("keydown", (function(ev) {
-      var letter = String.fromCharCode(ev.which); 
-      if (event.keyCode == 46){
+      var letter = String.fromCharCode(ev.which);
+
+      // delete
+      switch (ev.key) {
+      case "Delete": // 46
         this.remove();
+        break;
+
+        // Rotate left
+        /*
+      case "ControlLeft":
+        this.rotateLeft();
+        break;
+       */ 
+      // Move left
+      case "ArrowLeft": // 37:
+        if (this.cursor == null)
+          return;
+
+        // Todo: scroll if not in viewport
+        let prev = this.cursor.previousSibling;
+
+        // Prevents infinite loop
+        for (let i = 0; i < this.numPages; i++) {
+
+          if (prev === null) {
+            prev = this.viewport.lastChild;
+            continue;
+          };
+
+          if (prev.deleted) {
+            prev = prev.previousSibling;
+            continue;
+          };
+
+          break;
+        };
+
+        this.cursor = prev;
+        break;
+
+      // Move up
+      case "ArrowUp": // 38
+        break;
+
+      // Move right
+      case "ArrowRight": // 39
+
+        if (this.cursor == null)
+          return;
+
+        // Todo: scroll if not in viewport
+        let next = this.cursor.nextSibling;
+
+        // Prevents infinite loop
+        for (let i = 0; i < this.numPages; i++) {
+
+          if (next === null) {
+            next = this.viewport.firstChild;
+            continue;
+          };
+
+          if (next.deleted) {
+            next = next.nextSibling;
+            continue;
+          };
+
+          break;
+        };
+
+        this.cursor = next;
+        break;
+
+      // Move down
+      case "ArrowDown": // 40
+        break;
+
+      // Space
+      case " ":
+        if (this.cursor != null)
+          this.cursor.swapSelected();
+        break;
+
+      default:
+        console.log(ev);
       };
     }).bind(this));
   };
@@ -268,6 +350,28 @@ export default class PDFReorganizer extends HTMLElement {
     });
   }
 
+  /**
+   * Single page selected for key navigation
+   */
+  set cursor (page) {
+    if (this._cursor === page)
+      return;
+    if (this._cursor != null)
+      this._cursor.classList.remove("cursor");
+    this._cursor = page;
+    if (page !== null)
+      this._cursor.classList.add("cursor");
+  };
+
+  /**
+   * Single page selected for key navigation
+   */
+  get cursor () {
+    return this._cursor;
+  };
+
+  
+  
   /**
    * Add splits before all pages in the selection.
    */
@@ -465,10 +569,10 @@ pdf-reorganizer {
   flex-wrap: wrap;
   align-items: start;
   align-content: start;
-/* from page: desired width + 2 * padding (8px) + 2 * border (5px) + 2x margin (3px) */
-  min-width: 232px;
+/* from page: desired width + 2 * padding (8px) + 2 * border (3px) + 2x margin (3px) */
+  min-width: 228px;
 /* as above, + bottom padding 12px */
-  min-height: 244px;
+  min-height: 240px;
   overflow-y: scroll;
   overflow-x: hidden;
   resize: both;
@@ -499,10 +603,10 @@ nav > div + div::before {
 
 pdf-page {
   position: relative;
-  border-radius: 6px;
+  border-radius: 8px;
   display: inline-block;
   background-color: transparent;
-  border: 5px solid transparent;
+  border: 3px solid transparent;
   cursor: pointer;
   padding: 8px;
   padding-bottom: 20px;
@@ -596,6 +700,11 @@ pdf-page.deleted {
 
 pdf-page:not(.deleted):not(.selected):hover {
   background-color: var(--pdfro-hover-color);
+}
+
+pdf-page.cursor {
+  border-color: var(--pdfro-hover-color);
+  border-style: dashed;
 }
 
 pdf-page.deleted canvas {
