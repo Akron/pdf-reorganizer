@@ -134,8 +134,11 @@ export default class PDFReorganizer extends HTMLElement {
        */ 
       // Move left
       case "ArrowLeft": // 37:
-        if (this.cursor == null)
+
+        if (this.cursor == null) {
+          this.cursor = this.viewport.lastChild;
           return;
+        };
 
         // Todo: scroll if not in viewport
         let prev = this.cursor.previousSibling;
@@ -166,8 +169,10 @@ export default class PDFReorganizer extends HTMLElement {
       // Move right
       case "ArrowRight": // 39
 
-        if (this.cursor == null)
+        if (this.cursor == null) {
+          this.cursor = this.viewport.firstChild;
           return;
+        };
 
         // Todo: scroll if not in viewport
         let next = this.cursor.nextSibling;
