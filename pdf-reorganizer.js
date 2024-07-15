@@ -94,6 +94,8 @@ export default class PDFReorganizer extends HTMLElement {
       this.process();
     }).bind(this));
 
+    document.addEventListener("keydown", this._keyHandler.bind(this));
+
     // Lazy loading
     this.observeViewport = new IntersectionObserver((entries,observer) => {
       entries.forEach(entry => {
@@ -116,119 +118,6 @@ export default class PDFReorganizer extends HTMLElement {
       root: this.viewport,
       rootMargin: '10px 10px 10px 10px'
     });
-
-    document.addEventListener("keydown", (function(ev) {
-      var letter = String.fromCharCode(ev.which);
-
-      // delete
-      switch (ev.key) {
-      case "Delete": // 46
-        ev.preventDefault();
-        this.remove();
-        break;
-
-        // Rotate left
-        /*
-      case "ControlLeft":
-        this.rotateLeft();
-        break;
-       */ 
-      // Move left
-      case "ArrowLeft": // 37:
-        ev.preventDefault();
-
-        if (ev.ctrlKey) {
-          this.rotateLeft();
-          return;
-        };
-        
-        if (this.cursor == null) {
-          this.cursor = this.viewport.lastChild;
-          this.cursor.classList.add('move');
-          return;
-        };
-
-        // Todo: scroll if not in viewport
-        let prev = this.cursor.previousSibling;
-
-        // Prevents infinite loop
-        for (let i = 0; i < this.numPages; i++) {
-
-          if (prev === null) {
-            prev = this.viewport.lastChild;
-            continue;
-          };
-
-          if (prev.deleted) {
-            prev = prev.previousSibling;
-            continue;
-          };
-
-          break;
-        };
-
-        this.cursor = prev;
-        this.cursor.classList.add('move');
-        break;
-
-      // Move up
-      case "ArrowUp": // 38
-        break;
-
-      // Move right
-      case "ArrowRight": // 39
-
-        if (ev.ctrlKey) {
-          this.rotateRight();
-          return;
-        };
-        
-        ev.preventDefault();
-        if (this.cursor == null) {
-          this.cursor = this.viewport.firstChild;
-          this.cursor.classList.add('move');
-          return;
-        };
-
-        // Todo: scroll if not in viewport
-        let next = this.cursor.nextSibling;
-
-        // Prevents infinite loop
-        for (let i = 0; i < this.numPages; i++) {
-
-          if (next === null) {
-            next = this.viewport.firstChild;
-            continue;
-          };
-
-          if (next.deleted) {
-            next = next.nextSibling;
-            continue;
-          };
-
-          break;
-        };
-
-        this.cursor = next;
-        this.cursor.classList.add('move');
-        break;
-
-      // Move down
-      case "ArrowDown": // 40
-        break;
-
-      // Space
-      case " ":
-        if (this.cursor != null) {
-          ev.preventDefault();
-          this.cursor.swapSelected();
-        };
-        break;
-
-      default:
-        console.log(ev);
-      };
-    }).bind(this));
   };
 
   disconnectedCallback() {
@@ -264,6 +153,152 @@ export default class PDFReorganizer extends HTMLElement {
     });
 
     return selList;
+  }
+
+  /**
+   * Handle key presses.
+   */
+  _keyHandler (ev) {
+    var letter = String.fromCharCode(ev.which);
+
+    // delete
+    switch (ev.key) {
+    case "Delete":
+      ev.preventDefault();
+      if (ev.ctrlKey || this.cursor == null)
+        this.remove();
+      else { 
+        let old = this.cursor;
+        this._moveRight();
+        old.remove();
+      };
+      break;
+      
+    // Move left
+    case "ArrowLeft":
+      ev.preventDefault();
+
+      if (ev.ctrlKey) {
+        if (ev.shiftKey)
+          this.rotateLeft();
+        else if (this.cursor != null)
+          this.cursor.rotateLeft();
+        return;
+      };
+
+      this._moveLeft();
+      break;
+
+    // Move up
+    case "ArrowUp":
+      break;
+
+    // Move right
+    case "ArrowRight":
+      ev.preventDefault();
+
+      if (ev.ctrlKey) {
+        if (ev.shiftKey)
+          this.rotateRight();
+        else if (this.cursor != null)
+          this.cursor.rotateRight();
+        return;
+      };
+
+      this._moveRight();
+      break;
+
+    // Move down
+    case "ArrowDown":
+      break;
+
+    // Split before
+    case "y":
+      if (ev.ctrlKey && this.cursor != null) {
+        ev.preventDefault();
+        this.cursor.splitBefore();
+        return;
+      };
+        
+    // Space
+    case " ":
+      if (this.cursor != null) {
+        ev.preventDefault();
+        this.cursor.swapSelected();
+      };
+      break;
+
+    default:
+      console.log(ev);
+    };
+  }
+  
+  /**
+   * Move cursor to left.
+   */
+  _moveLeft () {
+        
+    // Todo: scroll if not in viewport
+    let prev;
+
+    if (this.cursor == null)
+      prev = this.viewport.lastChild
+    else
+      prev = this.cursor.previousSibling;
+
+    // Prevents infinite loop
+    for (let i = 0; i < this.numPages; i++) {
+
+      if (prev === null) {
+        prev = this.viewport.lastChild;
+        continue;
+      };
+      
+      if (prev.deleted) {
+        prev = prev.previousSibling;
+        continue;
+      };
+      
+      break;
+    };
+
+    this.cursor = prev;
+    if (prev != null)
+      this.cursor.classList.add('move');
+  }
+
+  /**
+   * Move cursor to right.
+   */
+  _moveRight () {
+
+    // Todo: scroll if not in viewport
+    let next;
+    
+    if (this.cursor == null)
+      next = this.viewport.firstChild;
+    else
+      next = this.cursor.nextSibling;
+
+    // Prevents infinite loop
+    for (let i = 0; i < this.numPages; i++) {
+
+      if (next === null) {
+        next = this.viewport.firstChild;
+        continue;
+      };
+
+      if (next.deleted) {
+        next = next.nextSibling;
+        continue;
+      };
+
+      break;
+    };
+
+    this.cursor = next;
+    if (next != null)
+      this.cursor.classList.add('move');
   }
   
   /**
