@@ -190,6 +190,10 @@ export default class PDFReorganizer extends HTMLElement {
 
     // Move up
     case "ArrowUp":
+
+      ev.preventDefault();
+
+      this._moveUp();
       break;
 
     // Move right
@@ -209,6 +213,9 @@ export default class PDFReorganizer extends HTMLElement {
 
     // Move down
     case "ArrowDown":
+      ev.preventDefault();
+      
+      this._moveDown();
       break;
 
     // Split before
@@ -240,12 +247,18 @@ export default class PDFReorganizer extends HTMLElement {
     // Todo: scroll if not in viewport
     let prev;
 
-    if (this.cursor == null)
-      prev = this.viewport.lastChild
-    else
-      prev = this.cursor.previousSibling;
+    // Already initialized
+    if (this.cursor != null) {
 
-    if (prev === null)
+      // Nowhere to move
+      if (this.numPages <= 1)
+        return;
+
+      prev = this.cursor.previousSibling;
+    };
+
+    // Init or overflow
+    if (prev == null)
       prev = this.viewport.lastChild;
 
     this.cursor = prev;
@@ -259,20 +272,129 @@ export default class PDFReorganizer extends HTMLElement {
   _moveRight () {
 
     // Todo: scroll if not in viewport
-    let next;
-    
-    if (this.cursor == null)
-      next = this.viewport.firstChild;
-    else
-      next = this.cursor.nextSibling;
+    let next = null;
 
-    if (next === null)
+    // Already initialized
+    if (this.cursor != null) {
+
+      // Nowhere to move
+      if (this.numPages <= 1)
+        return;
+
+      next = this.cursor.nextSibling;
+    };
+
+    // Init or overflow
+    if (next == null)
       next = this.viewport.firstChild;
 
     this.cursor = next;
     if (next != null)
       this.cursor.classList.add('move');
   }
+
+  /**
+   * Move cursor up.
+   */
+  _moveUp () {
+
+    // Init cursor
+    if (this.cursor == null) {
+      this.cursor = this.viewport.lastChild;
+      this.cursor.classList.add('move');
+      return;
+    };
+
+    // Nowhere to move
+    if (this.numPages <= 1)
+      return;
+
+    let currentLeft = this.cursor.offsetLeft;
+    let currentTop = this.cursor.offsetTop;
+
+    // Move prev
+    let prev = this.cursor.previousSibling;
+
+    // Move cursor to the last element of the previous line
+    while (prev != null && prev.offsetTop == currentTop)
+      prev = prev.previousSibling;
+
+    if (prev == null) {
+      prev = this.viewport.lastChild;
+
+      // There is only a single line - do nothing!
+      if (prev.offsetTop == currentTop)
+        return;
+    };
+
+    // move cursor to the vertically aligned element
+    // Here the handling differs from down
+    while (prev != null && prev.offsetLeft > currentLeft)
+      prev = prev.previousSibling;
+
+    // There is one
+    if (prev == null)
+      return;
+
+    this.cursor = prev;
+    this.cursor.classList.add('move');
+  }
+
+  /**
+   * Move cursor down.
+   */
+  _moveDown () {
+
+    // Init cursor
+    if (this.cursor == null) {
+      this.cursor = this.viewport.firstChild;
+      this.cursor.classList.add('move');
+      return;
+    };
+
+    // Nowhere to move
+    if (this.numPages <= 1)
+      return;
+
+    let currentLeft = this.cursor.offsetLeft;
+    let currentTop = this.cursor.offsetTop;
+
+    // Move next
+    let next = this.cursor.nextSibling;
+
+    // Move cursor to the first element of the next line
+    while (next != null && next.offsetTop == currentTop)
+      next = next.nextSibling;
+
+    if (next == null) {
+      next = this.viewport.firstChild;
+
+      // There is only a single line - do nothing!
+      if (next.offsetTop == currentTop)
+        return;
+    };
+
+    // move cursor to the vertically aligned element
+    while (next != null && next.offsetLeft < currentLeft) {
+      var tmpnext = next.nextSibling;
+
+      // No next in this line
+      if (tmpnext != null)
+        next = tmpnext;
+      else {
+        // There is no element below
+        break;
+      };
+    };
+    
+    // There is one
+    if (next == null)
+      next = this.viewport.lastChild;
+
+    this.cursor = next;
+    this.cursor.classList.add('move');
+  }
+
   
   /**
    * Removes all selected pages from the
@@ -391,8 +513,10 @@ export default class PDFReorganizer extends HTMLElement {
     if (this._cursor != null)
       this._cursor.classList.remove("cursor","move");
     this._cursor = page;
-    if (page !== null)
+    if (page != null) {
       this._cursor.classList.add("cursor");
+      this._cursor.focus();
+    };
   };
 
   /**
