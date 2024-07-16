@@ -26,9 +26,9 @@ export default class PDFPage extends HTMLElement {
     super();
     this.num = pagenum;
     this.deleted = false;
+    this.selected = false;
     this.splittedBefore = false;
     this._rotation = 0;
-    this._selected = false;
     this._pdfjsref = null; // The PDF.js-page
     this._parent = parent; // The reorganizer
 
@@ -162,7 +162,7 @@ export default class PDFPage extends HTMLElement {
         this._parent.delSelectAllExceptFor(this);
       };
       // Remember this page as cursor
-      if (!this.deleted)
+      if (!this.deleted && this._parent != null)
         this._parent.cursor = this;
       this.swapSelected();
     }).bind(this));
@@ -230,7 +230,7 @@ export default class PDFPage extends HTMLElement {
    * Otherwise select.
    */
   swapSelected() {
-    if (this._selected) {
+    if (this.selected) {
       this.selectOff();
     } else {
       this.selectOn();
@@ -245,8 +245,8 @@ export default class PDFPage extends HTMLElement {
       this.unremove();
       return;
     };
-    if (this._selected) return;
-    this._selected = true;
+    if (this.selected) return;
+    this.selected = true;
     this.classList.add('selected');
     if (this._parent)
       this._parent.addSelect(this);
@@ -256,8 +256,8 @@ export default class PDFPage extends HTMLElement {
    * Remove page from selection.
    */
   selectOff() {
-    if (!this._selected) return;
-    this._selected = false;
+    if (!this.selected) return;
+    this.selected = false;
     this.classList.remove('selected');
     if (this._parent)
       this._parent.delSelect(this);
@@ -284,8 +284,10 @@ export default class PDFPage extends HTMLElement {
    * Mark page as removed from PDF.
    */
   remove() {
-    if (this._parent.cursor === this)
+    /*
+    if (this._parent != null && this._parent.cursor === this)
       this._parent.cursor = null;
+*/
     this.deleted = true;
     this.classList.add('deleted');
     this.setAttribute('draggable', false);

@@ -1,7 +1,7 @@
 import 'pdfjs-dist';
 import PDFPage from './pdf-page.js';
 import PDFReorganizer from './pdf-reorganizer.js';
-import { describe, it, expect, vi } from 'vitest'
+import { describe, it, expect, vi, test } from 'vitest'
 import { resolve } from 'path'
 
 
@@ -15,7 +15,7 @@ describe('PDF Page', () => {
     expect(page.deleted).toBe(false);
     expect(page.splittedBefore).toBe(false);
     expect(page.rotation).toBe(0);
-    expect(page._selected).toBe(false);
+    expect(page.selected).toBe(false);
     expect(page._pdfjsref).toBe(null);
   });
 
@@ -38,43 +38,43 @@ describe('PDF Page', () => {
 
   it('should swap selections', () => {
     let page = new PDFPage(4, null);
-    expect(page._selected).toBe(false);
+    expect(page.selected).toBe(false);
 
     let cl = page.classList;
     expect(cl.contains("selected")).toBe(false);
     
     page.swapSelected();
-    expect(page._selected).toBe(true);
+    expect(page.selected).toBe(true);
     expect(cl.contains("selected")).toBe(true);
 
     page.swapSelected();
-    expect(page._selected).toBe(false);
+    expect(page.selected).toBe(false);
     expect(cl.contains("selected")).toBe(false);
 
     page.selectOn()
-    expect(page._selected).toBe(true);
+    expect(page.selected).toBe(true);
     expect(cl.contains("selected")).toBe(true);
 
     page.selectOn()
-    expect(page._selected).toBe(true);
+    expect(page.selected).toBe(true);
     expect(cl.contains("selected")).toBe(true);
     
     page.selectOff()
-    expect(page._selected).toBe(false);
+    expect(page.selected).toBe(false);
     expect(cl.contains("selected")).toBe(false);
 
     page.selectOff()
-    expect(page._selected).toBe(false);
+    expect(page.selected).toBe(false);
     expect(cl.contains("selected")).toBe(false);
 
     page.swapSelected();
-    expect(page._selected).toBe(true);
+    expect(page.selected).toBe(true);
     expect(cl.contains("selected")).toBe(true);
   });
 
   it('should be removable', () => {
     let page = new PDFPage(4, null);
-    expect(page._selected).toBe(false);
+    expect(page.selected).toBe(false);
     expect(page.deleted).toBe(false);
 
     expect(page.classList.contains("deleted")).toBe(false);
@@ -87,11 +87,11 @@ describe('PDF Page', () => {
 
     // Unselect if selected
     page = new PDFPage(4, null);
-    expect(page._selected).toBe(false);
+    expect(page.selected).toBe(false);
     expect(page.deleted).toBe(false);
 
     page.swapSelected();
-    expect(page._selected).toBe(true);
+    expect(page.selected).toBe(true);
 
     expect(page.classList.contains("deleted")).toBe(false);
     expect(page.classList.contains("selected")).toBe(true);
@@ -103,11 +103,11 @@ describe('PDF Page', () => {
     expect(page.classList.contains("deleted")).toBe(true);
     expect(page.getAttribute("draggable")).toBe("false");
     expect(page.classList.contains("selected")).toBe(false);
-    expect(page._selected).toBe(false);
+    expect(page.selected).toBe(false);
 
     // Unable to select when deleted
     page.swapSelected();
-    expect(page._selected).toBe(false);
+    expect(page.selected).toBe(false);
   });
 
   it('should be rotatable', () => {
@@ -361,6 +361,235 @@ describe('PDF Reorganizer', () => {
     expect(result).toBe(7);
 
     expect(reorganizer.viewport.children.length).toBe(7);
-
   });
+});
+
+describe('PDF Reorganizer (Key events)', () => {
+  let examplepdf = "file:" + resolve(__dirname, "demo/example.pdf");
+  let examplepdf2 = "file:" + resolve(__dirname, "demo/example2.pdf");
+
+  function keyd(opt) {
+    return new KeyboardEvent("keydown", opt)
+  };
+  
+  it('should init a cursor and move (arrow right)', async () => {
+    let reorganizer = new PDFReorganizer();
+    expect(reorganizer.children.length).toBe(0);
+    
+    // Async testing
+    let result = await reorganizer.loadDocument(examplepdf);
+    expect(result).toBe(8);
+
+    expect(reorganizer.viewport.children.length).toBe(8);
+
+    expect(reorganizer.cursor).toBe(null);
+
+    // Press right (init)
+    reorganizer._keyHandler(keyd({key: 'ArrowRight'}));
+    expect(reorganizer.cursor.num).toBe(1);
+
+    // Press right (move)
+    reorganizer._keyHandler(keyd({key: 'ArrowRight'}));
+    expect(reorganizer.cursor.num).toBe(2);
+
+    // Press right (move)
+    for (var i = 0; i < 5; i++)
+      reorganizer._keyHandler(keyd({key: 'ArrowRight'}));
+
+    // Press right (move)
+    reorganizer._keyHandler(keyd({key: 'ArrowRight'}));
+    expect(reorganizer.cursor.num).toBe(8);
+
+    // Press right (overflow)
+    reorganizer._keyHandler(keyd({key: 'ArrowRight'}));
+    expect(reorganizer.cursor.num).toBe(1);
+  });
+
+  it('should init a cursor and move (arrow left)', async () => {
+    let reorganizer = new PDFReorganizer();
+    expect(reorganizer.children.length).toBe(0);
+    
+    // Async testing
+    let result = await reorganizer.loadDocument(examplepdf);
+    expect(result).toBe(8);
+
+    expect(reorganizer.viewport.children.length).toBe(8);
+
+    expect(reorganizer.cursor).toBe(null);
+
+    // Press left (init)
+    reorganizer._keyHandler(keyd({key: 'ArrowLeft'}));
+    expect(reorganizer.cursor.num).toBe(8);
+
+    reorganizer._keyHandler(keyd({key: 'ArrowLeft'}));
+    expect(reorganizer.cursor.num).toBe(7);
+
+    for (var i = 0; i < 5; i++)
+      reorganizer._keyHandler(keyd({key: 'ArrowLeft'}));
+
+    reorganizer._keyHandler(keyd({key: 'ArrowLeft'}));
+    expect(reorganizer.cursor.num).toBe(1);
+
+    reorganizer._keyHandler(keyd({key: 'ArrowLeft'}));
+    expect(reorganizer.cursor.num).toBe(8);
+  });
+
+  it('should move and delete/undelete', async () => {
+    let reorganizer = new PDFReorganizer();
+    expect(reorganizer.children.length).toBe(0);
+    
+    // Async testing
+    let result = await reorganizer.loadDocument(examplepdf);
+    expect(result).toBe(8);
+
+    reorganizer._keyHandler(keyd({key: 'ArrowRight'}));
+    expect(reorganizer.cursor.num).toBe(1);
+
+    reorganizer._keyHandler(keyd({key: 'ArrowRight'}));
+    expect(reorganizer.cursor.num).toBe(2);
+    expect(reorganizer.cursor.deleted).toBeFalsy();
+
+    reorganizer._keyHandler(keyd({key: 'Delete'}));
+    expect(reorganizer.cursor.num).toBe(2);
+    expect(reorganizer.cursor.deleted).toBeTruthy();
+
+    reorganizer._keyHandler(keyd({key: 'ArrowRight'}));
+    expect(reorganizer.cursor.num).toBe(3);
+    expect(reorganizer.cursor.deleted).toBeFalsy();
+
+    reorganizer._keyHandler(keyd({key: 'ArrowLeft'}));
+    expect(reorganizer.cursor.num).toBe(2);
+    expect(reorganizer.cursor.deleted).toBeTruthy();
+
+    reorganizer._keyHandler(keyd({key: ' '}));
+    expect(reorganizer.cursor.num).toBe(2);
+    expect(reorganizer.cursor.deleted).toBeFalsy();
+
+    reorganizer._keyHandler(keyd({key: 'ArrowLeft'}));
+    expect(reorganizer.cursor.num).toBe(1);
+    expect(reorganizer.cursor.deleted).toBeFalsy();
+
+    reorganizer._keyHandler(keyd({key: 'ArrowRight'}));
+    expect(reorganizer.cursor.num).toBe(2);
+    expect(reorganizer.cursor.deleted).toBeFalsy();
+  });
+
+  it('should move and select', async () => {
+    let reorganizer = new PDFReorganizer();
+    expect(reorganizer.children.length).toBe(0);
+    
+    // Async testing
+    let result = await reorganizer.loadDocument(examplepdf);
+    expect(result).toBe(8);
+
+    reorganizer._keyHandler(keyd({key: 'ArrowRight'}));
+    expect(reorganizer.cursor.num).toBe(1);
+
+    reorganizer._keyHandler(keyd({key: 'ArrowRight'}));
+    expect(reorganizer.cursor.num).toBe(2);
+    expect(reorganizer.cursor.selected).toBeFalsy();
+    expect(reorganizer.selected.size).toBe(0);
+
+    reorganizer._keyHandler(keyd({key: ' '}));
+    expect(reorganizer.cursor.num).toBe(2);
+    expect(reorganizer.cursor.selected).toBeTruthy();
+    expect(reorganizer.selected.size).toBe(1);
+
+    reorganizer._keyHandler(keyd({key: 'ArrowRight'}));
+    expect(reorganizer.cursor.num).toBe(3);
+    expect(reorganizer.cursor.selected).toBeFalsy();
+
+    reorganizer._keyHandler(keyd({key: ' '}));
+    expect(reorganizer.cursor.num).toBe(3);
+    expect(reorganizer.cursor.selected).toBeTruthy();
+    expect(reorganizer.selected.size).toBe(2);
+
+    reorganizer._keyHandler(keyd({key: 'ArrowLeft'}));
+    expect(reorganizer.cursor.num).toBe(2);
+    expect(reorganizer.cursor.selected).toBeTruthy();
+
+    expect(reorganizer.selected.has(reorganizer.cursor)).toBeTruthy();
+
+    // Unselect all
+    expect(reorganizer.delSelectAll()).toBe(2);
+
+    expect(reorganizer.cursor.num).toBe(2);
+    expect(reorganizer.cursor.selected).toBeFalsy();
+
+    reorganizer._keyHandler(keyd({key: 'ArrowRight'}));
+    expect(reorganizer.cursor.num).toBe(3);
+    expect(reorganizer.cursor.selected).toBeFalsy();
+  });
+
+  it('should move and rotate', async () => {
+    let reorganizer = new PDFReorganizer();
+    expect(reorganizer.children.length).toBe(0);
+    
+    // Async testing
+    let result = await reorganizer.loadDocument(examplepdf);
+    expect(result).toBe(8);
+
+    reorganizer._keyHandler(keyd({key: 'ArrowRight'}));
+    expect(reorganizer.cursor.num).toBe(1);
+    expect(reorganizer.cursor.rotation).toBe(0);
+
+    reorganizer._keyHandler(keyd({key: 'ArrowRight', ctrlKey: true}));
+    expect(reorganizer.cursor.num).toBe(1);
+    expect(reorganizer.cursor.rotation).toBe(90);
+
+    reorganizer._keyHandler(keyd({key: 'ArrowRight', ctrlKey: true}));
+    expect(reorganizer.cursor.num).toBe(1);
+    expect(reorganizer.cursor.rotation).toBe(180);
+
+    reorganizer._keyHandler(keyd({key: 'ArrowRight'}));
+    expect(reorganizer.cursor.num).toBe(2);
+    expect(reorganizer.cursor.rotation).toBe(0);
+
+    reorganizer._keyHandler(keyd({key: 'ArrowLeft', ctrlKey: true}));
+    expect(reorganizer.cursor.num).toBe(2);
+    expect(reorganizer.cursor.rotation).toBe(270);
+
+    reorganizer._keyHandler(keyd({key: 'ArrowLeft'}));
+    expect(reorganizer.cursor.num).toBe(1);
+    expect(reorganizer.cursor.rotation).toBe(180);   
+
+    expect(reorganizer.selected.size).toBe(0);
+  });
+
+  it('should move and split before', async () => {
+    let reorganizer = new PDFReorganizer();
+    expect(reorganizer.children.length).toBe(0);
+    
+    // Async testing
+    let result = await reorganizer.loadDocument(examplepdf);
+    expect(result).toBe(8);
+
+    reorganizer._keyHandler(keyd({key: 'ArrowRight'}));
+    expect(reorganizer.cursor.num).toBe(1);
+    expect(reorganizer.cursor.splittedBefore).toBeFalsy();
+    
+
+    reorganizer._keyHandler(keyd({key: 'ArrowRight'}));
+    expect(reorganizer.cursor.num).toBe(2);
+    expect(reorganizer.cursor.splittedBefore).toBeFalsy();
+
+    reorganizer._keyHandler(keyd({key: 'y', ctrlKey: true}));
+    expect(reorganizer.cursor.num).toBe(2);
+    expect(reorganizer.cursor.splittedBefore).toBeTruthy();
+
+    reorganizer._keyHandler(keyd({key: 'ArrowRight'}));
+    expect(reorganizer.cursor.num).toBe(3);
+    expect(reorganizer.cursor.splittedBefore).toBeFalsy();
+
+    reorganizer._keyHandler(keyd({key: 'ArrowRight'}));
+    expect(reorganizer.cursor.num).toBe(4);
+    expect(reorganizer.cursor.splittedBefore).toBeFalsy();
+
+    reorganizer._keyHandler(keyd({key: 'y', ctrlKey: true}));
+    expect(reorganizer.cursor.num).toBe(4);
+    expect(reorganizer.cursor.splittedBefore).toBeTruthy();
+
+    expect(JSON.stringify(reorganizer.process())).toEqual('[["1"],["2","3"],["4","5","6","7","8"]]');
+  });
+
 });

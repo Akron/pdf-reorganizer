@@ -1,10 +1,11 @@
-import * as pdfjsLib from 'pdfjs-dist';
+//import * as pdfjsLib from 'pdfjs-dist';
+import {getDocument, GlobalWorkerOptions} from 'pdfjs-dist';
 import * as PdfjsWorker from "pdfjs-dist/build/pdf.worker.mjs";
 
 import PDFPage from './pdf-page.js';
 
 // The workerSrc property shall be specified.
-pdfjsLib.GlobalWorkerOptions.workerSrc = "pdfjs-dist/build/pdf.worker.mjs";
+GlobalWorkerOptions.workerSrc = "pdfjs-dist/build/pdf.worker.mjs";
 
 
 /**
@@ -27,6 +28,7 @@ export default class PDFReorganizer extends HTMLElement {
     this.numPages = 0;
     this.pdfDoc = undefined;
 
+    this.cursor = null;
     this.selected = new Set();
     
     this.shadow = this.attachShadow({ mode: "open" });
@@ -81,7 +83,7 @@ export default class PDFReorganizer extends HTMLElement {
       this.loadDocument(this.url);
 
     if (this.onprocess != null) {
-      this.addEventListener("processed", eval(this.onprocess))
+      this.addEventListener("processed", this.onprocess)
     };
 
     this.delElem.addEventListener('click', this.remove.bind(this));
@@ -167,11 +169,8 @@ export default class PDFReorganizer extends HTMLElement {
       ev.preventDefault();
       if (ev.ctrlKey || this.cursor == null)
         this.remove();
-      else { 
-        let old = this.cursor;
-        this._moveRight();
-        old.remove();
-      };
+      else
+        this.cursor.remove();
       break;
       
     // Move left
@@ -246,21 +245,8 @@ export default class PDFReorganizer extends HTMLElement {
     else
       prev = this.cursor.previousSibling;
 
-    // Prevents infinite loop
-    for (let i = 0; i < this.numPages; i++) {
-
-      if (prev === null) {
-        prev = this.viewport.lastChild;
-        continue;
-      };
-      
-      if (prev.deleted) {
-        prev = prev.previousSibling;
-        continue;
-      };
-      
-      break;
-    };
+    if (prev === null)
+      prev = this.viewport.lastChild;
 
     this.cursor = prev;
     if (prev != null)
@@ -280,21 +266,8 @@ export default class PDFReorganizer extends HTMLElement {
     else
       next = this.cursor.nextSibling;
 
-    // Prevents infinite loop
-    for (let i = 0; i < this.numPages; i++) {
-
-      if (next === null) {
-        next = this.viewport.firstChild;
-        continue;
-      };
-
-      if (next.deleted) {
-        next = next.nextSibling;
-        continue;
-      };
-
-      break;
-    };
+    if (next === null)
+      next = this.viewport.firstChild;
 
     this.cursor = next;
     if (next != null)
@@ -520,7 +493,7 @@ export default class PDFReorganizer extends HTMLElement {
 
    
     // Asynchronous download of PDF
-    let loadingTask = pdfjsLib.getDocument(this.url);
+    let loadingTask = getDocument(this.url);
    
     return loadingTask.promise.then(function(pdf) {
 

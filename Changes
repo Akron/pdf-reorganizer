@@ -2,3 +2,4 @@
         - Make viewport size independent.
         - Add right rotation.
         - Add select all.
+        - Add cursor navigation.
