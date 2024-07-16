@@ -706,7 +706,8 @@ export default class PDFReorganizer extends HTMLElement {
   --pdfro-selected-bg-color: #07d;
   --pdfro-selected-color: var(--pdfro-white);
   --pdfro-split-before-border-color: #696;
-  --pdfro-split-before-color: #6b6;
+  --pdfro-split-before-bg-color: #6b6;
+  --pdfro-split-before-counter-color: #fff;
   --pdfro-dragged-color: #7bf;
   --pdfro-loader: var(--pdfro-selected-bg-color);
   --pdfro-viewport-height: 244px;
@@ -718,6 +719,7 @@ pdf-reorganizer {
 }
 
 #pdf-viewport {
+  counter-reset: splite 0;
   border: 1px solid var(--pdfro-main-color);
   padding: 10px; /* Make the dragger visible */
   padding-top: 20px; /* Make the nav visible */
@@ -867,17 +869,25 @@ pdf-page.deleted canvas {
   opacity: .2;
 }
 
+pdf-page:first-of-type:not(.split-before) {
+  counter-increment: splite;
+}
+
 pdf-page.split-before div.container::before {
   position: absolute;
-  content: '';
+  content: " " counter(splite);
+  counter-increment: splite;
   top:0;
   left:0;
+  color: var(--pdfro-split-before-counter-color);
   border: 1px solid var(--pdfro-split-before-border-color);
-  transform: rotate(45deg);
-  background-color: var(--pdfro-split-before-color);
+  background-color: var(--pdfro-split-before-bg-color);
   width: 16px;
   height: 16px;
+  font-size: 9pt;
   border-radius: 10px;
+  text-align: center;
+  line-height: 11pt;
 }
 
 pdf-page.selected {
