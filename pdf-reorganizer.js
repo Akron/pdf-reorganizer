@@ -138,7 +138,7 @@ export default class PDFReorganizer extends HTMLElement {
     // Overload attributes, e.g. from the element attribute list
     this[property] = newValue;
   }
-
+  
   /**
    * Return selected elements in order of appearance
    * in the viewport.

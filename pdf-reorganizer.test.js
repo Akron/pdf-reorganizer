@@ -173,6 +173,49 @@ describe('PDF Page', () => {
     page.rotateLeft();
     expect(page._rotation).toBe(-450);
     expect(page.rotation).toBe(270);
+
+    page.remove();
+
+    // Ignore totation on deleted pages
+    page.rotateLeft();
+    expect(page._rotation).toBe(-450);
+    expect(page.rotation).toBe(270);
+
+    page.rotateRight();
+    expect(page._rotation).toBe(-450);
+    expect(page.rotation).toBe(270);
+  });
+
+  it('should split before', () => {
+    let page = new PDFPage(4, null);
+   
+    expect(page.deleted).toBeFalsy();
+    expect(page.classList.contains("split-before")).toBeFalsy();
+
+    expect(page.splitBefore()).toBeTruthy();
+    expect(page.splittedBefore).toBeTruthy();
+    expect(page.classList.contains("split-before")).toBeTruthy();    
+
+    expect(page.splitBefore()).toBeFalsy();
+    expect(page.splittedBefore).toBeFalsy();
+    expect(page.classList.contains("split-before")).toBeFalsy();
+
+    expect(page.splitBefore()).toBeTruthy();
+    expect(page.splittedBefore).toBeTruthy();
+    expect(page.classList.contains("split-before")).toBeTruthy();
+
+    // Unable to split on deleted pages
+    page.remove();
+    expect(page.splittedBefore).toBeFalsy();
+    expect(page.classList.contains("split-before")).toBeFalsy();
+
+    expect(page.splitBefore()).toBeFalsy();
+    expect(page.splittedBefore).toBeFalsy();
+    expect(page.classList.contains("split-before")).toBeFalsy();
+
+    expect(page.splitBefore()).toBeFalsy();
+    expect(page.splittedBefore).toBeFalsy();
+    expect(page.classList.contains("split-before")).toBeFalsy();
   });
 });
 
@@ -263,6 +306,13 @@ describe('PDF Reorganizer', () => {
     expect(reorganizer.splitBefore()).toBe(6);
 
     expect(JSON.stringify(reorganizer.process())).toEqual('[["1"],["2"],["3","4"],["5"],["6","7"],["8"]]');
+
+    // Don't split on removed pages
+    page = reorganizer.getPage(2);
+    page.remove();
+    expect(page.splitBefore()).toBeFalsy();
+   
+    expect(JSON.stringify(reorganizer.process())).toEqual('[["1"],["2","4"],["5"],["6","7"],["8"]]');
   });
 
   it('should rotate pages', async () => {
@@ -592,4 +642,7 @@ describe('PDF Reorganizer (Key events)', () => {
     expect(JSON.stringify(reorganizer.process())).toEqual('[["1"],["2","3"],["4","5","6","7","8"]]');
   });
 
+  // I have no good idea how to test it without something like playwright,
+  // as it requires a flexbox enabled viewport.
+  test.todo('should move up/down with different rows');
 });

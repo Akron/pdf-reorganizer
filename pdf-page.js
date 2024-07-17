@@ -162,8 +162,10 @@ export default class PDFPage extends HTMLElement {
         this._parent.delSelectAllExceptFor(this);
       };
       // Remember this page as cursor
-      if (!this.deleted && this._parent != null)
+      if (!this.deleted && this._parent != null) {
         this._parent.cursor = this;
+        this.classList.remove("cursor","move")
+      };
       this.swapSelected();
     }).bind(this));
   };
@@ -267,6 +269,9 @@ export default class PDFPage extends HTMLElement {
    * Mark page as a document splitter.
    */
   splitBefore() {
+    if (this.deleted)
+      return false;
+
     if (this.splittedBefore) {
       this.splittedBefore = false;
       this.classList.remove('split-before');
@@ -284,10 +289,6 @@ export default class PDFPage extends HTMLElement {
    * Mark page as removed from PDF.
    */
   remove() {
-    /*
-    if (this._parent != null && this._parent.cursor === this)
-      this._parent.cursor = null;
-*/
     this.deleted = true;
     this.classList.add('deleted');
     this.setAttribute('draggable', false);
@@ -312,6 +313,8 @@ export default class PDFPage extends HTMLElement {
    * Rotate page to the right.
    */
   rotateRight() {
+    if (this.deleted)
+      return false;
     this._rotation += 90;
     this.canvas.style.transform = 'rotate(' + this._rotation + 'deg)';
   };
@@ -320,6 +323,8 @@ export default class PDFPage extends HTMLElement {
    * Rotate page to the left.
    */
   rotateLeft() {
+    if (this.deleted)
+      return false;
     this._rotation -= 90;
     this.canvas.style.transform = 'rotate(' + this._rotation + 'deg)';
   };
