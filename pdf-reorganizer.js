@@ -29,6 +29,8 @@ export default class PDFReorganizer extends HTMLElement {
     this.pdfDoc = undefined;
 
     this.cursor = null;
+    this.zoomfactor = 4;
+    this.scrollStep = 14;
     this.selected = new Set();
     
     this.shadow = this.attachShadow({ mode: "open" });
@@ -65,14 +67,12 @@ export default class PDFReorganizer extends HTMLElement {
     this.processElem.setAttribute("class","process");
     this.processElem.innerText = 'process';
     nav.appendChild(this.processElem);
-    
+
     this.viewport = document.createElement('div');
     this.viewport.setAttribute('id', 'pdf-viewport');
-
-    // Magnifier
     
     this.shadow.appendChild(nav);
-    this.shadow.appendChild(this.viewport);    
+    this.shadow.appendChild(this.viewport);
   }
 
   connectedCallback () {
@@ -177,12 +177,17 @@ export default class PDFReorganizer extends HTMLElement {
     case "ArrowLeft":
       ev.preventDefault();
 
+      if (this.cursor?.magnified) {
+        this.cursor.scrollLeft -= this.scrollStep;
+        break;
+      };      
+
       if (ev.ctrlKey) {
         if (ev.shiftKey)
           this.rotateLeft();
         else if (this.cursor != null)
           this.cursor.rotateLeft();
-        return;
+        break;
       };
 
       this._moveLeft();
@@ -193,6 +198,11 @@ export default class PDFReorganizer extends HTMLElement {
 
       ev.preventDefault();
 
+      if (this.cursor?.magnified) {
+        this.cursor.scrollTop -= this.scrollStep;
+        break;
+      };
+      
       this._moveUp();
       break;
 
@@ -200,12 +210,17 @@ export default class PDFReorganizer extends HTMLElement {
     case "ArrowRight":
       ev.preventDefault();
 
+      if (this.cursor?.magnified) {
+        this.cursor.scrollLeft += this.scrollStep;
+        break;
+      };
+
       if (ev.ctrlKey) {
         if (ev.shiftKey)
           this.rotateRight();
         else if (this.cursor != null)
           this.cursor.rotateRight();
-        return;
+        break;
       };
 
       this._moveRight();
@@ -214,6 +229,11 @@ export default class PDFReorganizer extends HTMLElement {
     // Move down
     case "ArrowDown":
       ev.preventDefault();
+
+      if (this.cursor?.magnified) {
+        this.cursor.scrollTop += this.scrollStep;
+        break;
+      };
       
       this._moveDown();
       break;
@@ -223,10 +243,27 @@ export default class PDFReorganizer extends HTMLElement {
       if (ev.ctrlKey && this.cursor != null) {
         ev.preventDefault();
         this.cursor.splitBefore();
-        return;
+        break;
       };
-        
+
+    case "+":
+      if (!ev.ctrlKey)
+        break;
+      ev.preventDefault();
+      this.cursor.magnify();
+
+      break;
+
+    case "Escape":
+      if (this.cursor.magnified) {
+        ev.preventDefault();
+        this.cursor.unmagnify();
+      };
+
+      break;
+
     // Space
+    // case "Enter":
     case " ":
       if (this.cursor != null) {
         ev.preventDefault();
@@ -510,8 +547,10 @@ export default class PDFReorganizer extends HTMLElement {
   set cursor (page) {
     if (this._cursor === page)
       return;
-    if (this._cursor != null)
+    if (this._cursor != null) {
       this._cursor.classList.remove("cursor","move");
+      this._cursor.unmagnify();
+    };
     this._cursor = page;
     if (page != null) {
       this._cursor.classList.add("cursor");
@@ -697,7 +736,7 @@ export default class PDFReorganizer extends HTMLElement {
   }
 
   embedCSS() {
-    const cssData = `
+    let cssData = `
 :host {
   --pdfro-main-color: #555;
   --pdfro-white: #ffffff;
@@ -772,22 +811,25 @@ pdf-page {
   color: var(--pdfro-main-color);
   /* Relevant for drag target */
   margin: 3px;
-}
-
-pdf-page canvas {
-  position: relative;
+  /* Relevant for magnifying */
 }
 
 pdf-page div.container::after {
   position: absolute;
-  /*pointer-events: all;
-  z-index: 5;*/
+  /*
+  pointer-events: all;
+  z-index: 5;
+  */
   text-align: center;
   width: 100%;
   bottom: 0;
   left: 0;
   font-size: 75%;
   content: "[" attr(data-num) "]";
+}
+
+pdf-page.magnify div.container::after {
+  content: none;
 }
 
 pdf-page::after {
@@ -839,15 +881,17 @@ pdf-page.load::before {
   animation: rotation .6s linear infinite;
 }
 
-canvas {
+canvas.simple {
   opacity: 1;
-  box-shadow: rgba(50, 50, 93, 0.25) 0px 6px 12px -2px, rgba(0, 0, 0, 0.3) 0px 3px 7px -3px;
-  border: 1px solid var(--pdfro-main-color);
-  transition: transform .5s ease-out, opacity 1000ms ease;
+  transition: transform .2s ease-out, opacity 1000ms ease;
+  // transition: opacity 1000ms ease;
+
   z-index: -1;
+  position: relative;
+  border: 1px solid var(--pdfro-main-color);
 }
 
-pdf-page.load canvas {
+pdf-page.load canvas.simple {
   opacity: 0;
 }
 
@@ -865,7 +909,7 @@ pdf-page.cursor.move {
   outline: 3px dashed var(--pdfro-hover-color);
 }
 
-pdf-page.deleted canvas {
+pdf-page.deleted canvas.simple {
   opacity: .2;
 }
 
@@ -898,7 +942,28 @@ pdf-page.selected {
 pdf-page.dragged {
   background-color: var(--pdfro-dragged-color);
 }
+
+pdf-page.magnify {
+  overflow: scroll;
+}
+
+pdf-page.magnify canvas {
+  transition: none;
+  transform-origin: center;
+  margin-left: 0 !important;
+  margin-top: 0 !important;
+}
 `;
+
+    const zf = this.zoomfactor;
+    cssData += `
+canvas.simple {
+  box-shadow:
+    rgba(50, 50, 93, 0.25) 0px ${6 * zf}px ${12 * zf}px -${2 * zf}px,
+    rgba(0, 0, 0, 0.3) 0px ${3 * zf}px ${7 * zf}px -${3 * zf}px;
+  border-width: ${1 * zf}px;
+}`;
+    
     const css = new CSSStyleSheet();
     css.replace(cssData);
     this.shadow.adoptedStyleSheets = [css];

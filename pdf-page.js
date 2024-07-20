@@ -3,6 +3,8 @@ const outputScale = window.devicePixelRatio || 1;
 
 const desiredWidth = 100;
 const desiredHeight = 100;
+const rotateRegex = /rotate\(-?\d+(?:\.\d+)?deg\)/;
+const scaleRegex = /scale\(-?\d+(?:\.\d+)?\)/;
 
 var dropTarget = null;
 
@@ -41,6 +43,7 @@ export default class PDFPage extends HTMLElement {
     // Canvas
     this.canvas = document.createElement("canvas");
     this.canvas.setAttribute('droppable',false);
+    this.canvas.classList.add('simple');
 
     // container
     let container = document.createElement("div");
@@ -173,27 +176,30 @@ export default class PDFPage extends HTMLElement {
   /**
    * Renders the referenced PDF page using PDF.js.
    *
-   * @param pdfpage The PDF.js-page.
+   * @param {pdfpage} The PDF.js-page.
+   * @param zf {number} the zoom factor.
    */
   render(pdfpage) {
 
     // Page already rendered
     if (this._pdfjsref != null)
       return;
+
+    let zf = this._parent.zoomfactor;
     
     this._pdfjsref = pdfpage;
-
-    let viewportParam = {scale : 1};
     
+    let viewportParam = {scale : 1};
+
     // Prepare canvas using PDF page dimensions
     let canvas = this.canvas;
-    let context = canvas.getContext('2d');
+    let context = canvas.getContext('2d', { alpha: false });
     let viewport = pdfpage.getViewport(viewportParam);
 
     if (viewport.width > viewport.height) {
-      viewportParam['scale'] = desiredWidth / viewport.width;
+      viewportParam['scale'] = (desiredWidth*zf) / viewport.width;
     } else {
-      viewportParam['scale'] = desiredHeight / viewport.height;
+      viewportParam['scale'] = (desiredHeight*zf) / viewport.height;
     };
 
     // Reload viewport with new dimensions
@@ -202,12 +208,13 @@ export default class PDFPage extends HTMLElement {
     canvas.height = Math.floor(viewport.height * outputScale);
     canvas.width = Math.floor(viewport.width * outputScale);
 
-    // Center the canvas
     canvas.style.marginLeft =
-      Math.floor(((desiredWidth*outputScale) - canvas.width) / 2) + "px";
+      Math.floor(((desiredWidth*outputScale) - (canvas.width)) / 2) + "px";
     canvas.style.marginTop =
-      Math.floor(((desiredHeight*outputScale) - canvas.height) / 2) + "px";
+      Math.floor(((desiredHeight*outputScale) - (canvas.height)) / 2) + "px";
 
+    canvas.style.transform = `rotate(0deg) scale(${1 / zf}`;
+    
     let transform = outputScale !== 1
         ? [outputScale, 0, 0, outputScale, 0, 0]
         : null;
@@ -219,9 +226,10 @@ export default class PDFPage extends HTMLElement {
       transform : transform,
       // background: 'rgba(0,0,0,0)',
     };
-
+    
     let renderTask = pdfpage.render(renderContext);
     renderTask.promise.then((function () {
+
       // Page rendered!
       this.classList.remove("load");
     }).bind(this));
@@ -289,6 +297,7 @@ export default class PDFPage extends HTMLElement {
    * Mark page as removed from PDF.
    */
   remove() {
+    this.unmagnify();
     this.deleted = true;
     this.classList.add('deleted');
     this.setAttribute('draggable', false);
@@ -316,7 +325,7 @@ export default class PDFPage extends HTMLElement {
     if (this.deleted)
       return false;
     this._rotation += 90;
-    this.canvas.style.transform = 'rotate(' + this._rotation + 'deg)';
+    this._setRotationStyle();
   };
   
   /**
@@ -326,9 +335,42 @@ export default class PDFPage extends HTMLElement {
     if (this.deleted)
       return false;
     this._rotation -= 90;
-    this.canvas.style.transform = 'rotate(' + this._rotation + 'deg)';
+    this._setRotationStyle();
   };
 
+  _setRotationStyle () {
+    const newRotation = 'rotate(' + this._rotation + 'deg)';
+    const cStyle = this.canvas.style;
+
+    // There is always a rotate transformation
+    cStyle.transform = cStyle.transform.replace(rotateRegex, newRotation);
+  };
+
+  _setScaleStyle (s) {
+    const cStyle = this.canvas.style;
+
+    // There is always a scale transformation
+    cStyle.transform = cStyle.transform.replace(scaleRegex, `scale(${s})`);
+  };
+
+  get magnified() {
+    return this.classList.contains('magnify');
+  }
+  
+  magnify() {
+    if (this.deleted)
+      return false;
+    this.classList.add('magnify');
+    this._setScaleStyle(1);
+  }
+
+  unmagnify() {
+    if (!this.magnified)
+      return;
+    this.classList.remove('magnify');
+    this._setScaleStyle(1 / this._parent.zoomfactor);
+  }
+  
   /**
    * Degree of rotation.
    */

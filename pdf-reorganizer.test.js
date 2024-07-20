@@ -645,4 +645,6 @@ describe('PDF Reorganizer (Key events)', () => {
   // I have no good idea how to test it without something like playwright,
   // as it requires a flexbox enabled viewport.
   test.todo('should move up/down with different rows');
+
+  test.todo('should move before/after');
 });
