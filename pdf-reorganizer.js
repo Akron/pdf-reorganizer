@@ -301,6 +301,8 @@ export default class PDFReorganizer extends HTMLElement {
     this.cursor = prev;
     if (prev != null)
       this.cursor.classList.add('move');
+
+    this.cursor.showInViewport();
   }
 
   /**
@@ -328,6 +330,8 @@ export default class PDFReorganizer extends HTMLElement {
     this.cursor = next;
     if (next != null)
       this.cursor.classList.add('move');
+
+    this.cursor.showInViewport();
   }
 
   /**
@@ -375,6 +379,7 @@ export default class PDFReorganizer extends HTMLElement {
 
     this.cursor = prev;
     this.cursor.classList.add('move');
+    this.cursor.showInViewport();
   }
 
   /**
@@ -430,6 +435,7 @@ export default class PDFReorganizer extends HTMLElement {
 
     this.cursor = next;
     this.cursor.classList.add('move');
+    this.cursor.showInViewport();
   }
 
   

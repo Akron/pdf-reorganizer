@@ -86,7 +86,6 @@ export default class PDFPage extends HTMLElement {
       
       ev.dataTransfer.dropEffect = "move";
       ev.dataTransfer.setDragImage(newCanvas, -15, -15);
-      console.log("start dragging");
     }).bind(this));
 
     // Dragend
@@ -390,6 +389,14 @@ export default class PDFPage extends HTMLElement {
     }
 
     return 0;
+  }
+
+  showInViewport() {
+    this.scrollIntoView({
+      behavior: "smooth",
+      block: "end",
+      inline: "nearest"
+    });
   }
 };
 
