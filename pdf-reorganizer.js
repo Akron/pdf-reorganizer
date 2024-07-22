@@ -889,8 +889,7 @@ pdf-page.load::before {
 
 canvas {
   opacity: 1;
-  transition: transform .2s ease-out, opacity 1000ms ease;
-  // transition: opacity 1000ms ease;
+  transition: rotate .2s ease-out, opacity 1000ms ease;
 
   z-index: -1;
   position: relative;
@@ -955,7 +954,6 @@ pdf-page.magnify {
 }
 
 pdf-page.magnify canvas {
-  transition: none;
   transform-origin: center;
   margin-left: 0 !important;
   margin-top: 0 !important;

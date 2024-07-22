@@ -3,7 +3,6 @@ const outputScale = window.devicePixelRatio || 1;
 
 const desiredWidth = 100;
 const desiredHeight = 100;
-const rotateRegex = /rotate\(-?\d+(?:\.\d+)?deg\)/;
 
 var dropTarget = null;
 
@@ -213,7 +212,7 @@ export default class PDFPage extends HTMLElement {
     canvas.style.marginLeft = Math.floor(((desiredWidth*outputScale) - (canvas.width)) / 2) + "px";
     canvas.style.marginTop = Math.floor(((desiredHeight*outputScale) - (canvas.height)) / 2) + "px";
     
-    canvas.style.transform = `rotate(0deg)`;
+    canvas.style.rotate = '0deg';
     canvas.style.scale = 1 / zf;
     
     let transform = outputScale !== 1
@@ -340,11 +339,7 @@ export default class PDFPage extends HTMLElement {
   };
 
   _setRotationStyle () {
-    const newRotation = 'rotate(' + this._rotation + 'deg)';
-    const cStyle = this.canvas.style;
-
-    // There is always a rotate transformation
-    cStyle.transform = cStyle.transform.replace(rotateRegex, newRotation);
+    this.canvas.style.rotate = this._rotation + 'deg';
   };
 
   _setScaleStyle (s) {
