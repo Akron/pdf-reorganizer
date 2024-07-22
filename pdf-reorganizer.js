@@ -843,7 +843,7 @@ pdf-page::after {
   top: 0;
   width: 10px;
   height: 200px;
-  margin-top:-100px;
+  margin-top: -100px;
   border-radius: 5px;
   background-color: var(--pdfro-selected-bg-color);
   top: 50%;
@@ -951,6 +951,7 @@ pdf-page.dragged {
 
 pdf-page.magnify {
   overflow: scroll;
+  /* padding-bottom: 8px; */
 }
 
 pdf-page.magnify canvas {

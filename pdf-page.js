@@ -4,7 +4,6 @@ const outputScale = window.devicePixelRatio || 1;
 const desiredWidth = 100;
 const desiredHeight = 100;
 const rotateRegex = /rotate\(-?\d+(?:\.\d+)?deg\)/;
-const scaleRegex = /scale\(-?\d+(?:\.\d+)?\)/;
 
 var dropTarget = null;
 
@@ -214,7 +213,8 @@ export default class PDFPage extends HTMLElement {
     canvas.style.marginLeft = Math.floor(((desiredWidth*outputScale) - (canvas.width)) / 2) + "px";
     canvas.style.marginTop = Math.floor(((desiredHeight*outputScale) - (canvas.height)) / 2) + "px";
     
-    canvas.style.transform = `rotate(0deg) scale(${1 / zf}`;
+    canvas.style.transform = `rotate(0deg)`;
+    canvas.style.scale = 1 / zf;
     
     let transform = outputScale !== 1
         ? [outputScale, 0, 0, outputScale, 0, 0]
@@ -348,10 +348,7 @@ export default class PDFPage extends HTMLElement {
   };
 
   _setScaleStyle (s) {
-    const cStyle = this.canvas.style;
-
-    // There is always a scale transformation
-    cStyle.transform = cStyle.transform.replace(scaleRegex, `scale(${s})`);
+    this.canvas.style.scale = s;
   };
 
   get magnified() {
@@ -363,8 +360,10 @@ export default class PDFPage extends HTMLElement {
       return false;
 
     // Fix the offset on rotation, when height and width are reversed
-    if ((this.rotation % 180) != 0)
+    if ((this.rotation % 180) != 0) {
+      // this.canvas.style.clipPath = `rect(0 0 ${this.canvas.width}px ${this.canvas.height}px)`;
       this.canvas.style.translate = this._translate;
+    }
     else
       this.canvas.style.translate = "0px 0px";
     
