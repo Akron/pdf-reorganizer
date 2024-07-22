@@ -33,6 +33,7 @@ export default class PDFPage extends HTMLElement {
     this._rotation = 0;
     this._pdfjsref = null; // The PDF.js-page
     this._parent = parent; // The reorganizer
+    this._translate = "";
 
     this.style.width = (desiredWidth*outputScale) + 'px';
     this.style.height = (desiredWidth*outputScale) + 'px';
@@ -43,7 +44,6 @@ export default class PDFPage extends HTMLElement {
     // Canvas
     this.canvas = document.createElement("canvas");
     this.canvas.setAttribute('droppable',false);
-    this.canvas.classList.add('simple');
 
     // container
     let container = document.createElement("div");
@@ -207,11 +207,13 @@ export default class PDFPage extends HTMLElement {
     canvas.height = Math.floor(viewport.height * outputScale);
     canvas.width = Math.floor(viewport.width * outputScale);
 
-    canvas.style.marginLeft =
-      Math.floor(((desiredWidth*outputScale) - (canvas.width)) / 2) + "px";
-    canvas.style.marginTop =
-      Math.floor(((desiredHeight*outputScale) - (canvas.height)) / 2) + "px";
+    // Calculate translation when magnified after rotation
+    const trans = parseInt((canvas.height - canvas.width) / 2);
+    this._translate = `${trans}px ${-1 * trans}px`;
 
+    canvas.style.marginLeft = Math.floor(((desiredWidth*outputScale) - (canvas.width)) / 2) + "px";
+    canvas.style.marginTop = Math.floor(((desiredHeight*outputScale) - (canvas.height)) / 2) + "px";
+    
     canvas.style.transform = `rotate(0deg) scale(${1 / zf}`;
     
     let transform = outputScale !== 1
@@ -359,13 +361,23 @@ export default class PDFPage extends HTMLElement {
   magnify() {
     if (this.deleted)
       return false;
+
+    // Fix the offset on rotation, when height and width are reversed
+    if ((this.rotation % 180) != 0)
+      this.canvas.style.translate = this._translate;
+    else
+      this.canvas.style.translate = "0px 0px";
+    
     this.classList.add('magnify');
     this._setScaleStyle(1);
+    this.scrollLeft=0;
+    this.scrollTop=0;
   }
 
   unmagnify() {
     if (!this.magnified)
       return;
+    this.canvas.style.translate = "0px 0px";
     this.classList.remove('magnify');
     this._setScaleStyle(1 / this._parent.zoomfactor);
   }
@@ -392,11 +404,16 @@ export default class PDFPage extends HTMLElement {
   }
 
   showInViewport() {
-    this.scrollIntoView({
-      behavior: "smooth",
-      block: "end",
+
+    // TODO: Only do this, if necessary!
+
+    if (this.scrollIntoView) {
+      this.scrollIntoView({
+        behavior: "smooth",
+        block: "end",
       inline: "nearest"
-    });
+      });
+    };
   }
 };
 

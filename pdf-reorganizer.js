@@ -774,8 +774,8 @@ pdf-reorganizer {
   align-content: start;
 /* from page: desired width + 2 * padding (8px) + 2 * border (5px) + 2x margin (3px) */
   min-width: 232px;
-/* as above, + bottom padding 12px */
-  min-height: 244px;
+/* as above, + bottom padding (24px) */
+  min-height: 256px;
   overflow-y: scroll;
   overflow-x: hidden;
   resize: both;
@@ -812,12 +812,11 @@ pdf-page {
   border: 5px solid transparent;
   cursor: pointer;
   padding: 8px;
-  padding-bottom: 20px;
+  padding-bottom: 24px;
   z-index: 1;
   color: var(--pdfro-main-color);
   /* Relevant for drag target */
   margin: 3px;
-  /* Relevant for magnifying */
 }
 
 pdf-page div.container::after {
@@ -834,6 +833,7 @@ pdf-page div.container::after {
   content: "[" attr(data-num) "]";
 }
 
+/* Don't show page number on magnify */
 pdf-page.magnify div.container::after {
   content: none;
 }
@@ -887,7 +887,7 @@ pdf-page.load::before {
   animation: rotation .6s linear infinite;
 }
 
-canvas.simple {
+canvas {
   opacity: 1;
   transition: transform .2s ease-out, opacity 1000ms ease;
   // transition: opacity 1000ms ease;
@@ -897,7 +897,7 @@ canvas.simple {
   border: 1px solid var(--pdfro-main-color);
 }
 
-pdf-page.load canvas.simple {
+pdf-page.load canvas {
   opacity: 0;
 }
 
@@ -915,7 +915,7 @@ pdf-page.cursor.move {
   outline: 3px dashed var(--pdfro-hover-color);
 }
 
-pdf-page.deleted canvas.simple {
+pdf-page.deleted canvas {
   opacity: .2;
 }
 
@@ -958,12 +958,14 @@ pdf-page.magnify canvas {
   transform-origin: center;
   margin-left: 0 !important;
   margin-top: 0 !important;
+  box-shadow: none;
+  border-width: 0;
 }
 `;
 
     const zf = this.zoomfactor;
     cssData += `
-canvas.simple {
+canvas {
   box-shadow:
     rgba(50, 50, 93, 0.25) 0px ${6 * zf}px ${12 * zf}px -${2 * zf}px,
     rgba(0, 0, 0, 0.3) 0px ${3 * zf}px ${7 * zf}px -${3 * zf}px;

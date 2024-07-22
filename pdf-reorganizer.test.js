@@ -647,4 +647,10 @@ describe('PDF Reorganizer (Key events)', () => {
   test.todo('should move up/down with different rows');
 
   test.todo('should move before/after');
+
+  test.todo('should use magnifier');
+
+  test.todo('should scroll magnified in all directions');
+
+  test.todo('should jump scroll magnified in all directions');
 });
