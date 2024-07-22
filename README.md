@@ -19,11 +19,11 @@ Web Component for PDF arrangements
 ```
 
 
-
 # Planned Features
-
-- Select all / Unselect all
 - Copy instead of moving
 - Move/Copy without dragging and dropping
 - Add files per drag and drop
-- Allow arrow keys to move selector.
+
+# Known issues
+- When height and width of a page are switches after rotation,
+  the magnified view has an empty offset at the bottom of a page.

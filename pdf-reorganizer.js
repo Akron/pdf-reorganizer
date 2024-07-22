@@ -178,7 +178,10 @@ export default class PDFReorganizer extends HTMLElement {
       ev.preventDefault();
 
       if (this.cursor?.magnified) {
-        this.cursor.scrollLeft -= this.scrollStep;
+        if (ev.ctrlKey)
+            this.cursor.scrollLeft = 0;
+          else
+            this.cursor.scrollLeft -= this.scrollStep;
         break;
       };      
 
@@ -199,7 +202,10 @@ export default class PDFReorganizer extends HTMLElement {
       ev.preventDefault();
 
       if (this.cursor?.magnified) {
-        this.cursor.scrollTop -= this.scrollStep;
+        if (ev.ctrlKey)
+            this.cursor.scrollTop = 0;
+          else
+            this.cursor.scrollTop -= this.scrollStep;
         break;
       };
       
@@ -211,7 +217,11 @@ export default class PDFReorganizer extends HTMLElement {
       ev.preventDefault();
 
       if (this.cursor?.magnified) {
-        this.cursor.scrollLeft += this.scrollStep;
+        const c = this.cursor;
+        if (ev.ctrlKey)
+            c.scrollLeft = c.scrollWidth - c.clientWidth;
+        else
+          c.scrollLeft += this.scrollStep;
         break;
       };
 
@@ -231,7 +241,11 @@ export default class PDFReorganizer extends HTMLElement {
       ev.preventDefault();
 
       if (this.cursor?.magnified) {
-        this.cursor.scrollTop += this.scrollStep;
+        const c = this.cursor;
+        if (ev.ctrlKey)
+          c.scrollTop = c.scrollHeight - c.clientHeight;
+        else
+          c.scrollTop += this.scrollStep;
         break;
       };
       
