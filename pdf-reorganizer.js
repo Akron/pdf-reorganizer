@@ -41,36 +41,49 @@ export default class PDFReorganizer extends HTMLElement {
     this.splitBeforeElem = document.createElement("div");
     this.splitBeforeElem.setAttribute("class","split-before");
     this.splitBeforeElem.innerText = 'split';
+    this.splitBeforeElem.title = "split before current page (Ctrl+Y)";
     nav.appendChild(this.splitBeforeElem);
 
     this.rotateLeftElem = document.createElement("div");
     this.rotateLeftElem.setAttribute("class","rotate-left");
     this.rotateLeftElem.innerText = 'left';
+    this.rotateLeftElem.title = "Rotate 90deg ccw (Ctrl+left arrow)";
     nav.appendChild(this.rotateLeftElem);
 
     this.rotateRightElem = document.createElement("div");
     this.rotateRightElem.setAttribute("class","rotate-right");
     this.rotateRightElem.innerText = 'right';
+    this.rotateRightElem.title = "Rotate 90deg cw (Ctrl+right arrow)";
     nav.appendChild(this.rotateRightElem);
 
     this.selElem = document.createElement("div");
-    this.selElem.setAttribute("class","selectall");
-    this.selElem.innerText = 'select all';
+    this.selElem.setAttribute("class","select");
+    this.selElem.innerText = 'select';
+    this.selElem.title = "Start select mode";
     nav.appendChild(this.selElem);
+    
+    this.allElem = document.createElement("div");
+    this.allElem.setAttribute("class","selectall");
+    this.allElem.innerText = 'select all';
+    this.allElem.title = "Select all pages (Ctrl+a)";
+    nav.appendChild(this.allElem);
 
     this.delElem = document.createElement("div");
     this.delElem.setAttribute("class","delete");
     this.delElem.innerText = 'remove';
+    this.delElem.title = "Delete selected pages (Delete)";
     nav.appendChild(this.delElem);
 
     this.magElem = document.createElement("div");
     this.magElem.setAttribute("class","magnify");
     this.magElem.innerText = 'magnify';
+    this.magElem.title = "Start magnifying mode";
     nav.appendChild(this.magElem);
 
     this.processElem = document.createElement("div");
     this.processElem.setAttribute("class","process");
     this.processElem.innerText = 'process';
+    this.processElem.title = "Start processing";
     nav.appendChild(this.processElem);
 
     this.viewport = document.createElement('div');
@@ -96,7 +109,8 @@ export default class PDFReorganizer extends HTMLElement {
     this.rotateRightElem.addEventListener('click', this.rotateRight.bind(this));
     this.splitBeforeElem.addEventListener('click', this.splitBefore.bind(this));
     this.magElem.addEventListener('click', this.toggleMagnify.bind(this));
-    this.selElem.addEventListener('click', this.selectAll.bind(this));
+    this.allElem.addEventListener('click', this.selectAll.bind(this));
+    this.selElem.addEventListener('click', this.toggleSelector.bind(this));
 
     this.processElem.addEventListener('click', (function() {
       this.process();
@@ -299,8 +313,10 @@ export default class PDFReorganizer extends HTMLElement {
       };
       break;
 
+      /*
     default:
       console.log(ev);
+      */
     };
   }
   
@@ -483,10 +499,31 @@ export default class PDFReorganizer extends HTMLElement {
   }
 
   /**
+   * Starts or ends the selector.
+   */
+  toggleSelector() {
+    this.selElem?.classList.toggle("active");
+    this.viewport.classList.remove("magnify");
+    this.viewport.classList.toggle("select");
+  }
+
+  get selectorActive() {
+    return this.viewport.classList.contains("select");
+  }
+
+  /**
+   * Check if magnifier is active.
+   */
+  get magnified() {
+    return this.viewport.classList.contains("magnify");
+  }
+  
+  /**
    * Starts or ends the magnifier.
    */
   toggleMagnify() {
     this.magElem?.classList.toggle("active");
+    this.viewport.classList.remove("select");
     this.viewport.classList.toggle("magnify");
   }
 
