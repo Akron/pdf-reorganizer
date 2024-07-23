@@ -266,6 +266,14 @@ export default class PDFReorganizer extends HTMLElement {
         break;
       };
 
+    // Select all
+    case "a":
+      if (ev.ctrlKey) {
+        ev.preventDefault();
+        this.selectAll();
+        break;
+      };
+      
     case "+":
       if (!ev.ctrlKey)
         break;
