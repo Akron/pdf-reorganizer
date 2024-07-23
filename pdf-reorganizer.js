@@ -590,6 +590,7 @@ export default class PDFReorganizer extends HTMLElement {
    */
   addSelect(page) {
     this.selected.add(page);
+    this.selElem?.setAttribute('data-count',this.selected.size);
   }
   
   /**
@@ -599,6 +600,7 @@ export default class PDFReorganizer extends HTMLElement {
    */
   delSelect(page) {
     this.selected.delete(page);
+    this.selElem?.setAttribute('data-count',this.selected.size);
   }
 
   /**
@@ -887,6 +889,22 @@ nav > div:hover, nav > div.active {
   color: var(--pdfro-white)
 }
 
+nav > div::after {
+  position: absolute;
+  font-size: 80%;
+  background-color: var(--pdfro-selected-bg-color);
+  color: var(--pdfro-white);
+  border-radius: 4px;
+  padding: 0 3pt;
+  margin-top: -6pt;
+  content: attr(data-count);
+}
+
+nav > div[data-count="0"]::after,
+nav > div[data-count="1"]::after {
+  content: none;
+}
+
 pdf-page {
   position: relative;
   border-radius: 6px;
@@ -1028,6 +1046,7 @@ pdf-page.split-before div.container::before {
   border-radius: 10px;
   text-align: center;
   line-height: 11pt;
+  text-shadow: var(--pdfro-split-before-border-color) 1px 1px 4px;
 }
 
 pdf-page.selected {
