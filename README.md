@@ -1,7 +1,9 @@
 # pdf-reorganizer
 
-PDF-Reorg is a web component to help rearrange and split PDFs.
-It is heavily inspired by [PDF-Arranger](https://github.com/pdfarranger/pdfarranger)
+PDF-reorg is a web component to help rearrange and split PDFs.
+It does not modify PDF documents itself, but creates a [processing instruction](# Processing directives)
+that can be implemented independent of PDF processing APIs or programming languages. 
+PDF-reorg is heavily inspired by [PDF-Arranger](https://github.com/pdfarranger/pdfarranger)
 and is based on [PDF.js](https://github.com/mozilla/pdf.js).
 
 # Usage
@@ -54,6 +56,30 @@ In magnified view:
 | top    | Ctrl       | Move viewport to up |
 | down   | Ctrl       | Move viewport to bottom |
 | Escape |            | Leave magnifier view |
+
+# Processing directives
+
+After rearranging all pages into new documents, the `processed` custom event is dispatched.
+This event can be listened on and contains a directive in its detail object (`ev.detail.directive`).
+
+```
+{
+  src : [
+    "mysimple.pdf"
+  ]
+  docs : [
+    [1,2],
+    [3,"5@90"]
+  ]
+}
+```
+
+In the future this format may allow merging PDFs. To allow for that,
+page numbers can have a reference prefix refering to the PDF in the files
+array (index starts with 1), e.g. `1:2` (Page 2 of file 1) or `3:5@270`
+(Page 5 of file 3 rotated by 270 deg).
+
+If no prefix is given, the first file is assumed.
 
 # Planned Features
 - Copy instead of moving
