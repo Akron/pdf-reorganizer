@@ -158,14 +158,24 @@ export default class PDFPage extends HTMLElement {
     
     // Click
     this.addEventListener('click', (function (ev) {
-      if (!ev.ctrlKey) {
+
+      if (!ev.ctrlKey && !this._parent?.magnified) {
         this._parent.delSelectAllExceptFor(this);
       };
+
       // Remember this page as cursor
       if (!this.deleted && this._parent != null) {
         this._parent.cursor = this;
-        this.classList.remove("cursor","move")
+        this.classList.remove("cursor","move");
+
+        if (this._parent?.magnified) {
+          this.magnify();
+          this._parent.toggleMagnify();
+          return;
+        };
+
       };
+           
       this.swapSelected();
     }).bind(this));
   };

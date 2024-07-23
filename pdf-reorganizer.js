@@ -40,7 +40,7 @@ export default class PDFReorganizer extends HTMLElement {
     // These elements should only exist once and be appended to the page in focus!
     this.splitBeforeElem = document.createElement("div");
     this.splitBeforeElem.setAttribute("class","split-before");
-    this.splitBeforeElem.innerText = 'split before';
+    this.splitBeforeElem.innerText = 'split';
     nav.appendChild(this.splitBeforeElem);
 
     this.rotateLeftElem = document.createElement("div");
@@ -62,7 +62,12 @@ export default class PDFReorganizer extends HTMLElement {
     this.delElem.setAttribute("class","delete");
     this.delElem.innerText = 'remove';
     nav.appendChild(this.delElem);
-    
+
+    this.magElem = document.createElement("div");
+    this.magElem.setAttribute("class","magnify");
+    this.magElem.innerText = 'magnify';
+    nav.appendChild(this.magElem);
+
     this.processElem = document.createElement("div");
     this.processElem.setAttribute("class","process");
     this.processElem.innerText = 'process';
@@ -90,6 +95,7 @@ export default class PDFReorganizer extends HTMLElement {
     this.rotateLeftElem.addEventListener('click', this.rotateLeft.bind(this));
     this.rotateRightElem.addEventListener('click', this.rotateRight.bind(this));
     this.splitBeforeElem.addEventListener('click', this.splitBefore.bind(this));
+    this.magElem.addEventListener('click', this.toggleMagnify.bind(this));
     this.selElem.addEventListener('click', this.selectAll.bind(this));
 
     this.processElem.addEventListener('click', (function() {
@@ -469,6 +475,21 @@ export default class PDFReorganizer extends HTMLElement {
   }
 
   /**
+   * Starts or ends the magnifier.
+   */
+  toggleMagnify() {
+    this.magElem?.classList.toggle("active");
+    this.viewport.classList.toggle("magnify");
+  }
+
+  /**
+   * Check if magnifier is active.
+   */
+  get magnified() {
+    return this.viewport.classList.contains("magnify");
+  }
+
+  /**
    * Rotates all selected pages from the
    * PDF 90 degrees to the left.
    *
@@ -781,7 +802,7 @@ pdf-reorganizer {
   counter-reset: splite 0;
   border: 1px solid var(--pdfro-main-color);
   padding: 10px; /* Make the dragger visible */
-  padding-top: 20px; /* Make the nav visible */
+  padding-top: 28px; /* Make the nav visible */
   display: flex;
   flex-wrap: wrap;
   align-items: start;
@@ -800,6 +821,7 @@ pdf-reorganizer {
 nav {
   position: fixed;
   z-index: 5;
+  font-size: 80%;
   display: block;
   width: 100%;
 }
@@ -807,15 +829,17 @@ nav {
 nav > div {
   display: inline-block;
   cursor: pointer;
+  border: 1px solid var(--pdfro-main-color);
+  background-color: var(--pdfro-white);
+  border-radius: 5px;
+  padding: 2pt 4pt;
+  margin:2pt;
+  box-shadow: rgba(50, 50, 50, 0.5) 2px 2px 2px 1px;
 }
 
-nav > div:hover {
+nav > div:hover, nav > div.active {
   background-color: var(--pdfro-selected-bg-color);
-}
-
-nav > div + div::before {
-  content: "|";
-  padding: 0 4pt;
+  color: var(--pdfro-white)
 }
 
 pdf-page {
@@ -832,6 +856,14 @@ pdf-page {
   /* Relevant for drag target */
   margin: 3px;
 }
+
+#pdf-viewport.magnify,
+#pdf-viewport.magnify pdf-page {
+  cursor: -moz-zoom-in; 
+  cursor: -webkit-zoom-in; 
+  cursor: zoom-in;
+}
+
 
 pdf-page div.container::after {
   position: absolute;
@@ -982,6 +1014,8 @@ canvas {
   box-shadow:
     rgba(50, 50, 93, 0.25) 0px ${6 * zf}px ${12 * zf}px -${2 * zf}px,
     rgba(0, 0, 0, 0.3) 0px ${3 * zf}px ${7 * zf}px -${3 * zf}px;
+
+  /* box-shadow: rgba(50, 50, 50, 0.5) 9px ${2 * zf}px ${2 * zf}px ${1 * zf}px; */
   border-width: ${1 * zf}px;
 }`;
     
