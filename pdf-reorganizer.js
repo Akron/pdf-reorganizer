@@ -37,58 +37,34 @@ export default class PDFReorganizer extends HTMLElement {
    
     let nav = document.createElement('nav');
 
-    // These elements should only exist once and be appended to the page in focus!
-    this.splitBeforeElem = document.createElement("div");
-    this.splitBeforeElem.setAttribute("class","split-before");
-    this.splitBeforeElem.innerText = 'split';
-    this.splitBeforeElem.title = "split before current page (Ctrl+Y)";
+    this.splitBeforeElem = _addNavItem("split-before", "#splitscreen_vertical_add", "Split before current page (Ctrl+Y)");
     nav.appendChild(this.splitBeforeElem);
 
-    this.rotateLeftElem = document.createElement("div");
-    this.rotateLeftElem.setAttribute("class","rotate-left");
-    this.rotateLeftElem.innerText = 'left';
-    this.rotateLeftElem.title = "Rotate 90deg ccw (Ctrl+left arrow)";
+    this.rotateLeftElem = _addNavItem("rotate-left", "#rotate_90_degrees_ccw", "Rotate 90deg ccw (Ctrl+left arrow");
     nav.appendChild(this.rotateLeftElem);
-
-    this.rotateRightElem = document.createElement("div");
-    this.rotateRightElem.setAttribute("class","rotate-right");
-    this.rotateRightElem.innerText = 'right';
-    this.rotateRightElem.title = "Rotate 90deg cw (Ctrl+right arrow)";
+    
+    this.rotateRightElem = _addNavItem("rotate-right", "#rotate_90_degrees_cw", "Rotate 90deg cw (Ctrl+right arrow)");
     nav.appendChild(this.rotateRightElem);
 
-    this.selElem = document.createElement("div");
-    this.selElem.setAttribute("class","select");
-    this.selElem.innerText = 'select';
-    this.selElem.title = "Start select mode";
+    this.selElem = _addNavItem("select", "#select", "Start selection mode");
     nav.appendChild(this.selElem);
     
-    this.allElem = document.createElement("div");
-    this.allElem.setAttribute("class","selectall");
-    this.allElem.innerText = 'select all';
-    this.allElem.title = "Select all pages (Ctrl+a)";
+    this.allElem = _addNavItem("select-all", "#select_all", "Select all pages (Ctrl+a)");
     nav.appendChild(this.allElem);
 
-    this.delElem = document.createElement("div");
-    this.delElem.setAttribute("class","delete");
-    this.delElem.innerText = 'remove';
-    this.delElem.title = "Delete selected pages (Delete)";
+    this.delElem = _addNavItem("delete", "#scan_delete", "Delete selected pages (Delete)");
     nav.appendChild(this.delElem);
 
-    this.magElem = document.createElement("div");
-    this.magElem.setAttribute("class","magnify");
-    this.magElem.innerText = 'magnify';
-    this.magElem.title = "Start magnifying mode";
+    this.magElem = _addNavItem("magnify", "#zoom_in", "Start magnifying mode");
     nav.appendChild(this.magElem);
 
-    this.processElem = document.createElement("div");
-    this.processElem.setAttribute("class","process");
-    this.processElem.innerText = 'process';
-    this.processElem.title = "Start processing";
+    this.processElem = _addNavItem("process", "#play_arrow", "Start processing");
     nav.appendChild(this.processElem);
 
     this.viewport = document.createElement('div');
     this.viewport.setAttribute('id', 'pdf-viewport');
-    
+
+    this.shadow.appendChild(this.svgSymbols());
     this.shadow.appendChild(nav);
     this.shadow.appendChild(this.viewport);
   }
@@ -875,31 +851,34 @@ nav {
   z-index: 5;
   font-size: 80%;
   display: block;
-  width: 100%;
+  border-radius: 5px;
+  border: 1px solid var(--pdfro-main-color);
+  background-color: var(--pdfro-white);
+  box-shadow: rgba(50, 50, 50, 0.5) 2px 2px 2px 1px;
+  margin:4pt;
 }
 
 nav > div {
   display: inline-block;
   cursor: pointer;
-  border: 1px solid var(--pdfro-main-color);
-  background-color: var(--pdfro-white);
-  border-radius: 5px;
-  padding: 2pt 4pt;
-  margin:2pt;
-  box-shadow: rgba(50, 50, 50, 0.5) 2px 2px 2px 1px;
+  padding: 2pt;
+  margin: 0 2pt;
+  padding-bottom: 0;
+  fill: var(--pdfro-main-color);
 }
 
 nav > div:hover, nav > div.active {
   background-color: var(--pdfro-selected-bg-color);
-  color: var(--pdfro-white)
+  color: var(--pdfro-white);
+  fill: var(--pdfro-white);
 }
 
 nav > div::after {
-  position: absolute;
+ position: absolute;
   font-size: 80%;
   background-color: var(--pdfro-selected-bg-color);
   color: var(--pdfro-white);
-  border-radius: 4px;
+  border-radius: 5px;
   padding: 0 3pt;
   margin-top: -6pt;
   content: attr(data-count);
@@ -908,6 +887,11 @@ nav > div::after {
 nav > div[data-count="0"]::after,
 nav > div[data-count="1"]::after {
   content: none;
+}
+
+nav > div > svg {
+  width: 18px;
+  height: 18px;
 }
 
 pdf-page {
@@ -1092,6 +1076,57 @@ canvas {
     css.replace(cssData);
     this.shadow.adoptedStyleSheets = [css];
   }
+
+  /**
+   * Embed material design icons.
+   */
+  svgSymbols() {
+    const svgData = `
+  <!-- published under the Apache License 2.0 https://www.apache.org/licenses/LICENSE-2.0.html -->
+  <symbol viewBox="0 -960 960 960" id="play_arrow">
+    <path d="M320-200v-560l440 280-440 280Zm80-280Zm0 134 210-134-210-134v268Z"></path>
+  </symbol>
+  <symbol viewBox="0 -960 960 960" id="rotate_90_degrees_ccw">
+    <path d="M520-80q-51 0-100-14t-92-42l58-58q31 17 65 25.5t69 8.5q117 0 198.5-81.5T800-440q0-117-81.5-198.5T520-720h-6l62 62-56 58-160-160 160-160 56 58-62 62h6q150 0 255 105t105 255q0 75-28.5 140.5t-77 114q-48.5 48.5-114 77T520-80ZM280-200 40-440l240-240 240 240-240 240Zm0-114 126-126-126-126-126 126 126 126Zm0-126Z"></path>
+  </symbol>
+  <symbol viewBox="0 -960 960 960" id="rotate_90_degrees_cw">
+    <path d="M440-80q-75 0-140.5-28.5t-114-77q-48.5-48.5-77-114T80-440q0-150 105-255t255-105h6l-62-62 56-58 160 160-160 160-56-58 62-62h-6q-117 0-198.5 81.5T160-440q0 117 81.5 198.5T440-160q35 0 69-8.5t65-25.5l58 58q-43 28-92 42T440-80Zm240-120L440-440l240-240 240 240-240 240Zm0-114 126-126-126-126-126 126 126 126Zm0-126Z"></path>
+  </symbol>
+  <symbol viewBox="0 -960 960 960" id="scan_delete">
+    <path d="M240-800v200-200 640-9.5 9.5-640Zm0 720q-33 0-56.5-23.5T160-160v-640q0-33 23.5-56.5T240-880h320l240 240v174q-19-7-39-10.5t-41-3.5v-120H520v-200H240v640h254q8 23 20 43t28 37H240Zm396-20-56-56 84-84-84-84 56-56 84 84 84-84 56 56-83 84 83 84-56 56-84-83-84 83Z"></path>
+  </symbol>
+  <symbol viewBox="0 -960 960 960" id="select">
+    <path d="M200-200v80q-33 0-56.5-23.5T120-200h80Zm-80-80v-80h80v80h-80Zm0-160v-80h80v80h-80Zm0-160v-80h80v80h-80Zm80-160h-80q0-33 23.5-56.5T200-840v80Zm80 640v-80h80v80h-80Zm0-640v-80h80v80h-80Zm160 640v-80h80v80h-80Zm0-640v-80h80v80h-80Zm160 640v-80h80v80h-80Zm0-640v-80h80v80h-80Zm160 560h80q0 33-23.5 56.5T760-120v-80Zm0-80v-80h80v80h-80Zm0-160v-80h80v80h-80Zm0-160v-80h80v80h-80Zm0-160v-80q33 0 56.5 23.5T840-760h-80Z"></path>
+  </symbol>
+  <symbol viewBox="0 -960 960 960" id="select_all">
+    <path d="M280-280v-400h400v400H280Zm80-80h240v-240H360v240ZM200-200v80q-33 0-56.5-23.5T120-200h80Zm-80-80v-80h80v80h-80Zm0-160v-80h80v80h-80Zm0-160v-80h80v80h-80Zm80-160h-80q0-33 23.5-56.5T200-840v80Zm80 640v-80h80v80h-80Zm0-640v-80h80v80h-80Zm160 640v-80h80v80h-80Zm0-640v-80h80v80h-80Zm160 640v-80h80v80h-80Zm0-640v-80h80v80h-80Zm160 640v-80h80q0 33-23.5 56.5T760-120Zm0-160v-80h80v80h-80Zm0-160v-80h80v80h-80Zm0-160v-80h80v80h-80Zm0-160v-80q33 0 56.5 23.5T840-760h-80Z"></path>
+  </symbol>
+  <symbol viewBox="0 -960 960 960" id="splitscreen_vertical_add">
+    <path d="M760-760H599h5-4 160Zm-240 0q0-33 23.5-56.5T600-840h160q33 0 56.5 23.5T840-760v400h-80v-400H600v640q-33 0-56.5-23.5T520-200v-560ZM200-120q-33 0-56.5-23.5T120-200v-560q0-33 23.5-56.5T200-840h160q33 0 56.5 23.5T440-760v560q0 33-23.5 56.5T360-120H200Zm160-640H200v560h160v-560Zm0 0H200h160ZM760-40v-80h-80v-80h80v-80h80v80h80v80h-80v80h-80Z"></path>
+  </symbol>
+  <symbol viewBox="0 -960 960 960" id="zoom_in">
+    <path d="M784-120 532-372q-30 24-69 38t-83 14q-109 0-184.5-75.5T120-580q0-109 75.5-184.5T380-840q109 0 184.5 75.5T640-580q0 44-14 83t-38 69l252 252-56 56ZM380-400q75 0 127.5-52.5T560-580q0-75-52.5-127.5T380-760q-75 0-127.5 52.5T200-580q0 75 52.5 127.5T380-400Zm-40-60v-80h-80v-80h80v-80h80v80h80v80h-80v80h-80Z"></path>
+  </symbol>`;
+    const svg = document.createElementNS('http://www.w3.org/2000/svg','svg');
+    svg.setAttribute('width',0);
+    svg.setAttribute('height',0);
+    svg.innerHTML = svgData;
+    return svg;
+  }
 };
+
+
+function _addNavItem(type,symbol,desc) {
+  const elem = document.createElement("div");
+  elem.setAttribute("class",type);
+  const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+  const use = document.createElementNS("http://www.w3.org/2000/svg", "use");
+  use.setAttribute("href", symbol);
+  svg.appendChild(use);
+  elem.appendChild(svg);
+  elem.title = desc;
+  return elem
+};
+
 
 customElements.define('pdf-reorganizer', PDFReorganizer);

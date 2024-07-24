@@ -85,7 +85,12 @@ If no prefix is given, the first file is assumed.
 - Copy instead of moving
 - Move/Copy without dragging and dropping
 - Add files per drag and drop (if embedded in a service)
+- Add select mode on long press (mousedown and touchstart)
 
 # Known issues
 - When height and width of a page are switches after rotation,
   the magnified view has an empty offset at the bottom of a page.
+
+# License
+
+This software bundles [Material Symbols](https://fonts.google.com/icons) from Google, published under the [Apache License 2.0](https://www.apache.org/licenses/LICENSE-2.0.html).

@@ -30,4 +30,15 @@
   <body style="background-color: #ccc;">
     <pdf-reorganizer url="example.pdf"></pdf-reorganizer>
   </body>
+
+  <script>
+   const reorg = document.getElementsByTagName("pdf-reorganizer")[0];
+   reorg.addEventListener(
+     'processed',
+     function (ev) {
+       window.alert(JSON.stringify(ev.detail.directive));
+     }
+   );
+ </script>
+
 </html>
