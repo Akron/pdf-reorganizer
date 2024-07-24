@@ -33,7 +33,7 @@ export default class PDFReorganizer extends HTMLElement {
     this.scrollStep = 14;
     this.selected = new Set();
     
-    this.shadow = this.attachShadow({ mode: "open" });
+    this.attachShadow({ mode: "open" });
    
     let nav = document.createElement('nav');
 
@@ -64,9 +64,10 @@ export default class PDFReorganizer extends HTMLElement {
     this.viewport = document.createElement('div');
     this.viewport.setAttribute('id', 'pdf-viewport');
 
-    this.shadow.appendChild(this.svgSymbols());
-    this.shadow.appendChild(nav);
-    this.shadow.appendChild(this.viewport);
+    const shadow = this.shadowRoot;
+    shadow.appendChild(this.svgSymbols());
+    shadow.appendChild(nav);
+    shadow.appendChild(this.viewport);
   }
 
   connectedCallback () {
@@ -680,7 +681,7 @@ export default class PDFReorganizer extends HTMLElement {
    * @param {url} URL of the CSS file.
    */
   loadCSS(url) {
-    const shadow = this.shadow;
+    const shadow = this.shadowRoot;
     const css = new CSSStyleSheet();
 
     fetch(url).then(
@@ -830,7 +831,7 @@ pdf-reorganizer {
   counter-reset: splite 0;
   border: 1px solid var(--pdfro-main-color);
   padding: 10px; /* Make the dragger visible */
-  padding-top: 28px; /* Make the nav visible */
+  padding-top: 38px; /* Make the nav visible */
   display: flex;
   flex-wrap: wrap;
   align-items: start;
@@ -848,8 +849,8 @@ pdf-reorganizer {
 
 nav {
   position: fixed;
-  z-index: 5;
-  font-size: 80%;
+  z-index: 10;
+/*  font-size: 80%; */
   display: block;
   border-radius: 5px;
   border: 1px solid var(--pdfro-main-color);
@@ -919,10 +920,6 @@ pdf-page {
 
 pdf-page div.container::after {
   position: absolute;
-  /*
-  pointer-events: all;
-  z-index: 5;
-  */
   text-align: center;
   width: 100%;
   bottom: 0;
@@ -1049,7 +1046,6 @@ pdf-page.dragged {
 
 pdf-page.magnify {
   overflow: scroll;
-  /* padding-bottom: 8px; */
 }
 
 pdf-page.magnify canvas {
@@ -1074,7 +1070,7 @@ canvas {
     
     const css = new CSSStyleSheet();
     css.replace(cssData);
-    this.shadow.adoptedStyleSheets = [css];
+    this.shadowRoot.adoptedStyleSheets = [css];
   }
 
   /**

@@ -173,9 +173,9 @@ export default class PDFPage extends HTMLElement {
           this._parent.toggleMagnify();
           return;
         };
-
       };
-           
+
+      this.showInViewport();
       this.swapSelected();
     }).bind(this));
   };
