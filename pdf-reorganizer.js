@@ -644,16 +644,14 @@ export default class PDFReorganizer extends HTMLElement {
       this._cursor.classList.add("cursor");
       this._cursor.focus();
     };
-  };
+  }
 
   /**
    * Single page selected for key navigation
    */
   get cursor () {
     return this._cursor;
-  };
-
-  
+  };  
   
   /**
    * Add splits before all pages in the selection.
@@ -666,6 +664,13 @@ export default class PDFReorganizer extends HTMLElement {
     return i;
   }
 
+  calcSplitCount () {
+    if (this.splitBeforeElem) {
+      const count = this.viewport.getElementsByClassName("split-before").length;
+      this.splitBeforeElem.setAttribute("data-count",count);
+    };
+  }
+  
   /**
    * Move all selected pages in front of a target page.
    *

@@ -293,12 +293,14 @@ export default class PDFPage extends HTMLElement {
     if (this.splittedBefore) {
       this.splittedBefore = false;
       this.classList.remove('split-before');
+      this._parent?.calcSplitCount();
       this.selectOff();
       return false;
     };
 
     this.splittedBefore = true;
     this.classList.add('split-before');
+    this._parent?.calcSplitCount();
     this.selectOff();
     return true;
   };
