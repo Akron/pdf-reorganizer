@@ -1,4 +1,5 @@
 sandbox
+coverage
 *.pl
 *.pdf
 templates

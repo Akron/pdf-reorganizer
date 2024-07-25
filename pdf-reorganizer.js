@@ -94,7 +94,7 @@ export default class PDFReorganizer extends HTMLElement {
       this.process();
     }).bind(this));
 
-    document.addEventListener("keydown", this._keyDownHandler.bind(this));
+    document.addEventListener("keydown", this._keyHandler.bind(this));
 
     // Lazy loading
     this.observeViewport = new IntersectionObserver((entries,observer) => {
@@ -158,7 +158,7 @@ export default class PDFReorganizer extends HTMLElement {
   /**
    * Handle key presses.
    */
-  _keyDownHandler (ev) {
+  _keyHandler (ev) {
     var letter = String.fromCharCode(ev.which);
 
     // delete
@@ -848,8 +848,10 @@ export default class PDFReorganizer extends HTMLElement {
   --pdfro-white: #ffffff;
   --pdfro-deleted-color: #777;
   --pdfro-hover-color: #aaa;
+
   --pdfro-selected-bg-color: #07d;
   --pdfro-selected-color: var(--pdfro-white);
+
   --pdfro-split-before-border-color: #696;
   --pdfro-split-before-bg-color: #6b6;
   --pdfro-split-before-counter-color: #fff;
@@ -985,7 +987,8 @@ pdf-page::after {
   height: 200px;
   margin-top: -100px;
   border-radius: 5px;
-  background-color: var(--pdfro-selected-bg-color);
+  background-color: var(--pdfro-dragged-color);
+  border: 1px solid var(--pdfro-selected-color);
   top: 50%;
 }
 
@@ -997,13 +1000,13 @@ pdf-page.drag-right {
 pdf-page.drag-left::after {
   content: "";
   left: 0;
-  margin-left: -13px;
+  margin-left: -14px;
 }
 
 pdf-page.drag-right::after {
   content: "";
   right: 0;
-  margin-right: -13px;
+  margin-right: -14px;
 }
 
 

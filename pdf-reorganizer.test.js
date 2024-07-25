@@ -108,6 +108,14 @@ describe('PDF Page', () => {
     // Unable to select when deleted
     page.swapSelected();
     expect(page.selected).toBe(false);
+
+    expect(page.deleted).toBe(false);
+    expect(page.classList.contains("deleted")).toBe(false);
+
+    page.unremove();
+
+    expect(page.deleted).toBe(false);
+    expect(page.classList.contains("deleted")).toBe(false);
   });
 
   it('should be rotatable', () => {
@@ -216,6 +224,37 @@ describe('PDF Page', () => {
     expect(page.splitBefore()).toBeFalsy();
     expect(page.splittedBefore).toBeFalsy();
     expect(page.classList.contains("split-before")).toBeFalsy();
+  });
+
+  it('should be magnifiable', () => {
+    let page = new PDFPage(4, null);
+   
+    expect(page.deleted).toBeFalsy();
+    expect(page.classList.contains("split-before")).toBeFalsy();
+    expect(page.classList.contains("magnify")).toBeFalsy();
+
+    expect(page.unmagnify()).toBeFalsy();
+    
+    expect(page.magnify()).toBeTruthy();
+
+    expect(page.classList.contains("magnify")).toBeTruthy();
+
+    expect(page.unmagnify()).toBeTruthy();
+
+    expect(page.classList.contains("magnify")).toBeFalsy();
+
+    page.remove();
+
+    expect(page.deleted).toBe(true);
+
+    expect(page.magnify()).toBeFalsy();
+
+    expect(page.classList.contains("magnify")).toBeFalsy();
+
+    page.unremove();
+    page.rotateRight();
+    expect(page.magnify()).toBeTruthy();
+    expect(page.classList.contains("magnify")).toBeTruthy();
   });
 });
 
@@ -624,7 +663,7 @@ describe('PDF Reorganizer (Key events)', () => {
     expect(reorganizer.cursor.num).toBe(2);
     expect(reorganizer.cursor.splittedBefore).toBeFalsy();
 
-    reorganizer._keyHandler(keyd({key: 'y', ctrlKey: true}));
+    reorganizer._keyHandler(keyd({key: 's', ctrlKey: true}));
     expect(reorganizer.cursor.num).toBe(2);
     expect(reorganizer.cursor.splittedBefore).toBeTruthy();
 
@@ -636,7 +675,7 @@ describe('PDF Reorganizer (Key events)', () => {
     expect(reorganizer.cursor.num).toBe(4);
     expect(reorganizer.cursor.splittedBefore).toBeFalsy();
 
-    reorganizer._keyHandler(keyd({key: 'y', ctrlKey: true}));
+    reorganizer._keyHandler(keyd({key: 's', ctrlKey: true}));
     expect(reorganizer.cursor.num).toBe(4);
     expect(reorganizer.cursor.splittedBefore).toBeTruthy();
 

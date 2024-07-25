@@ -364,16 +364,19 @@ export default class PDFPage extends HTMLElement {
     
     this.classList.add('magnify');
     this._setScaleStyle(1);
-    this.scrollLeft=0;
-    this.scrollTop=0;
+    this.scrollLeft = 0;
+    this.scrollTop = 0;
+    return true;
   }
 
   unmagnify() {
     if (!this.magnified)
-      return;
+      return false;
     this.canvas.style.translate = "0px 0px";
     this.classList.remove('magnify');
-    this._setScaleStyle(1 / this._parent.zoomfactor);
+    if (this._parent)
+      this._setScaleStyle(1 / this._parent.zoomfactor);
+    return true;
   }
   
   /**
