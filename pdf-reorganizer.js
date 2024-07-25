@@ -38,7 +38,7 @@ export default class PDFReorganizer extends HTMLElement {
    
     const nav = document.createElement('nav');
 
-    this.splitBeforeElem = _addNavItem("split-before", "#splitscreen_vertical_add", "Split before current page (Ctrl+Y)");
+    this.splitBeforeElem = _addNavItem("split-before", "#splitscreen_vertical_add", "Split before selected pages (Ctrl+Shift+S)");
     nav.appendChild(this.splitBeforeElem);
 
     this.rotateLeftElem = _addNavItem("rotate-left", "#rotate_90_degrees_ccw", "Rotate 90deg ccw (Ctrl+left arrow");
@@ -275,13 +275,19 @@ export default class PDFReorganizer extends HTMLElement {
       break;
 
     // Split before
-    case "y":
-      if (ev.ctrlKey && this.cursor != null) {
-        ev.preventDefault();
-        this.cursor.splitBefore();
-        break;
-      };
+    case "s":
+    case "S":
 
+      if (ev.ctrlKey) {
+        ev.preventDefault();
+        if (ev.shiftKey) {
+          this.splitBefore();
+        }
+        else if (this.cursor != null)
+          this.cursor.splitBefore();
+      };
+      break;
+      
     // Select all
     case "a":
       if (ev.ctrlKey) {
@@ -289,7 +295,7 @@ export default class PDFReorganizer extends HTMLElement {
         this.selectAll();
         break;
       };
-      
+     
     case "+":
       if (!ev.ctrlKey)
         break;
@@ -305,13 +311,13 @@ export default class PDFReorganizer extends HTMLElement {
       };
 
       break;
-
+      
     // Space
     case " ":
       if (this.cursor != null) {
         ev.preventDefault();
         this.cursor.swapSelected();
-      };
+      };    
       break;
 
     case "Enter":
@@ -919,13 +925,15 @@ nav > div:hover, nav > div.active {
 
 nav > div::after {
  position: absolute;
-  font-size: 80%;
+  font-size: 8pt;
   background-color: var(--pdfro-selected-bg-color);
   color: var(--pdfro-white);
-  border-radius: 6px;
+  border-radius: 8pt;
   padding: 0 3pt;
   margin-top: -6pt;
   content: attr(data-count);
+  cursor: default;
+  pointer-events: none;
 }
 
 nav > div[data-count="0"]::after,
