@@ -35,7 +35,7 @@ export default class PDFReorganizer extends HTMLElement {
     
     this.attachShadow({ mode: "open" });
    
-    let nav = document.createElement('nav');
+    const nav = document.createElement('nav');
 
     this.splitBeforeElem = _addNavItem("split-before", "#splitscreen_vertical_add", "Split before current page (Ctrl+Y)");
     nav.appendChild(this.splitBeforeElem);
@@ -153,7 +153,7 @@ export default class PDFReorganizer extends HTMLElement {
 
     return selList;
   }
-
+ 
   /**
    * Handle key presses.
    */
@@ -676,25 +676,6 @@ export default class PDFReorganizer extends HTMLElement {
   }
 
   /**
-   * Load CSS file and add it to the shadow dom.
-   *
-   * @param {url} URL of the CSS file.
-   */
-  loadCSS(url) {
-    const shadow = this.shadowRoot;
-    const css = new CSSStyleSheet();
-
-    fetch(url).then(
-      response => response.text()
-    ).then(
-      data => {
-        css.replace(data)
-        shadow.adoptedStyleSheets = [css];
-      }
-    );
-  }
-
-  /**
    * Load a PDF document.
    *
    * @param {url} URL or Int array representing the document.
@@ -821,17 +802,21 @@ export default class PDFReorganizer extends HTMLElement {
   --pdfro-loader: var(--pdfro-selected-bg-color);
   --pdfro-viewport-height: 244px;
   --pdfro-viewport-width: 232px;
+  display: block;
+  position: relative;
 }
 
+/* Ignored: */
 pdf-reorganizer {
   display: block;
+  position: inherit;
 }
 
 #pdf-viewport {
   counter-reset: splite 0;
   border: 1px solid var(--pdfro-main-color);
   padding: 10px; /* Make the dragger visible */
-  padding-top: 38px; /* Make the nav visible */
+  padding-left: 42px; /* Make the nav visible */
   display: flex;
   flex-wrap: wrap;
   align-items: start;
@@ -848,7 +833,7 @@ pdf-reorganizer {
 }
 
 nav {
-  position: fixed;
+  position: absolute;
   z-index: 10;
 /*  font-size: 80%; */
   display: block;
@@ -857,15 +842,17 @@ nav {
   background-color: var(--pdfro-white);
   box-shadow: rgba(50, 50, 50, 0.5) 2px 2px 2px 1px;
   margin:4pt;
+  width: 28px;
 }
 
 nav > div {
   display: inline-block;
   cursor: pointer;
   padding: 2pt;
-  margin: 0 2pt;
   padding-bottom: 0;
+  margin: 2pt;
   fill: var(--pdfro-main-color);
+  border-radius: 3px;
 }
 
 nav > div:hover, nav > div.active {
@@ -879,7 +866,7 @@ nav > div::after {
   font-size: 80%;
   background-color: var(--pdfro-selected-bg-color);
   color: var(--pdfro-white);
-  border-radius: 5px;
+  border-radius: 6px;
   padding: 0 3pt;
   margin-top: -6pt;
   content: attr(data-count);
@@ -888,6 +875,7 @@ nav > div::after {
 nav > div[data-count="0"]::after,
 nav > div[data-count="1"]::after {
   content: none;
+  box-shadow: none;
 }
 
 nav > div > svg {
