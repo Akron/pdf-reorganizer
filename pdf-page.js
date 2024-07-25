@@ -4,9 +4,6 @@ const outputScale = window.devicePixelRatio || 1;
 const desiredWidth = 100;
 const desiredHeight = 100;
 
-var dropTarget = null;
-
-
 // - Change selectOn/selectOff to select(true) and select(false)
 
 /**
@@ -91,19 +88,15 @@ export default class PDFPage extends HTMLElement {
       this._parent.forEachSelected(function (obj) {
         obj.classList.remove("dragged");
       });
-      if (dropTarget != null) {
-        dropTarget.classList.remove('drag-left','drag-right');
-        dropTarget = null;
-      }
+      if (this._parent)
+        this._parent.dropTarget = null;
     }).bind(this));
 
     // Dragleave
     this.addEventListener("dragleave", function (ev) {
       ev.preventDefault();
-      if (dropTarget != null) {
-        dropTarget.classList.remove('drag-left','drag-right');
-        dropTarget = null;
-      };
+      if (this._parent)
+        this._parent.dropTarget = null;
 
       this.classList.remove("drag-left","drag-right");
     });
@@ -123,11 +116,8 @@ export default class PDFPage extends HTMLElement {
         cl.add("drag-right");
       };
 
-      if (dropTarget != null && dropTarget != this) {
-        dropTarget.classList.remove('drag-left','drag-right');
-        dropTarget = null;
-      };
-      dropTarget = this
+      if (this._parent)
+        this._parent.dropTarget = this;
     });
 
     // Drop
@@ -136,10 +126,8 @@ export default class PDFPage extends HTMLElement {
 
       // Currently no "dataTransfer" is used
 
-      if (dropTarget != null) {
-        dropTarget.classList.remove('drag-left','drag-right');
-        dropTarget = null;
-      }
+      if (this._parent)
+        this._parent.dropTarget = null;
 
       this.classList.remove("drag-left","drag-right");
 

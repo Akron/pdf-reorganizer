@@ -234,8 +234,9 @@ describe('PDF Reorganizer', () => {
 
     expect(reorganizer.children.length).toBe(0);
 
-    let s = reorganizer.shadow;
-    expect(s.firstChild.tagName).toBe("NAV");
+    let s = reorganizer.shadowRoot;
+    expect(s.firstChild.tagName).toBe("svg"); // symbols
+    expect(s.children[1].tagName).toBe("NAV");
     expect(s.lastChild.tagName).toBe("DIV");
     expect(s.lastChild.getAttribute('id')).toBe("pdf-viewport");
   });
@@ -653,4 +654,6 @@ describe('PDF Reorganizer (Key events)', () => {
   test.todo('should scroll magnified in all directions');
 
   test.todo('should jump scroll magnified in all directions');
+
+  test.todo('should accept configuration');
 });

@@ -57,6 +57,12 @@ In magnified view:
 | down   | Ctrl       | Move viewport to bottom |
 | Escape |            | Leave magnifier view |
 
+# Observed attributes
+
+| Key | |
+|-----|-|
+| url | URL of the PDF file to be shown |
+
 # Processing directives
 
 After rearranging all pages into new documents, the `processed` custom event is dispatched.

@@ -28,7 +28,8 @@ export default class PDFReorganizer extends HTMLElement {
     this.numPages = 0;
     this.pdfDoc = undefined;
 
-    this.cursor = null;
+    this._cursor = null;
+    this._dropTarget = null;
     this.zoomfactor = 4;
     this.scrollStep = 14;
     this.selected = new Set();
@@ -124,7 +125,7 @@ export default class PDFReorganizer extends HTMLElement {
   };
   
   static get observedAttributes() {
-    return ['url','css','onprocess'];
+    return ['url','onprocess'];
   }
 
   // attribute change
@@ -189,6 +190,15 @@ export default class PDFReorganizer extends HTMLElement {
           this.cursor.rotateLeft();
         break;
       };
+
+      /*
+      drop target:
+      if (ev.altKey) {
+        if (this.selected.size > 0) {
+          this.cursor.add('drag-left')
+        }
+      }
+      */
 
       this._moveLeft();
       break;
@@ -631,6 +641,23 @@ export default class PDFReorganizer extends HTMLElement {
   };  
   
   /**
+   * Set dropTarget for page moving.
+   */
+  set dropTarget (page) {
+    if (this._dropTarget != null && this._dropTarget != page) {
+      this._dropTarget.classList.remove('drag-left','drag-right');
+    }
+    this._dropTarget = page;
+  }
+
+  /**
+   * Get dropTarget for page moving.
+   */
+  get dropTarget () {
+    return this._dropTarget;
+  }
+  
+  /**
    * Add splits before all pages in the selection.
    */
   splitBefore() {
@@ -779,7 +806,8 @@ export default class PDFReorganizer extends HTMLElement {
 
     this.dispatchEvent(new CustomEvent("processed", {
       detail: {
-        directive: alldocs
+        "src": [this.url],
+        "docs": alldocs
       }
     }));
     
