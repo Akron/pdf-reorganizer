@@ -200,7 +200,7 @@ export default class PDFReorganizer extends HTMLElement {
           cl.remove('drag-right');
         }
         this.dropTarget = this.cursor;
-        break;
+        return; // Don't reset dropTarget!
       };
 
       this._moveLeft();
@@ -252,7 +252,7 @@ export default class PDFReorganizer extends HTMLElement {
           cl.remove('drag-left');
         }
         this.dropTarget = this.cursor;
-        break;
+        return; // Don't reset dropTarget!
       };
 
       this._moveRight();
@@ -332,6 +332,7 @@ export default class PDFReorganizer extends HTMLElement {
       console.log(ev);
       */
     };
+    this.dropTarget = null;
   }
   
   /**
