@@ -39,9 +39,9 @@ In Reorganizer Viewport:
 | right  | Alt        | Choose preceding target to move selected pages (requires confirmation) |
 | left   | Alt        | Choose following target to move selected pages (requires confirmation) |
 | Delete |            | Remove page on cursor position (If no cursor exists, remove all selected) |
-| Delete | Ctrl       | Remove all selected pages |
+| Delete | Shift      | Remove all selected pages |
 | Space  |            | Add page on cursor to the selection or remove from it |
-| s      | Ctrl       | Add split before page on cursor |
+| s      | Ctrl       | Add split before page on cursor (If no cursor exists, add split before selected pages) |
 | s/S    | Ctrl+Shift | Add split before selected pages |
 | +      | Ctrl       | Open magnified view on cursor |
 | a      | Ctrl       | Select all pages |

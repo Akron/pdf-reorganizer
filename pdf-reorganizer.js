@@ -53,7 +53,7 @@ export default class PDFReorganizer extends HTMLElement {
     this.allElem = _addNavItem("select-all", "#select_all", "Select all pages (Ctrl+a)");
     nav.appendChild(this.allElem);
 
-    this.delElem = _addNavItem("delete", "#scan_delete", "Delete selected pages (Delete)");
+    this.delElem = _addNavItem("delete", "#scan_delete", "Delete selected pages (Delete+Shift)");
     nav.appendChild(this.delElem);
 
     this.magElem = _addNavItem("magnify", "#zoom_in", "Start magnifying mode");
@@ -165,7 +165,7 @@ export default class PDFReorganizer extends HTMLElement {
     switch (ev.key) {
     case "Delete":
       ev.preventDefault();
-      if (ev.ctrlKey || this.cursor == null)
+      if (ev.shiftKey || this.cursor == null)
         this.remove();
       else
         this.cursor.remove();
@@ -280,10 +280,10 @@ export default class PDFReorganizer extends HTMLElement {
 
       if (ev.ctrlKey) {
         ev.preventDefault();
-        if (ev.shiftKey) {
+        if (ev.shiftKey || this.cursor == null) {
           this.splitBefore();
         }
-        else if (this.cursor != null)
+        else
           this.cursor.splitBefore();
       };
       break;
