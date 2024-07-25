@@ -36,12 +36,15 @@ In Reorganizer Viewport:
 | left   | Ctrl       | Rotate page on cursor position 90deg counter clockwise |
 | right  | Ctrl+Shift | Rotate selected pages 90deg clockwise |
 | left   | Ctrl+Shift | Rotate selected pages 90deg counter clockwise |
+| right  | Alt        | Choose preceding target to move selected pages (requires confirmation) |
+| left   | Alt        | Choose following target to move selected pages (requires confirmation) |
 | Delete |            | Remove page on cursor position (If no cursor exists, remove all selected) |
 | Delete | Ctrl       | Remove all selected pages |
 | Space  |            | Add page on cursor to the selection or remove from it |
 | y      | Ctrl       | Add split before page  on cursor |
 | +      | Ctrl       | Open magnified view on cursor |
 | a      | Ctrl       | Select all pages |
+| Enter  |            | Confirm moving selected pages |
 
 In magnified view:
 

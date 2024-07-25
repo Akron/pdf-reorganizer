@@ -94,7 +94,7 @@ export default class PDFReorganizer extends HTMLElement {
       this.process();
     }).bind(this));
 
-    document.addEventListener("keydown", this._keyHandler.bind(this));
+    document.addEventListener("keydown", this._keyDownHandler.bind(this));
 
     // Lazy loading
     this.observeViewport = new IntersectionObserver((entries,observer) => {
@@ -158,7 +158,7 @@ export default class PDFReorganizer extends HTMLElement {
   /**
    * Handle key presses.
    */
-  _keyHandler (ev) {
+  _keyDownHandler (ev) {
     var letter = String.fromCharCode(ev.which);
 
     // delete
@@ -183,6 +183,7 @@ export default class PDFReorganizer extends HTMLElement {
         break;
       };      
 
+      // Rotate
       if (ev.ctrlKey) {
         if (ev.shiftKey)
           this.rotateLeft();
@@ -191,14 +192,16 @@ export default class PDFReorganizer extends HTMLElement {
         break;
       };
 
-      /*
-      drop target:
+      // drop
       if (ev.altKey) {
         if (this.selected.size > 0) {
-          this.cursor.add('drag-left')
+          const cl = this.cursor.classList;
+          cl.add('drag-left');
+          cl.remove('drag-right');
         }
-      }
-      */
+        this.dropTarget = this.cursor;
+        break;
+      };
 
       this._moveLeft();
       break;
@@ -232,11 +235,23 @@ export default class PDFReorganizer extends HTMLElement {
         break;
       };
 
+      // Rotate
       if (ev.ctrlKey) {
         if (ev.shiftKey)
           this.rotateRight();
         else if (this.cursor != null)
           this.cursor.rotateRight();
+        break;
+      };
+
+      // drop
+      if (ev.altKey) {
+        if (this.selected.size > 0) {
+          const cl = this.cursor.classList;
+          cl.add('drag-right');
+          cl.remove('drag-left');
+        }
+        this.dropTarget = this.cursor;
         break;
       };
 
@@ -292,7 +307,6 @@ export default class PDFReorganizer extends HTMLElement {
       break;
 
     // Space
-    // case "Enter":
     case " ":
       if (this.cursor != null) {
         ev.preventDefault();
@@ -300,6 +314,19 @@ export default class PDFReorganizer extends HTMLElement {
       };
       break;
 
+    case "Enter":
+
+      const dt = this.dropTarget;
+      if (dt != null && this.selected.size > 0) {
+        if (dt.classList.contains("drag-left")) {
+          this.moveBefore(dt);
+        } else {
+          this.moveAfter(dt);
+        }
+        this.dropTarget = null;
+        ev.preventDefault();
+      };
+      
       /*
     default:
       console.log(ev);
