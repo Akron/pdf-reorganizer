@@ -147,7 +147,7 @@ export default class PDFPage extends HTMLElement {
     // Click
     this.addEventListener('click', (function (ev) {
 
-      if (!ev.ctrlKey && !this._parent?.magnified && !this._parent?.selectorActive) {
+      if (!ev.ctrlKey && !this._parent?.magnifierActive && !this._parent?.selectorActive) {
         this._parent.delSelectAllExceptFor(this);
       };
 
@@ -156,9 +156,9 @@ export default class PDFPage extends HTMLElement {
         this._parent.cursor = this;
         this.classList.remove("cursor","move");
 
-        if (this._parent?.magnified) {
+        if (this._parent?.magnifierActive) {
           this.magnify();
-          this._parent.toggleMagnify();
+          this._parent.toggleMagnifier();
           return;
         };
       };
@@ -266,7 +266,7 @@ export default class PDFPage extends HTMLElement {
   selectOff() {
     if (!this.selected) return;
     this.selected = false;
-    this.classList.remove('selected');
+    this.classList.remove('selected','dragged');
     if (this._parent)
       this._parent.delSelect(this);
   };

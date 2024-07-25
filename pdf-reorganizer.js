@@ -86,7 +86,7 @@ export default class PDFReorganizer extends HTMLElement {
     this.rotateLeftElem.addEventListener('click', this.rotateLeft.bind(this));
     this.rotateRightElem.addEventListener('click', this.rotateRight.bind(this));
     this.splitBeforeElem.addEventListener('click', this.splitBefore.bind(this));
-    this.magElem.addEventListener('click', this.toggleMagnify.bind(this));
+    this.magElem.addEventListener('click', this.toggleMagnifier.bind(this));
     this.allElem.addEventListener('click', this.selectAll.bind(this));
     this.selElem.addEventListener('click', this.toggleSelector.bind(this));
 
@@ -306,7 +306,7 @@ export default class PDFReorganizer extends HTMLElement {
 
     case "Escape":
       if (this.cursor.magnified) {
-        ev.preventDefault();
+        // ev.preventDefault();
         this.cursor.unmagnify();
       };
 
@@ -533,16 +533,9 @@ export default class PDFReorganizer extends HTMLElement {
   }
 
   /**
-   * Check if magnifier is active.
-   */
-  get magnified() {
-    return this.viewport.classList.contains("magnify");
-  }
-  
-  /**
    * Starts or ends the magnifier.
    */
-  toggleMagnify() {
+  toggleMagnifier() {
     this.magElem?.classList.toggle("active");
     this.viewport.classList.remove("select");
     this.viewport.classList.toggle("magnify");
@@ -551,7 +544,7 @@ export default class PDFReorganizer extends HTMLElement {
   /**
    * Check if magnifier is active.
    */
-  get magnified() {
+  get magnifierActive() {
     return this.viewport.classList.contains("magnify");
   }
 
