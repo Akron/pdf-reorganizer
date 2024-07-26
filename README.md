@@ -1,5 +1,7 @@
 # pdf-reorganizer
 
+![pdf-reorganizer](demo/pdf-reorganizer.png)
+
 PDF-reorg is a web component to help rearrange and split PDFs.
 It does not modify PDF documents itself, but creates a [processing instruction](# Processing directives)
 that can be implemented independent of PDF processing APIs or programming languages. 
