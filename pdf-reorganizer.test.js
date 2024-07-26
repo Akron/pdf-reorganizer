@@ -932,6 +932,91 @@ describe('PDF Reorganizer (Key events)', () => {
     expect(JSON.stringify(reorganizer.process())).toEqual('[["3","4","5","6","7","8"]]');
   });
 
+  it('should move and rotate all selected', async () => {
+    let reorganizer = new PDFReorganizer();
+    expect(reorganizer.children.length).toBe(0);
+    
+    // Async testing
+    let result = await reorganizer.loadDocument(examplepdf);
+    expect(result).toBe(8);
+
+    reorganizer._keyHandler(keyd({key: 'ArrowRight'}));
+    expect(reorganizer.cursor.num).toBe(1);
+    expect(reorganizer.cursor.selected).toBeFalsy();
+    expect(reorganizer.selected.size).toBe(0);
+
+    reorganizer._keyHandler(keyd({key: ' '}));
+    expect(reorganizer.selected.size).toBe(1);
+    expect(reorganizer.cursor.deleted).toBeFalsy();
+
+    reorganizer._keyHandler(keyd({key: 'ArrowRight'}));
+    expect(reorganizer.cursor.num).toBe(2);
+    expect(reorganizer.cursor.selected).toBeFalsy();
+
+    reorganizer._keyHandler(keyd({key: ' '}));
+    expect(reorganizer.selected.size).toBe(2);
+    expect(reorganizer.cursor.selected).toBeTruthy();
+    expect(reorganizer.cursor.rotation).toEqual(0);
+    
+    expect(reorganizer.cursor.deleted).toBeFalsy();
+    reorganizer._keyHandler(keyd({key: 'ArrowRight', shiftKey: true, ctrlKey: true}));
+    expect(reorganizer.cursor.num).toBe(2);
+    expect(reorganizer.cursor.selected).toBeTruthy();
+    expect(reorganizer.cursor.rotation).toEqual(90);
+
+    reorganizer._keyHandler(keyd({key: 'ArrowRight', shiftKey: true, ctrlKey: true}));
+    expect(reorganizer.cursor.num).toBe(2);
+    expect(reorganizer.cursor.selected).toBeTruthy();
+    expect(reorganizer.cursor.rotation).toEqual(180);
+
+    reorganizer._keyHandler(keyd({key: 'ArrowRight'}));
+    expect(reorganizer.cursor.num).toBe(3);
+    expect(reorganizer.cursor.selected).toBeFalsy();
+    expect(reorganizer.cursor.rotation).toEqual(0);
+
+    reorganizer._keyHandler(keyd({key: 'ArrowLeft', shiftKey: true, ctrlKey: true}));
+    expect(reorganizer.cursor.num).toBe(3);
+    expect(reorganizer.cursor.selected).toBeFalsy();
+    expect(reorganizer.cursor.rotation).toEqual(0);
+
+    reorganizer._keyHandler(keyd({key: 'ArrowLeft', ctrlKey: true}));
+    expect(reorganizer.cursor.num).toBe(3);
+    expect(reorganizer.cursor.selected).toBeFalsy();
+    expect(reorganizer.cursor.rotation).toEqual(270);
+
+    reorganizer._keyHandler(keyd({key: 'ArrowLeft'}));
+    expect(reorganizer.cursor.num).toBe(2);
+    expect(reorganizer.cursor.selected).toBeTruthy();
+    expect(reorganizer.cursor.rotation).toEqual(90);
+
+    reorganizer._keyHandler(keyd({key: 'ArrowRight', ctrlKey: true}));
+    expect(reorganizer.cursor.num).toBe(2);
+    expect(reorganizer.cursor.selected).toBeTruthy();
+    expect(reorganizer.cursor.rotation).toEqual(180);
+    
+    reorganizer._keyHandler(keyd({key: 'ArrowLeft'}));
+    expect(reorganizer.cursor.num).toBe(1);
+    expect(reorganizer.cursor.selected).toBeTruthy();
+    expect(reorganizer.cursor.rotation).toEqual(90);
+
+    
+    /*
+    reorganizer._keyHandler(keyd({key: 'ArrowRight'}));
+    expect(reorganizer.cursor.num).toBe(3);
+    expect(reorganizer.cursor.deleted).toBeFalsy();
+
+    reorganizer._keyHandler(keyd({key: 'ArrowLeft'}));
+    expect(reorganizer.cursor.num).toBe(2);
+    expect(reorganizer.cursor.deleted).toBeTruthy();
+
+    reorganizer._keyHandler(keyd({key: 'ArrowLeft'}));
+    expect(reorganizer.cursor.num).toBe(1);
+    expect(reorganizer.cursor.deleted).toBeTruthy();
+
+    expect(JSON.stringify(reorganizer.process())).toEqual('[["3","4","5","6","7","8"]]');
+*/
+  });
+  
   it('should move and magnify', async () => {
     let reorganizer = new PDFReorganizer();
     expect(reorganizer.children.length).toBe(0);
@@ -1034,9 +1119,14 @@ describe('PDF Reorganizer (Key events)', () => {
   // as it requires a flexbox enabled viewport.
   test.todo('should move up/down with different rows');
 
-  test.todo('should move before/after');
-
-  test.todo('should use magnifier');
+  test.todo('should move and drop selected');
 
   test.todo('should accept configuration');
+
+  test.todo('should move and rotate all selected');
+
+  test.todo('should move and split before all selected');
+
+  test.todo('should select all pages');
+
 });

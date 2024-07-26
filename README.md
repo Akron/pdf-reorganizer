@@ -28,7 +28,7 @@ In Reorganizer Viewport:
 
 | Key    | Modifier   | Command |
 |--------|------------|---------|
-| right  |            | Move cursor to next page |
+| right  |    !        | Move cursor to next page |
 | left   |            | Move cursor to previous page |
 | top    |            | Move cursor to page above in viewport |
 | down   |            | Move cursor to page below in viewport |
@@ -63,8 +63,8 @@ In magnified view:
 
 # Observed attributes
 
-| Key | |
-|-----|-|
+| Key | Value |
+|-----|-------|
 | url | URL of the PDF file to be shown |
 
 # Processing directives
