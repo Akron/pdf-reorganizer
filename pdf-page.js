@@ -41,7 +41,7 @@ export default class PDFPage extends HTMLElement {
     this.canvas.setAttribute('droppable',false);
 
     // container
-    let container = document.createElement("div");
+    const container = document.createElement("div");
     container.classList.add('container');
     container.setAttribute('droppable',false);
     container.setAttribute('data-num', this.num);
@@ -49,100 +49,11 @@ export default class PDFPage extends HTMLElement {
     this.appendChild(container);
     
     // Establish event listeners
-
-    var instance = this;
-    
-    // Dragstart
-    this.addEventListener("dragstart", (function (ev) {
-
-      // TODO:
-      // - Check if the object is selected
-      // - Check, if multiple objects are selected.
-      //   -> make all "dragged
-
-      this.selectOn();
-
-      this._parent.forEachSelected(function (obj) {
-        obj.classList.add("dragged");
-      });
-      
-      // create drag image
-      let newCanvas = document.createElement('canvas');
-      let context = newCanvas.getContext('2d');
-
-      // set dimensions
-      newCanvas.width = this.canvas.width * 0.5;
-      newCanvas.height = this.canvas.height * 0.5;
-
-      // apply the old canvas to the new one
-      context.drawImage(
-        this.canvas, 0, 0, newCanvas.width, newCanvas.height
-      ); 
-      
-      ev.dataTransfer.dropEffect = "move";
-      ev.dataTransfer.setDragImage(newCanvas, -15, -15);
-    }).bind(this));
-
-    // Dragend
-    this.addEventListener("dragend", (function (ev) {     
-      this._parent.forEachSelected(function (obj) {
-        obj.classList.remove("dragged");
-      });
-      if (this._parent)
-        this._parent.dropTarget = null;
-    }).bind(this));
-
-    // Dragleave
-    this.addEventListener("dragleave", function (ev) {
-      ev.preventDefault();
-      if (this._parent)
-        this._parent.dropTarget = null;
-
-      this.classList.remove("drag-left","drag-right");
-    });
-
-    // Dragover
-    this.addEventListener("dragover", function (ev) {
-      ev.preventDefault();
-      // Set the dropEffect to move
-      ev.dataTransfer.dropEffect = "move";
-
-      let cl = this.classList;
-      if (_pointerBefore(this, ev)) {
-        cl.add("drag-left");
-        cl.remove("drag-right");
-      } else {
-        cl.remove("drag-left");
-        cl.add("drag-right");
-      };
-
-      if (this._parent)
-        this._parent.dropTarget = this;
-    });
-
-    // Drop
-    this.addEventListener("drop", function (ev) {
-      ev.preventDefault();
-
-      // Currently no "dataTransfer" is used
-
-      if (this._parent)
-        this._parent.dropTarget = null;
-
-      this.classList.remove("drag-left","drag-right");
-
-      var target = this;
-      
-      while (target.tagName != 'PDF-PAGE')
-        target = target.parentNode;
-
-      // TODO: Instance may not be required!
-      if (_pointerBefore(this, ev)) {
-        instance._parent.moveBefore(target);
-      } else {
-        instance._parent.moveAfter(target);
-      };
-    });
+    this.addEventListener("dragstart", this._dragStartHandler.bind(this));
+    this.addEventListener("dragend", this._dragEndHandler.bind(this));
+    this.addEventListener("dragleave", this._dragLeaveHandler);
+    this.addEventListener("dragover", this._dragOverHandler);
+    this.addEventListener("drop", this._dropHandler);
     
     // Click
     this.addEventListener('click', (function (ev) {
@@ -168,6 +79,95 @@ export default class PDFPage extends HTMLElement {
     }).bind(this));
   };
 
+  _dragStartHandler (ev) {
+
+    // TODO:
+    // - Check if the object is selected
+    // - Check, if multiple objects are selected.
+    //   -> make all "dragged
+
+    this.selectOn();
+
+    this._parent?.forEachSelected(function (obj) {
+      obj.classList.add("dragged");
+    });
+      
+    // create drag image
+    let newCanvas = document.createElement('canvas');
+    let context = newCanvas.getContext('2d');
+
+    if (context) {
+      // set dimensions
+      newCanvas.width = this.canvas.width * 0.5;
+      newCanvas.height = this.canvas.height * 0.5;
+
+      // apply the old canvas to the new one
+      context.drawImage(
+        this.canvas, 0, 0, newCanvas.width, newCanvas.height
+      );
+    };
+
+    ev.dataTransfer.setDragImage(newCanvas, -15, -15);
+    ev.dataTransfer.dropEffect = "move";
+  };
+
+  _dragEndHandler (ev) {     
+    if (!this._parent)
+      return;
+    this._parent.forEachSelected(function (obj) {
+      obj.classList.remove("dragged");
+    });
+    this._parent.dropTarget = null;
+  };
+
+  _dragLeaveHandler (ev) {
+    ev.preventDefault();
+    if (this._parent)
+      this._parent.dropTarget = null;
+    
+    this.classList.remove("drag-left","drag-right");
+  };
+
+  _dragOverHandler (ev) {
+    ev.preventDefault();
+    // Set the dropEffect to move
+    ev.dataTransfer.dropEffect = "move";
+
+    let cl = this.classList;
+    if (_pointerBefore(this, ev)) {
+      cl.add("drag-left");
+      cl.remove("drag-right");
+    } else {
+      cl.remove("drag-left");
+      cl.add("drag-right");
+    };
+    
+    if (this._parent)
+      this._parent.dropTarget = this;
+  };
+
+  _dropHandler (ev) {
+    ev.preventDefault();
+
+    // Currently no "dataTransfer" is used
+
+    if (this._parent)
+      this._parent.dropTarget = null;
+
+    this.classList.remove("drag-left","drag-right");
+
+    var target = this;
+    
+    while (target.tagName != 'PDF-PAGE')
+      target = target.parentNode;
+
+    if (_pointerBefore(this, ev)) {
+      this._parent.moveBefore(target);
+    } else {
+      this._parent.moveAfter(target);
+    };
+  };
+  
   /**
    * Renders the referenced PDF page using PDF.js.
    *

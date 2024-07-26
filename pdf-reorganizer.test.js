@@ -4,7 +4,6 @@ import PDFReorganizer from './pdf-reorganizer.js';
 import { describe, it, expect, vi, test } from 'vitest'
 import { resolve } from 'path'
 
-
 window = global;
 
 describe('PDF Page', () => {
@@ -255,6 +254,56 @@ describe('PDF Page', () => {
     page.rotateRight();
     expect(page.magnify()).toBeTruthy();
     expect(page.classList.contains("magnify")).toBeTruthy();
+  });
+
+  it('should be draggable (wo reorganizer)', () => {
+    let page = new PDFPage(4, null);
+    let dragEv = new Object();
+    dragEv.dataTransfer = {
+      "dropEffect" : "ok",
+      "setDragImage" : function () {}
+    };
+    dragEv.preventDefault = function () {};
+
+    expect(page.selected).toBe(false);
+    expect(page.classList.contains("selected")).toBe(false);    
+
+    page._dragStartHandler(dragEv);
+    expect(page.selected).toBeTruthy();
+    expect(page.classList.contains("selected")).toBeTruthy();
+    expect(dragEv.dataTransfer.dropEffect).toBe("move");
+
+    page._dragEndHandler(dragEv);
+    expect(page.selected).toBeTruthy();
+    expect(page.classList.contains("selected")).toBeTruthy();
+
+    page.classList.add("drag-left","drag-right");
+    expect(page.classList.contains("drag-left")).toBeTruthy();
+    expect(page.classList.contains("drag-right")).toBeTruthy();
+
+    page._dragLeaveHandler(dragEv);
+    expect(page.classList.contains("drag-left")).toBeFalsy();
+    expect(page.classList.contains("drag-right")).toBeFalsy();
+
+    page.classList.add("drag-left","drag-right");
+    dragEv.dataTransfer.dropEffect = "ok";
+    page._dragOverHandler(dragEv);
+    expect(dragEv.dataTransfer.dropEffect).toBe("move");
+    expect(page.classList.contains("drag-left")).toBeFalsy();
+    expect(page.classList.contains("drag-right")).toBeTruthy(); // default!
+
+    let dir = "unknown";
+    page._parent = {
+      dropTarget : new Object(),
+      moveAfter : function() { dir = "after"},
+      moveBefore : function() { dir = "before"},
+    };
+    
+    page._dropHandler(dragEv);
+    expect(page.classList.contains("drag-left")).toBeFalsy();
+    expect(page.classList.contains("drag-right")).toBeFalsy();
+    expect(page._parent.dropTarget).toBeNull();
+    expect(dir).toBe("after");
   });
 });
 
