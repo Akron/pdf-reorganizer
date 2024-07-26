@@ -140,6 +140,8 @@ export default class PDFReorganizer extends HTMLElement {
   /**
    * Return selected elements in order of appearance
    * in the viewport.
+   *
+   * @private
    */
   _selectedSort () {
     if (this.selected.size < 2)
@@ -157,6 +159,8 @@ export default class PDFReorganizer extends HTMLElement {
  
   /**
    * Handle key presses.
+   *
+   * @private
    */
   _keyHandler (ev) {
     var letter = String.fromCharCode(ev.which);
@@ -343,6 +347,8 @@ export default class PDFReorganizer extends HTMLElement {
   
   /**
    * Move cursor to left.
+   *
+   * @private
    */
   _moveLeft () {
         
@@ -372,6 +378,8 @@ export default class PDFReorganizer extends HTMLElement {
 
   /**
    * Move cursor to right.
+   *
+   * @private
    */
   _moveRight () {
 
@@ -401,6 +409,8 @@ export default class PDFReorganizer extends HTMLElement {
 
   /**
    * Move cursor up.
+   *
+   * @private
    */
   _moveUp () {
 
@@ -449,6 +459,8 @@ export default class PDFReorganizer extends HTMLElement {
 
   /**
    * Move cursor down.
+   *
+   * @private
    */
   _moveDown () {
 
@@ -528,6 +540,11 @@ export default class PDFReorganizer extends HTMLElement {
     this.viewport.classList.toggle("select");
   }
 
+  /**
+   * Check if the selector is active.
+   *
+   * @return {bool} Activity state.
+   */
   get selectorActive() {
     return this.viewport.classList.contains("select");
   }
@@ -543,6 +560,8 @@ export default class PDFReorganizer extends HTMLElement {
 
   /**
    * Check if magnifier is active.
+   *
+   * @return {bool} Activity state.
    */
   get magnifierActive() {
     return this.viewport.classList.contains("magnify");

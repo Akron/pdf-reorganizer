@@ -562,6 +562,52 @@ describe('PDF Reorganizer', () => {
 
     expect(reorganizer.viewport.children.length).toBe(7);
   });
+
+  it('should use the selector mode', async () => {
+    let reorganizer = new PDFReorganizer();
+    expect(reorganizer.children.length).toBe(0);
+    
+    // Async testing
+    let result = await reorganizer.loadDocument(examplepdf);
+    expect(result).toBe(8);
+    expect(reorganizer.selected.size).toBe(0);
+
+    expect(reorganizer.selectorActive).toBeFalsy();
+    expect(reorganizer.selElem.classList.contains('active')).toBeFalsy();
+    expect(reorganizer.viewport.classList.contains('magnify')).toBeFalsy();
+    expect(reorganizer.viewport.classList.contains('select')).toBeFalsy();
+
+    let page = reorganizer.getPage(3); // 4
+    page._clickHandler({ctrlKey:null});
+    expect(reorganizer.selected.size).toBe(1);
+
+    page = reorganizer.getPage(4); // 5
+    page._clickHandler({ctrlKey:null});
+    expect(reorganizer.selected.size).toBe(1);
+
+    page = reorganizer.getPage(5); // 6
+    page._clickHandler({ctrlKey:null});
+    expect(reorganizer.selected.size).toBe(1);
+
+    reorganizer.toggleSelector();
+
+    page = reorganizer.getPage(3); // 4
+    page._clickHandler({ctrlKey:null});
+    expect(reorganizer.selected.size).toBe(2);
+
+    page = reorganizer.getPage(4); // 5
+    page._clickHandler({ctrlKey:null});
+    expect(reorganizer.selected.size).toBe(3);
+
+    page = reorganizer.getPage(5); // 6
+    page._clickHandler({ctrlKey:null});
+    expect(reorganizer.selected.size).toBe(2);
+    
+    expect(reorganizer.selectorActive).toBeTruthy();
+    expect(reorganizer.selElem.classList.contains('active')).toBeTruthy();
+    expect(reorganizer.viewport.classList.contains('magnify')).toBeFalsy();
+    expect(reorganizer.viewport.classList.contains('select')).toBeTruthy();
+  });
 });
 
 describe('PDF Reorganizer (Key events)', () => {
@@ -630,6 +676,8 @@ describe('PDF Reorganizer (Key events)', () => {
     reorganizer._keyHandler(keyd({key: 'ArrowLeft'}));
     expect(reorganizer.cursor.num).toBe(1);
 
+    reorganizer.cursor = reorganizer.cursor;
+    
     reorganizer._keyHandler(keyd({key: 'ArrowLeft'}));
     expect(reorganizer.cursor.num).toBe(8);
   });
@@ -791,7 +839,7 @@ describe('PDF Reorganizer (Key events)', () => {
 
     expect(JSON.stringify(reorganizer.process())).toEqual('[["1"],["2","3"],["4","5","6","7","8"]]');
   });
-
+  
   // I have no good idea how to test it without something like playwright,
   // as it requires a flexbox enabled viewport.
   test.todo('should move up/down with different rows');
