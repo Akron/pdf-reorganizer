@@ -100,8 +100,6 @@ If no prefix is given, the first file is assumed.
 # Known issues
 - When height and width of a page are switches after rotation,
   the magnified view has an empty offset at the bottom of a page.
-- Pages are partially too long, so when dragging/dropping first on a page in one line
-  and then trying to drag to the page below, it fails to highlight the position
 - hdpi doesn't properly work across browsers.
 
 # License

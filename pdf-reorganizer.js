@@ -965,6 +965,10 @@ pdf-page {
 }
 
 
+pdf-page div.container {
+  height: 100%;
+}
+
 pdf-page div.container::after {
   position: absolute;
   text-align: center;
