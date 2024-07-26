@@ -608,6 +608,54 @@ describe('PDF Reorganizer', () => {
     expect(reorganizer.viewport.classList.contains('magnify')).toBeFalsy();
     expect(reorganizer.viewport.classList.contains('select')).toBeTruthy();
   });
+
+  it('should use the magnifier mode', async () => {
+    let reorganizer = new PDFReorganizer();
+    expect(reorganizer.children.length).toBe(0);
+    
+    // Async testing
+    let result = await reorganizer.loadDocument(examplepdf);
+    expect(result).toBe(8);
+    expect(reorganizer.selected.size).toBe(0);
+
+    expect(reorganizer.magnifierActive).toBeFalsy();
+    expect(reorganizer.magElem.classList.contains('active')).toBeFalsy();
+    expect(reorganizer.viewport.classList.contains('magnify')).toBeFalsy();
+    expect(reorganizer.viewport.classList.contains('select')).toBeFalsy();
+
+    let page = reorganizer.getPage(3); // 4
+    page._clickHandler({ctrlKey:null});
+    expect(reorganizer.selected.size).toBe(1);
+    expect(page.classList.contains('magnify')).toBeFalsy();
+    page.selectOff();
+    expect(reorganizer.selected.size).toBe(0);
+    
+    reorganizer.toggleMagnifier();
+    
+    expect(reorganizer.magnifierActive).toBeTruthy();
+    expect(reorganizer.magElem.classList.contains('active')).toBeTruthy();
+    expect(reorganizer.viewport.classList.contains('magnify')).toBeTruthy();
+    expect(reorganizer.viewport.classList.contains('select')).toBeFalsy();
+
+    page = reorganizer.getPage(3); // 4
+    page._clickHandler({ctrlKey:null});
+    expect(reorganizer.selected.size).toBe(0);
+    expect(page.classList.contains('magnify')).toBeTruthy();
+
+    // This resets the mode
+    expect(reorganizer.magnifierActive).toBeFalsy();
+    expect(reorganizer.magElem.classList.contains('active')).toBeFalsy();
+    expect(reorganizer.viewport.classList.contains('magnify')).toBeFalsy();
+    expect(reorganizer.viewport.classList.contains('select')).toBeFalsy();
+
+    // This will use the select mode and demagnify the former page
+    let page2 = reorganizer.getPage(4); // 5
+    page2._clickHandler({ctrlKey:null});
+    expect(reorganizer.selected.size).toBe(1);
+    expect(page2.classList.contains('magnify')).toBeFalsy();
+
+    expect(page.classList.contains('magnify')).toBeFalsy();
+  });
 });
 
 describe('PDF Reorganizer (Key events)', () => {
@@ -839,6 +887,148 @@ describe('PDF Reorganizer (Key events)', () => {
 
     expect(JSON.stringify(reorganizer.process())).toEqual('[["1"],["2","3"],["4","5","6","7","8"]]');
   });
+
+  it('should move and delete all selected', async () => {
+    let reorganizer = new PDFReorganizer();
+    expect(reorganizer.children.length).toBe(0);
+    
+    // Async testing
+    let result = await reorganizer.loadDocument(examplepdf);
+    expect(result).toBe(8);
+
+    reorganizer._keyHandler(keyd({key: 'ArrowRight'}));
+    expect(reorganizer.cursor.num).toBe(1);
+    expect(reorganizer.cursor.selected).toBeFalsy();
+    expect(reorganizer.selected.size).toBe(0);
+
+    reorganizer._keyHandler(keyd({key: ' '}));
+    expect(reorganizer.selected.size).toBe(1);
+    expect(reorganizer.cursor.deleted).toBeFalsy();
+
+    reorganizer._keyHandler(keyd({key: 'ArrowRight'}));
+    expect(reorganizer.cursor.num).toBe(2);
+    expect(reorganizer.cursor.selected).toBeFalsy();
+
+    reorganizer._keyHandler(keyd({key: ' '}));
+    expect(reorganizer.selected.size).toBe(2);
+    
+    expect(reorganizer.cursor.deleted).toBeFalsy();
+    reorganizer._keyHandler(keyd({key: 'Delete', shiftKey: true}));
+    expect(reorganizer.cursor.num).toBe(2);
+    expect(reorganizer.cursor.deleted).toBeTruthy();
+
+    reorganizer._keyHandler(keyd({key: 'ArrowRight'}));
+    expect(reorganizer.cursor.num).toBe(3);
+    expect(reorganizer.cursor.deleted).toBeFalsy();
+
+    reorganizer._keyHandler(keyd({key: 'ArrowLeft'}));
+    expect(reorganizer.cursor.num).toBe(2);
+    expect(reorganizer.cursor.deleted).toBeTruthy();
+
+    reorganizer._keyHandler(keyd({key: 'ArrowLeft'}));
+    expect(reorganizer.cursor.num).toBe(1);
+    expect(reorganizer.cursor.deleted).toBeTruthy();
+
+    expect(JSON.stringify(reorganizer.process())).toEqual('[["3","4","5","6","7","8"]]');
+  });
+
+  it('should move and magnify', async () => {
+    let reorganizer = new PDFReorganizer();
+    expect(reorganizer.children.length).toBe(0);
+    
+    // Async testing
+    let result = await reorganizer.loadDocument(examplepdf);
+    expect(result).toBe(8);
+
+    reorganizer._keyHandler(keyd({key: 'ArrowRight'}));
+    reorganizer._keyHandler(keyd({key: 'ArrowRight'}));
+    reorganizer._keyHandler(keyd({key: 'ArrowRight'}));
+    expect(reorganizer.cursor.num).toBe(3);
+    expect(reorganizer.cursor.magnified).toBeFalsy();
+
+    reorganizer._keyHandler(keyd({key: '+'}));
+    expect(reorganizer.cursor.magnified).toBeFalsy();
+
+    reorganizer._keyHandler(keyd({key: '+', ctrlKey:true}));
+    expect(reorganizer.cursor.magnified).toBeTruthy();
+    expect(reorganizer.cursor.scrollLeft).toEqual(0); 
+    expect(reorganizer.cursor.scrollTop).toEqual(0); 
+
+    // Navigate inside the magnifier
+    reorganizer._keyHandler(keyd({key: 'ArrowRight'}));
+    expect(reorganizer.cursor.num).toBe(3);
+    expect(reorganizer.cursor.magnified).toBeTruthy();
+    expect(reorganizer.cursor.scrollLeft).toEqual(1*reorganizer.scrollStep); 
+    expect(reorganizer.cursor.scrollTop).toEqual(0); 
+
+    reorganizer._keyHandler(keyd({key: 'ArrowRight'}));
+    expect(reorganizer.cursor.num).toBe(3);
+    expect(reorganizer.cursor.magnified).toBeTruthy();
+    expect(reorganizer.cursor.scrollLeft).toEqual(2*reorganizer.scrollStep); 
+    expect(reorganizer.cursor.scrollTop).toEqual(0); 
+
+    reorganizer._keyHandler(keyd({key: 'ArrowLeft'}));
+    expect(reorganizer.cursor.num).toBe(3);
+    expect(reorganizer.cursor.magnified).toBeTruthy();
+    expect(reorganizer.cursor.scrollLeft).toEqual(1*reorganizer.scrollStep); 
+    expect(reorganizer.cursor.scrollTop).toEqual(0); 
+
+    reorganizer._keyHandler(keyd({key: 'ArrowDown'}));
+    expect(reorganizer.cursor.num).toBe(3);
+    expect(reorganizer.cursor.magnified).toBeTruthy();
+    expect(reorganizer.cursor.scrollLeft).toEqual(1*reorganizer.scrollStep); 
+    expect(reorganizer.cursor.scrollTop).toEqual(1*reorganizer.scrollStep); 
+
+    reorganizer._keyHandler(keyd({key: 'ArrowDown'}));
+    expect(reorganizer.cursor.num).toBe(3);
+    expect(reorganizer.cursor.magnified).toBeTruthy();
+    expect(reorganizer.cursor.scrollLeft).toEqual(1*reorganizer.scrollStep); 
+    expect(reorganizer.cursor.scrollTop).toEqual(2*reorganizer.scrollStep); 
+
+    reorganizer._keyHandler(keyd({key: 'ArrowUp'}));
+    expect(reorganizer.cursor.num).toBe(3);
+    expect(reorganizer.cursor.magnified).toBeTruthy();
+    expect(reorganizer.cursor.scrollLeft).toEqual(1*reorganizer.scrollStep); 
+    expect(reorganizer.cursor.scrollTop).toEqual(1*reorganizer.scrollStep); 
+
+    // Jump inside magnified view
+    reorganizer._keyHandler(keyd({key: 'ArrowRight', ctrlKey:true}));
+    expect(reorganizer.cursor.num).toBe(3);
+    expect(reorganizer.cursor.magnified).toBeTruthy();
+    expect(reorganizer.cursor.scrollLeft).toEqual(reorganizer.cursor.scrollWidth - reorganizer.cursor.clientWidth); 
+    expect(reorganizer.cursor.scrollTop).toEqual(1*reorganizer.scrollStep); 
+
+    reorganizer._keyHandler(keyd({key: 'ArrowDown', ctrlKey:true}));
+    expect(reorganizer.cursor.num).toBe(3);
+    expect(reorganizer.cursor.magnified).toBeTruthy();
+    expect(reorganizer.cursor.scrollLeft).toEqual(reorganizer.cursor.scrollWidth - reorganizer.cursor.clientWidth); 
+    expect(reorganizer.cursor.scrollTop).toEqual(reorganizer.cursor.scrollHeight - reorganizer.cursor.clientHeight); 
+
+    reorganizer.cursor.scrollTop = 56;
+    reorganizer.cursor.scrollLeft = 56;
+
+    reorganizer._keyHandler(keyd({key: 'ArrowUp', ctrlKey: true}));
+    expect(reorganizer.cursor.num).toBe(3);
+    expect(reorganizer.cursor.magnified).toBeTruthy();
+    expect(reorganizer.cursor.scrollLeft).toEqual(56); 
+    expect(reorganizer.cursor.scrollTop).toEqual(0); 
+
+    reorganizer._keyHandler(keyd({key: 'ArrowLeft', ctrlKey: true}));
+    expect(reorganizer.cursor.num).toBe(3);
+    expect(reorganizer.cursor.magnified).toBeTruthy();
+    expect(reorganizer.cursor.scrollLeft).toEqual(0); 
+    expect(reorganizer.cursor.scrollTop).toEqual(0);
+
+    reorganizer._keyHandler(keyd({key: 'Escape'}));
+    expect(reorganizer.cursor.num).toBe(3);
+    expect(reorganizer.cursor.magnified).toBeFalsy();
+
+    reorganizer._keyHandler(keyd({key: 'ArrowRight'}));
+    expect(reorganizer.cursor.num).toBe(4);
+    expect(reorganizer.cursor.magnified).toBeFalsy();
+  });
+
+  
   
   // I have no good idea how to test it without something like playwright,
   // as it requires a flexbox enabled viewport.
@@ -847,10 +1037,6 @@ describe('PDF Reorganizer (Key events)', () => {
   test.todo('should move before/after');
 
   test.todo('should use magnifier');
-
-  test.todo('should scroll magnified in all directions');
-
-  test.todo('should jump scroll magnified in all directions');
 
   test.todo('should accept configuration');
 });
