@@ -256,7 +256,7 @@ describe('PDF Page', () => {
     expect(page.classList.contains("magnify")).toBeTruthy();
   });
 
-  it('should be draggable (wo reorganizer)', () => {
+  it('should be draggable (wo parent)', () => {
     let page = new PDFPage(4, null);
     let dragEv = new Object();
     dragEv.dataTransfer = {
@@ -304,6 +304,67 @@ describe('PDF Page', () => {
     expect(page.classList.contains("drag-right")).toBeFalsy();
     expect(page._parent.dropTarget).toBeNull();
     expect(dir).toBe("after");
+  });
+
+  it('should be clickable (with limited parent)', () => {
+    let page = new PDFPage(4, null);
+    let clickEv = new Object();
+    clickEv.ctrlKey = false;
+
+    let except = null;
+
+    page._parent = {
+      cursor : null,
+      magnifierActive : false,
+      selectorActive : false,
+      toggleMagnifier : function () {
+        this.magnifierActive = (this.magnifierActive ? false : true);
+      },
+      delSelectAllExceptFor : function (obj) {
+        except = obj;
+      },
+      addSelect : function () {},
+      delSelect : function () {}
+    };
+    
+    expect(page.selected).toBeFalsy();
+    expect(except).toBeNull();
+    page.classList.add('move','cursor');
+    expect(page.classList.contains('selected')).toBeFalsy();
+    expect(page._parent.cursor).toBeNull();
+
+    page._clickHandler(clickEv);
+
+    expect(page.selected).toBeTruthy();
+    expect(page.classList.contains('selected')).toBeTruthy();
+    expect(page.classList.contains('move')).toBeFalsy();
+    expect(page.classList.contains('cursor')).toBeFalsy();
+    expect(page._parent.cursor).toBe(page);
+
+    page._clickHandler(clickEv);
+
+    expect(page.selected).toBeFalsy();
+    expect(page.classList.contains('selected')).toBeFalsy();
+    expect(page.classList.contains('move')).toBeFalsy();
+    expect(page.classList.contains('cursor')).toBeFalsy();
+
+    expect(page.deleted).toBe(false);
+    expect(page.classList.contains("deleted")).toBe(false);
+
+    page.remove();
+    expect(page.deleted).toBeTruthy();
+    expect(page.classList.contains("deleted")).toBeTruthy();
+
+    // Revive deleted page
+    page._clickHandler(clickEv);
+
+    expect(page.selected).toBeFalsy();
+    expect(page.classList.contains('selected')).toBeFalsy();
+    expect(page.classList.contains('move')).toBeFalsy();
+    expect(page.classList.contains('cursor')).toBeFalsy();
+    expect(page.deleted).toBeFalsy();
+    expect(page.classList.contains("deleted")).toBeFalsy();
+    
   });
 });
 

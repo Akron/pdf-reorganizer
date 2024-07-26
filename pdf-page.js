@@ -56,27 +56,7 @@ export default class PDFPage extends HTMLElement {
     this.addEventListener("drop", this._dropHandler);
     
     // Click
-    this.addEventListener('click', (function (ev) {
-
-      if (!ev.ctrlKey && !this._parent?.magnifierActive && !this._parent?.selectorActive) {
-        this._parent.delSelectAllExceptFor(this);
-      };
-
-      // Remember this page as cursor
-      if (!this.deleted && this._parent != null) {
-        this._parent.cursor = this;
-        this.classList.remove("cursor","move");
-
-        if (this._parent?.magnifierActive) {
-          this.magnify();
-          this._parent.toggleMagnifier();
-          return;
-        };
-      };
-
-      this.showInViewport();
-      this.swapSelected();
-    }).bind(this));
+    this.addEventListener('click', this._clickHandler.bind(this));
   };
 
   _dragStartHandler (ev) {
@@ -166,6 +146,30 @@ export default class PDFPage extends HTMLElement {
     } else {
       this._parent.moveAfter(target);
     };
+  };
+
+  _clickHandler (ev) {
+    if (this._parent &&
+        !ev.ctrlKey &&
+        !this._parent.magnifierActive &&
+        !this._parent.selectorActive) {
+      this._parent.delSelectAllExceptFor(this);
+    };
+
+    // Remember this page as cursor
+    if (!this.deleted && this._parent != null) {
+      this._parent.cursor = this;
+      this.classList.remove("cursor","move");
+
+      if (this._parent.magnifierActive) {
+        this.magnify();
+        this._parent.toggleMagnifier();
+        return;
+      };
+    };
+
+    this.showInViewport();
+    this.swapSelected();
   };
   
   /**
