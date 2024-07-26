@@ -3,7 +3,7 @@
 ![pdf-reorganizer](demo/pdf-reorganizer.png)
 
 PDF-reorg is a web component to help rearrange and split PDFs.
-It does not modify PDF documents itself, but creates a [processing instruction](# Processing directives)
+It does not modify PDF documents itself, but creates a [processing instruction](processing-directives)
 that can be implemented independent of PDF processing APIs or programming languages. 
 PDF-reorg is heavily inspired by [PDF-Arranger](https://github.com/pdfarranger/pdfarranger)
 and is based on [PDF.js](https://github.com/mozilla/pdf.js).
@@ -30,7 +30,7 @@ In Reorganizer Viewport:
 
 | Key    | Modifier   | Command |
 |--------|------------|---------|
-| right  |    !        | Move cursor to next page |
+| right  |            | Move cursor to next page |
 | left   |            | Move cursor to previous page |
 | top    |            | Move cursor to page above in viewport |
 | down   |            | Move cursor to page below in viewport |
@@ -72,30 +72,35 @@ In magnified view:
 # Processing directives
 
 After rearranging all pages into new documents, the `processed` custom event is dispatched.
-This event can be listened on and contains a directive in its detail object (`ev.detail.directive`).
+This event can be listened on and contains a `docs` list and a `src` list in its `detail`
+object.
 
-```
+```json
 {
-  src : [
+  "src" : [
     "mysimple.pdf"
-  ]
-  docs : [
+  ],
+  "docs" : [
     [1,2],
     [3,"5@90"]
   ]
 }
 ```
 
-In the future this format may allow merging PDFs. To allow for that,
-page numbers can have a reference prefix refering to the PDF in the files
-array (index starts with 1), e.g. `1:2` (Page 2 of file 1) or `3:5@270`
-(Page 5 of file 3 rotated by 270 deg).
+The `docs` contains a list of documents resulting from the reorganization of the
+source documents (listed in `src`). Each document is represented by a list of page
+numbers. If pages where rotated (in 90 degree steps) this is appended to the pagenumber
+separated by an `@` symbol.
 
-If no prefix is given, the first file is assumed.
+In the future this format may allow merging PDFs. To allow for that,
+page numbers can have a reference prefix refering to the PDF in the `src`
+array (index starts with 0), e.g. `1:2` (Page 2 of file 2) or `3:5@270`
+(Page 5 of file 4 rotated by 270 deg).
+
+If no file prefix is given, the first file (0) is assumed.
 
 # Planned Features
 - Copy instead of moving
-- Move/Copy without dragging and dropping
 - Add files per drag and drop (if embedded in a service)
 - Add select mode on long press (mousedown and touchstart)
 

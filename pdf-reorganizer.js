@@ -822,8 +822,9 @@ export default class PDFReorganizer extends HTMLElement {
    * Create a JSON array representing the modified document(s)
    * to generate.
    * This dispatches a custom event `processed` on the PDFReorganizer
-   * object that has a `detail` objects containing a `directive`
-   * object representing the JSON object.
+   * object that has a `detail` object containing a `docs`
+   * array representing all rearranged documents and a `src`
+   * array containing all associated filenames.
    */
   process () {
     let nodeList = this.viewport.childNodes;
