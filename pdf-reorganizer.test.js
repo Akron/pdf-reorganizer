@@ -657,7 +657,36 @@ describe('PDF Reorganizer', () => {
     expect(page.classList.contains('magnify')).toBeFalsy();
   });
 
-  test.todo('should deselect/inverse select all');
+  it('should deselect/inverse select all', async () => {
+    let reorganizer = new PDFReorganizer();
+    expect(reorganizer.children.length).toBe(0);
+    
+    // Async testing
+    let result = await reorganizer.loadDocument(examplepdf);
+    expect(result).toBe(8);
+    expect(reorganizer.selected.size).toBe(0);
+
+    reorganizer.selectAll(-1);
+    expect(reorganizer.selected.size).toBe(8);
+
+    reorganizer.selectAll(-1);
+    expect(reorganizer.selected.size).toBe(0);
+
+    reorganizer.selectAll(1);
+    expect(reorganizer.selected.size).toBe(8);
+
+    reorganizer.selectAll(0);
+    expect(reorganizer.selected.size).toBe(0);
+
+    let page = reorganizer.getPage(4); // 5
+    page._clickHandler({});
+    expect(page.selected).toBeTruthy();
+    expect(reorganizer.selected.size).toBe(1);
+
+    reorganizer.selectAll(-1);
+    expect(reorganizer.selected.size).toBe(7);
+    expect(page.selected).toBeFalsy();
+  });
 });
 
 describe('PDF Reorganizer (Key events)', () => {
