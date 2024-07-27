@@ -970,7 +970,7 @@ nav > div {
   border-radius: 3px;
 }
 
-nav > div:hover, nav > div.active {
+nav > :where(div:hover, div.active) {
   background-color: var(--pdfro-selected-bg-color);
   color: var(--pdfro-white);
   fill: var(--pdfro-white);
@@ -989,8 +989,7 @@ nav > div::after {
   pointer-events: none;
 }
 
-nav > div[data-count="0"]::after,
-nav > div[data-count="1"]::after {
+nav > div:where([data-count="0"],[data-count="1"])::after {
   content: none;
   box-shadow: none;
 }
