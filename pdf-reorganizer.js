@@ -299,7 +299,23 @@ export default class PDFReorganizer extends HTMLElement {
         this.selectAll();
         break;
       };
-     
+
+    // Deselect all
+    case "d":
+      if (ev.ctrlKey) {
+        ev.preventDefault();
+        this.selectAll(0);
+        break;
+      };
+
+      // Inverse select all
+    case "I":
+      if (ev.ctrlKey) {
+        ev.preventDefault();
+        this.selectAll(-1);
+        break;
+      };
+
     case "+":
       if (!ev.ctrlKey)
         break;
@@ -596,26 +612,48 @@ export default class PDFReorganizer extends HTMLElement {
     });
     return i;
   }
-
+  
   /**
    * Select all pages.
    *
-   * @return {number} The number of selected pages.
+   * @param {(number|Event)} [opt=1] Optional value.
+   *        If numerical type:
+   *        opt == 0 will deselect, opt < 0 will inverse,
+   *        otherwise will select all.
+   *        If event type:
+   *        In case the ctrlKey is clicked, will deselect.
+   *
+   * @return {number} The number of selected pages (excludes deleted pages).
    */
-  selectAll() {
+  selectAll(opt = 1) {
     let i = 0;
 
+    if (opt instanceof Event) {
+      if (opt.ctrlKey && opt.shiftKey)
+        opt = -1;
+      else if (opt.ctrlKey)
+        opt = 0;
+      else
+        opt = 1;
+    };
+    
     let nodeList = this.viewport.childNodes;
     nodeList.forEach((page) => {
       if (page.deleted)
         return;
-      page.selectOn();
+      if (!opt)
+        page.selectOff();
+      else if (opt < 0) 
+        page.swapSelected();
+      else 
+        page.selectOn();
       i++;
     });
 
     return i;
-  }
+  };
   
+
   /**
    * Add a single page to the selection.
    *
