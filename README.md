@@ -2,13 +2,19 @@
 
 ![pdf-reorganizer](demo/pdf-reorganizer.png)
 
-PDF-reorg is a web component to help rearrange and split PDFs.
-It does not modify PDF documents itself, but creates a [processing instruction](processing-directives)
+pdf-reorganizer is a web component to help rearrange and split PDFs.
+It does not modify PDF documents itself, but creates a [processing instruction](#processing-instructions)
 that can be implemented independent of PDF processing APIs or programming languages. 
-PDF-reorg is heavily inspired by [PDF-Arranger](https://github.com/pdfarranger/pdfarranger)
+pdf-reorganizer is heavily inspired by [PDF-Arranger](https://github.com/pdfarranger/pdfarranger)
 and is based on [PDF.js](https://github.com/mozilla/pdf.js).
 
-# Usage
+Reorganization supports:
+- Splits
+- Deletions
+- Movements
+- Rotations
+
+# Integration
 
 ```html
 
@@ -23,6 +29,8 @@ and is based on [PDF.js](https://github.com/mozilla/pdf.js).
   </body>
 </html>
 ```
+
+# Usage
 
 # Key Bindings
 
@@ -47,6 +55,8 @@ In Reorganizer Viewport:
 | s/S    | Ctrl+Shift | Add split before selected pages |
 | +      | Ctrl       | Open magnified view on cursor |
 | a      | Ctrl       | Select all pages |
+| d      | Ctrl       | Unselect all pages |
+| i/I    | Ctrl+Shift | Inverse select all pages |
 | Enter  |            | Confirm moving selected pages |
 
 In magnified view:
@@ -69,9 +79,9 @@ In magnified view:
 |-----|-------|
 | url | URL of the PDF file to be shown |
 
-# Processing directives
+# Processing instructions
 
-After rearranging all pages into new documents, the `processed` custom event is dispatched.
+After reorganizing all pages into new documents, the `processed` custom event is dispatched.
 This event can be listened on and contains a `docs` list and a `src` list in its `detail`
 object.
 
@@ -87,10 +97,10 @@ object.
 }
 ```
 
-The `docs` contains a list of documents resulting from the reorganization of the
+The `docs` array contains a list of documents resulting from the reorganization of the
 source documents (listed in `src`). Each document is represented by a list of page
-numbers. If pages where rotated (in 90 degree steps) this is appended to the pagenumber
-separated by an `@` symbol.
+numbers. If pages were rotated (clockwise by 90, 180 or 270 degrees) this is appended to the pagenumber
+separated by an `@` symbol (e.g. `5@180` means page 5 is rotated by 180 degree).
 
 In the future this format may allow merging PDFs. To allow for that,
 page numbers can have a reference prefix refering to the PDF in the `src`
@@ -98,6 +108,8 @@ array (index starts with 0), e.g. `1:2` (Page 2 of file 2) or `3:5@270`
 (Page 5 of file 4 rotated by 270 deg).
 
 If no file prefix is given, the first file (0) is assumed.
+
+# Customization
 
 # Planned Features
 - Copy instead of moving
