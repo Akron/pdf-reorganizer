@@ -42,11 +42,11 @@ describe('PDF Page', () => {
     let cl = page.classList;
     expect(cl.contains("selected")).toBe(false);
     
-    page.swapSelected();
+    page.selectToggle();
     expect(page.selected).toBe(true);
     expect(cl.contains("selected")).toBe(true);
 
-    page.swapSelected();
+    page.selectToggle();
     expect(page.selected).toBe(false);
     expect(cl.contains("selected")).toBe(false);
 
@@ -66,7 +66,7 @@ describe('PDF Page', () => {
     expect(page.selected).toBe(false);
     expect(cl.contains("selected")).toBe(false);
 
-    page.swapSelected();
+    page.selectToggle();
     expect(page.selected).toBe(true);
     expect(cl.contains("selected")).toBe(true);
   });
@@ -89,7 +89,7 @@ describe('PDF Page', () => {
     expect(page.selected).toBe(false);
     expect(page.deleted).toBe(false);
 
-    page.swapSelected();
+    page.selectToggle();
     expect(page.selected).toBe(true);
 
     expect(page.classList.contains("deleted")).toBe(false);
@@ -105,7 +105,7 @@ describe('PDF Page', () => {
     expect(page.selected).toBe(false);
 
     // Unable to select when deleted
-    page.swapSelected();
+    page.selectToggle();
     expect(page.selected).toBe(false);
 
     expect(page.deleted).toBe(false);
@@ -656,6 +656,8 @@ describe('PDF Reorganizer', () => {
 
     expect(page.classList.contains('magnify')).toBeFalsy();
   });
+
+  test.todo('should deselect/inverse select all');
 });
 
 describe('PDF Reorganizer (Key events)', () => {
@@ -1209,6 +1211,8 @@ describe('PDF Reorganizer (Key events)', () => {
   test.todo('should move up/down with different rows');
 
   test.todo('should accept configuration');
+
+  test.todo('should deselect / inverse select all');
 
   test.todo('should move and split before all selected');
 });

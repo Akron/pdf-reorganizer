@@ -336,7 +336,7 @@ export default class PDFReorganizer extends HTMLElement {
     case " ":
       if (this.cursor != null) {
         ev.preventDefault();
-        this.cursor.swapSelected();
+        this.cursor.selectToggle();
       };    
       break;
 
@@ -644,7 +644,7 @@ export default class PDFReorganizer extends HTMLElement {
       if (!opt)
         page.selectOff();
       else if (opt < 0) 
-        page.swapSelected();
+        page.selectToggle();
       else 
         page.selectOn();
       i++;

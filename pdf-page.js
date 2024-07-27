@@ -169,7 +169,7 @@ export default class PDFPage extends HTMLElement {
     };
 
     this.showInViewport();
-    this.swapSelected();
+    this.selectToggle();
   };
   
   /**
@@ -241,7 +241,7 @@ export default class PDFPage extends HTMLElement {
    * Remove page from selection, if selected.
    * Otherwise select.
    */
-  swapSelected() {
+  selectToggle() {
     if (this.selected) {
       this.selectOff();
     } else {
