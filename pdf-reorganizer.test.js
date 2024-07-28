@@ -373,13 +373,13 @@ describe('PDF Reorganizer', () => {
   let examplepdf2 = "file:" + resolve(__dirname, "demo/example2.pdf");
   
   it('should be constructible', () => {
-    let reorganizer = new PDFReorganizer(20);
+    let reorganizer = new PDFReorganizer(20).init();
 
     expect(reorganizer.selected.size).toBe(0);
   });
 
   it('should have the right element structure', () => {
-    let reorganizer = new PDFReorganizer();
+    let reorganizer = new PDFReorganizer().init();
 
     expect(reorganizer.children.length).toBe(0);
 
@@ -391,7 +391,7 @@ describe('PDF Reorganizer', () => {
   });
 
   it('should load a PDF document', async () => {
-    let reorganizer = new PDFReorganizer();
+    let reorganizer = new PDFReorganizer().init();
     expect.assertions(2);
     expect(reorganizer.children.length).toBe(0);
     
@@ -401,7 +401,7 @@ describe('PDF Reorganizer', () => {
   });
 
   it('should (de)select all pages', async () => {
-    let reorganizer = new PDFReorganizer();
+    let reorganizer = new PDFReorganizer().init();
     // expect.assertions(3);
     expect(reorganizer.children.length).toBe(0);
     
@@ -421,7 +421,7 @@ describe('PDF Reorganizer', () => {
   });
 
   it('should process all pages', async () => {
-    let reorganizer = new PDFReorganizer();
+    let reorganizer = new PDFReorganizer().init();
     // expect.assertions(3);
     expect(reorganizer.children.length).toBe(0);
     
@@ -433,7 +433,7 @@ describe('PDF Reorganizer', () => {
   });
 
   it('should splitBefore pages', async () => {
-    let reorganizer = new PDFReorganizer();
+    let reorganizer = new PDFReorganizer().init();
     // expect.assertions(3);
     expect(reorganizer.children.length).toBe(0);
     
@@ -466,7 +466,7 @@ describe('PDF Reorganizer', () => {
   });
 
   it('should rotate pages', async () => {
-    let reorganizer = new PDFReorganizer();
+    let reorganizer = new PDFReorganizer().init();
     // expect.assertions(3);
     expect(reorganizer.children.length).toBe(0);
     
@@ -496,7 +496,7 @@ describe('PDF Reorganizer', () => {
   });
 
   it('should remove pages', async () => {
-    let reorganizer = new PDFReorganizer();
+    let reorganizer = new PDFReorganizer().init();
     // expect.assertions(3);
     expect(reorganizer.children.length).toBe(0);
     
@@ -522,7 +522,7 @@ describe('PDF Reorganizer', () => {
   });
 
   it('should move pages before/after', async () => {
-    let reorganizer = new PDFReorganizer();
+    let reorganizer = new PDFReorganizer().init();
     expect(reorganizer.children.length).toBe(0);
     
     // Async testing
@@ -548,7 +548,7 @@ describe('PDF Reorganizer', () => {
   });
 
   it('should reload for a new document', async () => {
-    let reorganizer = new PDFReorganizer();
+    let reorganizer = new PDFReorganizer().init();
     expect(reorganizer.children.length).toBe(0);
     
     // Async testing
@@ -564,7 +564,7 @@ describe('PDF Reorganizer', () => {
   });
 
   it('should use the selector mode', async () => {
-    let reorganizer = new PDFReorganizer();
+    let reorganizer = new PDFReorganizer().init();
     expect(reorganizer.children.length).toBe(0);
     
     // Async testing
@@ -610,7 +610,7 @@ describe('PDF Reorganizer', () => {
   });
 
   it('should use the magnifier mode', async () => {
-    let reorganizer = new PDFReorganizer();
+    let reorganizer = new PDFReorganizer().init();
     expect(reorganizer.children.length).toBe(0);
     
     // Async testing
@@ -658,7 +658,7 @@ describe('PDF Reorganizer', () => {
   });
 
   it('should deselect/inverse select all', async () => {
-    let reorganizer = new PDFReorganizer();
+    let reorganizer = new PDFReorganizer().init();
     expect(reorganizer.children.length).toBe(0);
     
     // Async testing
@@ -698,7 +698,7 @@ describe('PDF Reorganizer (Key events)', () => {
   };
   
   it('should init a cursor and move (arrow right)', async () => {
-    let reorganizer = new PDFReorganizer();
+    let reorganizer = new PDFReorganizer().init();
     expect(reorganizer.children.length).toBe(0);
     
     // Async testing
@@ -731,7 +731,7 @@ describe('PDF Reorganizer (Key events)', () => {
   });
 
   it('should init a cursor and move (arrow left)', async () => {
-    let reorganizer = new PDFReorganizer();
+    let reorganizer = new PDFReorganizer().init();
     expect(reorganizer.children.length).toBe(0);
     
     // Async testing
@@ -762,7 +762,7 @@ describe('PDF Reorganizer (Key events)', () => {
   });
 
   it('should move and delete/undelete', async () => {
-    let reorganizer = new PDFReorganizer();
+    let reorganizer = new PDFReorganizer().init();
     expect(reorganizer.children.length).toBe(0);
     
     // Async testing
@@ -802,7 +802,7 @@ describe('PDF Reorganizer (Key events)', () => {
   });
 
   it('should move and select', async () => {
-    let reorganizer = new PDFReorganizer();
+    let reorganizer = new PDFReorganizer().init();
     expect(reorganizer.children.length).toBe(0);
     
     // Async testing
@@ -849,7 +849,7 @@ describe('PDF Reorganizer (Key events)', () => {
   });
 
   it('should move and rotate', async () => {
-    let reorganizer = new PDFReorganizer();
+    let reorganizer = new PDFReorganizer().init();
     expect(reorganizer.children.length).toBe(0);
     
     // Async testing
@@ -884,7 +884,7 @@ describe('PDF Reorganizer (Key events)', () => {
   });
 
   it('should move and split before', async () => {
-    let reorganizer = new PDFReorganizer();
+    let reorganizer = new PDFReorganizer().init();
     expect(reorganizer.children.length).toBe(0);
     
     // Async testing
@@ -920,7 +920,7 @@ describe('PDF Reorganizer (Key events)', () => {
   });
 
   it('should move and delete all selected', async () => {
-    let reorganizer = new PDFReorganizer();
+    let reorganizer = new PDFReorganizer().init();
     expect(reorganizer.children.length).toBe(0);
     
     // Async testing
@@ -964,7 +964,7 @@ describe('PDF Reorganizer (Key events)', () => {
   });
 
   it('should move and rotate all selected', async () => {
-    let reorganizer = new PDFReorganizer();
+    let reorganizer = new PDFReorganizer().init();
     expect(reorganizer.children.length).toBe(0);
     
     // Async testing
@@ -1034,7 +1034,7 @@ describe('PDF Reorganizer (Key events)', () => {
   });
 
   it('should move and drop before/after', async () => {
-    let reorganizer = new PDFReorganizer();
+    let reorganizer = new PDFReorganizer().init();
     expect(reorganizer.children.length).toBe(0);
     
     // Async testing
@@ -1117,7 +1117,7 @@ describe('PDF Reorganizer (Key events)', () => {
   });
   
   it('should move and magnify', async () => {
-    let reorganizer = new PDFReorganizer();
+    let reorganizer = new PDFReorganizer().init();
     expect(reorganizer.children.length).toBe(0);
     
     // Async testing
@@ -1213,7 +1213,7 @@ describe('PDF Reorganizer (Key events)', () => {
   });
 
   it('should select all pages', async () => {
-    let reorganizer = new PDFReorganizer();
+    let reorganizer = new PDFReorganizer().init();
     expect(reorganizer.children.length).toBe(0);
     
     // Async testing
@@ -1236,7 +1236,7 @@ describe('PDF Reorganizer (Key events)', () => {
   });
 
   it('should deselect/inverse select all', async () => {
-    let reorganizer = new PDFReorganizer();
+    let reorganizer = new PDFReorganizer().init();
     expect(reorganizer.children.length).toBe(0);
     
     // Async testing

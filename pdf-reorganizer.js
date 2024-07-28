@@ -16,12 +16,19 @@ GlobalWorkerOptions.workerSrc = "pdfjs-dist/build/pdf.worker.mjs";
  * @exports
  */
 export default class PDFReorganizer extends HTMLElement {
+  static observedAttributes = ["url","split-button"];
 
   /**
    * @constructor
    */
   constructor() {
     super();
+  }
+
+  /**
+   * Initialize the element.
+   */
+  init () {
     this.url;
     this.numPages = 0;
     this.pdfDoc = undefined;
@@ -67,10 +74,13 @@ export default class PDFReorganizer extends HTMLElement {
     shadow.appendChild(this.svgSymbols());
     shadow.appendChild(nav);
     shadow.appendChild(this.viewport);
+    return this;
   }
 
   connectedCallback () {
+    this.init();
     let instance = this;
+    
     this._embedCSS();
 
     if (this.url != undefined)
@@ -114,10 +124,6 @@ export default class PDFReorganizer extends HTMLElement {
     this.observeViewport.disconnect();
   };
   
-  static get observedAttributes() {
-    return ['url'];
-  }
-
   // attribute change
   attributeChangedCallback(property, oldValue, newValue) {
     if (oldValue === newValue)
