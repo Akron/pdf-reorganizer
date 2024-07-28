@@ -1233,15 +1233,46 @@ describe('PDF Reorganizer (Key events)', () => {
     reorganizer._keyHandler(keyd({key: 'a', ctrlKey: '+'}));
     expect(reorganizer.cursor.selected).toBeTruthy();
     expect(reorganizer.selected.size).toBe(8);
-  });  
+  });
+
+  it('should deselect/inverse select all', async () => {
+    let reorganizer = new PDFReorganizer();
+    expect(reorganizer.children.length).toBe(0);
+    
+    // Async testing
+    let result = await reorganizer.loadDocument(examplepdf);
+    expect(result).toBe(8);
+    expect(reorganizer.selected.size).toBe(0);
+
+    reorganizer._keyHandler(keyd({key: 'I', ctrlKey: true, shiftKey: true}));
+    expect(reorganizer.selected.size).toBe(8);
+
+    reorganizer._keyHandler(keyd({key: 'I', ctrlKey: true, shiftKey: true}));
+    expect(reorganizer.selected.size).toBe(0);
+
+    reorganizer._keyHandler(keyd({key: 'a', ctrlKey: true}));
+    expect(reorganizer.selected.size).toBe(8);
+
+    reorganizer._keyHandler(keyd({key: 'd', ctrlKey: true}));
+    expect(reorganizer.selected.size).toBe(0);
+
+    reorganizer._keyHandler(keyd({key: 'ArrowRight'}));
+    reorganizer._keyHandler(keyd({key: 'ArrowRight'}));
+    reorganizer._keyHandler(keyd({key: ' '}));
+    expect(reorganizer.cursor.selected).toBeTruthy();
+    expect(reorganizer.selected.size).toBe(1);
+
+    reorganizer._keyHandler(keyd({key: 'I', ctrlKey: true, shiftKey: true}));
+    expect(reorganizer.selected.size).toBe(7);
+    expect(reorganizer.cursor.selected).toBeFalsy();
+  });
+
   
   // I have no good idea how to test it without something like playwright,
   // as it requires a flexbox enabled viewport.
   test.todo('should move up/down with different rows');
 
   test.todo('should accept configuration');
-
-  test.todo('should deselect / inverse select all');
 
   test.todo('should move and split before all selected');
 });
