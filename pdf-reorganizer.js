@@ -23,8 +23,6 @@ export default class PDFReorganizer extends HTMLElement {
   constructor() {
     super();
     this.url;
-    this.css;
-    this.onprocess;
     this.numPages = 0;
     this.pdfDoc = undefined;
 
@@ -73,14 +71,10 @@ export default class PDFReorganizer extends HTMLElement {
 
   connectedCallback () {
     let instance = this;
-    this.embedCSS();
+    this._embedCSS();
 
     if (this.url != undefined)
       this.loadDocument(this.url);
-
-    if (this.onprocess != null) {
-      this.addEventListener("processed", this.onprocess)
-    };
 
     this.delElem.addEventListener('click', this.remove.bind(this));
     this.rotateLeftElem.addEventListener('click', this.rotateLeft.bind(this));
@@ -121,7 +115,7 @@ export default class PDFReorganizer extends HTMLElement {
   };
   
   static get observedAttributes() {
-    return ['url','onprocess'];
+    return ['url'];
   }
 
   // attribute change
@@ -895,7 +889,7 @@ export default class PDFReorganizer extends HTMLElement {
     return alldocs;
   }
 
-  embedCSS() {
+  _embedCSS() {
     let cssData = `
 :host {
   --pdfro-main-color: #555;
