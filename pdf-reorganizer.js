@@ -89,11 +89,7 @@ export default class PDFReorganizer extends HTMLElement {
     this.magElem.addEventListener('click', this.toggleMagnifier.bind(this));
     this.allElem.addEventListener('click', this.selectAll.bind(this));
     this.selElem.addEventListener('click', this.toggleSelector.bind(this));
-
-    this.processElem.addEventListener('click', (function() {
-      this.process();
-    }).bind(this));
-
+    this.processElem.addEventListener('click', this.process.bind(this));
     document.addEventListener("keydown", this._keyHandler.bind(this));
 
     // Lazy loading
