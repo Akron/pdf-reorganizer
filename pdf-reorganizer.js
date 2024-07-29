@@ -916,14 +916,16 @@ export default class PDFReorganizer extends HTMLElement {
     });
     alldocs.push(splitdocs);
 
+    const detail = {
+      "src": [this.url],
+      "docs": alldocs
+    };
+    
     this.dispatchEvent(new CustomEvent("processed", {
-      detail: {
-        "src": [this.url],
-        "docs": alldocs
-      }
+      "detail": detail
     }));
     
-    return alldocs;
+    return detail;
   }
 
   /**

@@ -429,7 +429,7 @@ describe('PDF Reorganizer', () => {
     const result = await reorganizer.loadDocument(examplepdf);
     expect(result).toBe(8);
 
-    expect(JSON.stringify(reorganizer.process())).toEqual('[["1","2","3","4","5","6","7","8"]]');
+    expect(JSON.stringify(reorganizer.process().docs)).toEqual('[["1","2","3","4","5","6","7","8"]]');
   });
 
   it('should splitBefore pages', async () => {
@@ -449,20 +449,20 @@ describe('PDF Reorganizer', () => {
 
     expect(page.splitBefore()).toBeTruthy();
 
-    expect(JSON.stringify(reorganizer.process())).toEqual('[["1","2","3"],["4","5","6"],["7","8"]]');
+    expect(JSON.stringify(reorganizer.process().docs)).toEqual('[["1","2","3"],["4","5","6"],["7","8"]]');
 
     expect(reorganizer.selectAll()).toBe(8);
 
     expect(reorganizer.splitBefore()).toBe(6);
 
-    expect(JSON.stringify(reorganizer.process())).toEqual('[["1"],["2"],["3","4"],["5"],["6","7"],["8"]]');
+    expect(JSON.stringify(reorganizer.process().docs)).toEqual('[["1"],["2"],["3","4"],["5"],["6","7"],["8"]]');
 
     // Don't split on removed pages
     page = reorganizer.getPage(2);
     page.remove();
     expect(page.splitBefore()).toBeFalsy();
    
-    expect(JSON.stringify(reorganizer.process())).toEqual('[["1"],["2","4"],["5"],["6","7"],["8"]]');
+    expect(JSON.stringify(reorganizer.process().docs)).toEqual('[["1"],["2","4"],["5"],["6","7"],["8"]]');
   });
 
   it('should rotate pages', async () => {
@@ -482,17 +482,17 @@ describe('PDF Reorganizer', () => {
 
     page.rotateRight()
 
-    expect(JSON.stringify(reorganizer.process())).toEqual('[["1","2","3","4@270","5","6","7@90","8"]]');
+    expect(JSON.stringify(reorganizer.process().docs)).toEqual('[["1","2","3","4@270","5","6","7@90","8"]]');
 
     expect(reorganizer.selectAll()).toBe(8);
 
     expect(reorganizer.rotateLeft()).toBe(8);
 
-    expect(JSON.stringify(reorganizer.process())).toEqual('[["1@270","2@270","3@270","4@180","5@270","6@270","7","8@270"]]');
+    expect(JSON.stringify(reorganizer.process().docs)).toEqual('[["1@270","2@270","3@270","4@180","5@270","6@270","7","8@270"]]');
 
     expect(reorganizer.rotateRight()).toBe(8);
 
-    expect(JSON.stringify(reorganizer.process())).toEqual('[["1","2","3","4@270","5","6","7@90","8"]]');
+    expect(JSON.stringify(reorganizer.process().docs)).toEqual('[["1","2","3","4@270","5","6","7@90","8"]]');
   });
 
   it('should remove pages', async () => {
@@ -512,13 +512,13 @@ describe('PDF Reorganizer', () => {
 
     page.remove()
 
-    expect(JSON.stringify(reorganizer.process())).toEqual('[["1","2","3","5","6","8"]]');
+    expect(JSON.stringify(reorganizer.process().docs)).toEqual('[["1","2","3","5","6","8"]]');
 
     expect(reorganizer.selectAll()).toBe(6);
 
     expect(reorganizer.remove()).toBe(6);
 
-    expect(JSON.stringify(reorganizer.process())).toEqual('[[]]');
+    expect(JSON.stringify(reorganizer.process().docs)).toEqual('[[]]');
   });
 
   it('should move pages before/after', async () => {
@@ -537,14 +537,14 @@ describe('PDF Reorganizer', () => {
 
     reorganizer.moveBefore(reorganizer.getPage(2)); // 3
     
-    expect(JSON.stringify(reorganizer.process())).toEqual('[["1","2","4","7","3","5","6","8"]]');
+    expect(JSON.stringify(reorganizer.process().docs)).toEqual('[["1","2","4","7","3","5","6","8"]]');
 
     // still selected
     expect(reorganizer.selected.size).toBe(2);
 
     reorganizer.moveAfter(reorganizer.getPage(5)); // 3
 
-    expect(JSON.stringify(reorganizer.process())).toEqual('[["1","2","3","5","4","7","6","8"]]');
+    expect(JSON.stringify(reorganizer.process().docs)).toEqual('[["1","2","3","5","4","7","6","8"]]');
   });
 
   it('should reload for a new document', async () => {
@@ -916,7 +916,7 @@ describe('PDF Reorganizer (Key events)', () => {
     expect(reorganizer.cursor.num).toBe(4);
     expect(reorganizer.cursor.splittedBefore).toBeTruthy();
 
-    expect(JSON.stringify(reorganizer.process())).toEqual('[["1"],["2","3"],["4","5","6","7","8"]]');
+    expect(JSON.stringify(reorganizer.process().docs)).toEqual('[["1"],["2","3"],["4","5","6","7","8"]]');
   });
 
   it('should move and delete all selected', async () => {
@@ -960,7 +960,7 @@ describe('PDF Reorganizer (Key events)', () => {
     expect(reorganizer.cursor.num).toBe(1);
     expect(reorganizer.cursor.deleted).toBeTruthy();
 
-    expect(JSON.stringify(reorganizer.process())).toEqual('[["3","4","5","6","7","8"]]');
+    expect(JSON.stringify(reorganizer.process().docs)).toEqual('[["3","4","5","6","7","8"]]');
   });
 
   it('should move and rotate all selected', async () => {
@@ -1030,7 +1030,7 @@ describe('PDF Reorganizer (Key events)', () => {
     expect(reorganizer.cursor.selected).toBeTruthy();
     expect(reorganizer.cursor.rotation).toEqual(90);
 
-    expect(JSON.stringify(reorganizer.process())).toEqual('[["1@90","2@180","3@270","4","5","6","7","8"]]');
+    expect(JSON.stringify(reorganizer.process().docs)).toEqual('[["1@90","2@180","3@270","4","5","6","7","8"]]');
   });
 
   it('should move and drop before/after', async () => {
@@ -1087,7 +1087,7 @@ describe('PDF Reorganizer (Key events)', () => {
     expect(reorganizer.cursor.classList.contains('drag-right')).toBeFalsy();
     expect(reorganizer.selected.size).toBe(2);
 
-    expect(JSON.stringify(reorganizer.process())).toEqual('[["1","4","5","6","2","3","7","8"]]');
+    expect(JSON.stringify(reorganizer.process().docs)).toEqual('[["1","4","5","6","2","3","7","8"]]');
 
     reorganizer._keyHandler(keyd({key: 'ArrowLeft'}));
     expect(reorganizer.cursor.num).toBe(5);
@@ -1113,7 +1113,7 @@ describe('PDF Reorganizer (Key events)', () => {
     expect(reorganizer.cursor.classList.contains('drag-right')).toBeFalsy();
     expect(reorganizer.selected.size).toBe(2);
 
-    expect(JSON.stringify(reorganizer.process())).toEqual('[["2","3","1","4","5","6","7","8"]]');
+    expect(JSON.stringify(reorganizer.process().docs)).toEqual('[["2","3","1","4","5","6","7","8"]]');
   });
   
   it('should move and magnify', async () => {
