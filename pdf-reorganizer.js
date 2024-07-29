@@ -696,19 +696,6 @@ export default class PDFReorganizer extends HTMLElement {
 
   /**
    * Remove all pages from the selection,
-   * i.e. clear the selection.
-   */
-  delSelectAll() {
-    let i = 0;
-    this.forEachSelected(function (page) {
-      page.selectOff();
-      i++;
-    });
-    return i;
-  }
-
-  /**
-   * Remove all pages from the selection,
    * except for one single page.
    *
    * @param {PDFPage} page - Single page to be excluded from clearance.
@@ -836,7 +823,7 @@ export default class PDFReorganizer extends HTMLElement {
     let instance = this;
     
     /* Clear possible data */
-    this.delSelectAll();
+    this.selectAll(0);
 
     // Remove all pages from the viewport
     while (this.viewport.lastChild) {

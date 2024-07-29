@@ -415,7 +415,7 @@ describe('PDF Reorganizer', () => {
 
     expect(reorganizer.selected.size).toBe(8);
 
-    expect(reorganizer.delSelectAll()).toBe(8);
+    expect(reorganizer.selectAll(0)).toBe(8);
 
     expect(reorganizer.selected.size).toBe(0);
   });
@@ -838,7 +838,7 @@ describe('PDF Reorganizer (Key events)', () => {
     expect(reorganizer.selected.has(reorganizer.cursor)).toBeTruthy();
 
     // Unselect all
-    expect(reorganizer.delSelectAll()).toBe(2);
+    expect(reorganizer.selectAll(0)).toBe(8);
 
     expect(reorganizer.cursor.num).toBe(2);
     expect(reorganizer.cursor.selected).toBeFalsy();
