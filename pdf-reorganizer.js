@@ -16,8 +16,19 @@ GlobalWorkerOptions.workerSrc = "pdfjs-dist/build/pdf.worker.mjs";
  * @exports
  */
 export default class PDFReorganizer extends HTMLElement {
-  static observedAttributes = ["url","split-button"];
 
+  static observedAttributes = [
+    "url",
+    "split-before-button",
+    "rotate-left-button",
+    "rotate-right-button",
+    "select-button",
+    "select-all-button",
+    "delete-button",
+    "magnify-button",
+    "process-button",
+  ];
+  
   /**
    * @constructor
    */
@@ -42,30 +53,22 @@ export default class PDFReorganizer extends HTMLElement {
     this.attachShadow({ mode: "open" });
    
     const nav = document.createElement('nav');
+    this.navElem = nav;
 
-    this.splitBeforeElem = _addNavItem("split-before", "#splitscreen_vertical_add", "Split before selected pages (Ctrl+Shift+S)");
-    nav.appendChild(this.splitBeforeElem);
-
-    this.rotateLeftElem = _addNavItem("rotate-left", "#rotate_90_degrees_ccw", "Rotate 90deg ccw (Ctrl+left arrow");
-    nav.appendChild(this.rotateLeftElem);
-    
-    this.rotateRightElem = _addNavItem("rotate-right", "#rotate_90_degrees_cw", "Rotate 90deg cw (Ctrl+right arrow)");
-    nav.appendChild(this.rotateRightElem);
-
-    this.selElem = _addNavItem("select", "#select", "Start selection mode");
-    nav.appendChild(this.selElem);
-    
-    this.allElem = _addNavItem("select-all", "#select_all", "Select all pages (Ctrl+a)");
-    nav.appendChild(this.allElem);
-
-    this.delElem = _addNavItem("delete", "#scan_delete", "Delete selected pages (Delete+Shift)");
-    nav.appendChild(this.delElem);
-
-    this.magElem = _addNavItem("magnify", "#zoom_in", "Start magnifying mode");
-    nav.appendChild(this.magElem);
-
-    this.processElem = _addNavItem("process", "#play_arrow", "Start processing");
-    nav.appendChild(this.processElem);
+    this.splitBeforeElem = this._addNavItem(
+      "split-before", "#splitscreen_vertical_add", "Split before selected pages (Ctrl+Shift+S)"
+    );
+    this.rotateLeftElem = this._addNavItem(
+      "rotate-left", "#rotate_90_degrees_ccw", "Rotate 90deg ccw (Ctrl+left arrow"
+    );
+    this.rotateRightElem = this._addNavItem(
+      "rotate-right", "#rotate_90_degrees_cw", "Rotate 90deg cw (Ctrl+right arrow)"
+    );
+    this.selElem = this._addNavItem("select", "#select", "Start selection mode");
+    this.allElem = this._addNavItem("select-all", "#select_all", "Select all pages (Ctrl+a)");
+    this.delElem = this._addNavItem("delete", "#scan_delete", "Delete selected pages (Delete+Shift)");
+    this.magElem = this._addNavItem("magnify", "#zoom_in", "Start magnifying mode");
+    this.processElem = this._addNavItem("process", "#play_arrow", "Start processing");
 
     this.viewport = document.createElement('div');
     this.viewport.setAttribute('id', 'pdf-viewport');
@@ -1179,6 +1182,28 @@ canvas {
   }
 
   /**
+   * Add item to navigation.
+   */
+  _addNavItem (type, symbol, desc) {
+
+    if (this[type + '-button'])
+      return document.getElementById(this[type + '-button']);
+    
+    const elem = document.createElement("div");
+    elem.setAttribute("class",type);
+    const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+    const use = document.createElementNS("http://www.w3.org/2000/svg", "use");
+    use.setAttribute("href", symbol);
+    svg.appendChild(use);
+    elem.appendChild(svg);
+    elem.title = desc;
+    this.navElem.appendChild(elem);
+
+    return elem;
+  };
+
+  
+  /**
    * Embed material design icons.
    */
   svgSymbols() {
@@ -1214,19 +1239,6 @@ canvas {
     svg.innerHTML = svgData;
     return svg;
   }
-};
-
-
-function _addNavItem(type,symbol,desc) {
-  const elem = document.createElement("div");
-  elem.setAttribute("class",type);
-  const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
-  const use = document.createElementNS("http://www.w3.org/2000/svg", "use");
-  use.setAttribute("href", symbol);
-  svg.appendChild(use);
-  elem.appendChild(svg);
-  elem.title = desc;
-  return elem
 };
 
 
