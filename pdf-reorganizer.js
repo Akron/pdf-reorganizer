@@ -9,12 +9,15 @@ GlobalWorkerOptions.workerSrc = "pdfjs-dist/build/pdf.worker.mjs";
 
 
 /**
- * @class PDFReorganizer extends an HTMLElement
+ * PDFReorganizer extends an HTMLElement
  * that allows to rearrange, split, and
  * modify PDFs.
  *
+ * @class
+ * @classdesc PDFReorganizer is a web component to reorganize PDF documents.
  * @exports
  */
+
 export default class PDFReorganizer extends HTMLElement {
 
   static observedAttributes = [
@@ -31,6 +34,8 @@ export default class PDFReorganizer extends HTMLElement {
   
   /**
    * @constructor
+   *
+   * @return {PDFReorganizer} The instance.
    */
   constructor() {
     super();
@@ -38,6 +43,11 @@ export default class PDFReorganizer extends HTMLElement {
 
   /**
    * Initialize the element.
+   * This will setup the navigation structure
+   * when embedded by connectedCallback(), but can also
+   * be called independently of the DOM.
+   *
+   * @return {PDFReorganizer} The instance.
    */
   init () {
     this.url;
@@ -74,12 +84,15 @@ export default class PDFReorganizer extends HTMLElement {
     this.viewport.setAttribute('id', 'pdf-viewport');
 
     const shadow = this.shadowRoot;
-    shadow.appendChild(this.svgSymbols());
+    shadow.appendChild(this._svgSymbols());
     shadow.appendChild(nav);
     shadow.appendChild(this.viewport);
     return this;
   }
 
+  /**
+   * Init the web component when embedded in the DOM.
+   */
   connectedCallback () {
     this.init();
     let instance = this;
@@ -123,11 +136,16 @@ export default class PDFReorganizer extends HTMLElement {
     });
   };
 
+  /**
+   * Clear the web component when removed from the DOM.
+   */
   disconnectedCallback() {
     this.observeViewport.disconnect();
   };
   
-  // attribute change
+  /**
+   * React to attribute changes.
+   */
   attributeChangedCallback(property, oldValue, newValue) {
     if (oldValue === newValue)
       return;
@@ -529,7 +547,6 @@ export default class PDFReorganizer extends HTMLElement {
     this.cursor.classList.add('move');
     this.cursor.showInViewport();
   }
-
   
   /**
    * Removes all selected pages from the
@@ -559,6 +576,8 @@ export default class PDFReorganizer extends HTMLElement {
    * Check if the selector is active.
    *
    * @return {bool} Activity state.
+   *
+   * @readonly
    */
   get selectorActive() {
     return this.viewport.classList.contains("select");
@@ -577,6 +596,8 @@ export default class PDFReorganizer extends HTMLElement {
    * Check if magnifier is active.
    *
    * @return {bool} Activity state.
+   *
+   * @readonly
    */
   get magnifierActive() {
     return this.viewport.classList.contains("magnify");
@@ -690,7 +711,7 @@ export default class PDFReorganizer extends HTMLElement {
    * Remove all pages from the selection,
    * except for one single page.
    *
-   * @param {page} Single page to be excluded from clearance.
+   * @param {PDFPage} page - Single page to be excluded from clearance.
    */
   delSelectAllExceptFor(page) {
     this.forEachSelected(function (page1) {
@@ -700,7 +721,9 @@ export default class PDFReorganizer extends HTMLElement {
   }
 
   /**
-   * Single page selected for key navigation
+   * Single page selected for key navigation.
+   * 
+   * @param {PDFPage} page - Page to be excluded from selection.
    */
   set cursor (page) {
     if (this._cursor === page)
@@ -717,14 +740,19 @@ export default class PDFReorganizer extends HTMLElement {
   }
 
   /**
-   * Single page selected for key navigation
+   * Single page selected for key navigation.
+   *
+   * @return {PDFPage} The cursor page.
    */
   get cursor () {
     return this._cursor;
-  };  
+  }
   
+
   /**
    * Set dropTarget for page moving.
+   *
+   * @param {PDFPage} page - The target for drop actions.
    */
   set dropTarget (page) {
     if (this._dropTarget != null && this._dropTarget != page) {
@@ -733,15 +761,21 @@ export default class PDFReorganizer extends HTMLElement {
     this._dropTarget = page;
   }
 
+
   /**
    * Get dropTarget for page moving.
+   *
+   * @return {PDFPage} The target for drop actions.
    */
   get dropTarget () {
     return this._dropTarget;
   }
   
+
   /**
    * Add splits before all pages in the selection.
+   *
+   * @return {number} The number of introduced page splits.
    */
   splitBefore() {
     let i = 0;
@@ -751,7 +785,14 @@ export default class PDFReorganizer extends HTMLElement {
     return i;
   }
 
-  calcSplitCount () {
+  /**
+   * Calculate the number of splits in the document.
+   *
+   * @return {number} The number of splits in the document.
+   *
+   * @private
+   */
+  _calcSplitCount () {
     if (this.splitBeforeElem) {
       const count = this.viewport.getElementsByClassName("split-before").length;
       this.splitBeforeElem.setAttribute("data-count",count);
@@ -759,18 +800,18 @@ export default class PDFReorganizer extends HTMLElement {
   }
   
   /**
-   * Move all selected pages in front of a target page.
+   * Move all selected pages in front of a target page (aka dropping).
    *
-   * @param {page} The target page.
+   * @param {PDFPage} page - The target page.
    */
   moveBefore(page) {
     page.before(...this._selectedSort())
   }
 
   /**
-   * Move all selected behind a target page.
+   * Move all selected behind a target page (aka dropping).
    *
-   * @param {page} The target page.
+   * @param {PDFPage} page - The target page.
    */
   moveAfter(page) {
     page.after(...this._selectedSort())
@@ -779,7 +820,7 @@ export default class PDFReorganizer extends HTMLElement {
   /**
    * Helper function to iterate through all selected objects.
    *
-   * @param {cb} Callback function.
+   * @param {function} cb - Callback function.
    */
   forEachSelected(cb) {
     this.selected.forEach(cb);
@@ -788,7 +829,7 @@ export default class PDFReorganizer extends HTMLElement {
   /**
    * Load a PDF document.
    *
-   * @param {url} URL or Int array representing the document.
+   * @param {string} url - URL or Int array representing the document.
    */
   loadDocument (url) {
     this.url = url;
@@ -844,10 +885,10 @@ export default class PDFReorganizer extends HTMLElement {
   }
 
   /**
-   * Get a page at a certain index position. Includes deleted pages.
-   * But respects order.
+   * Get a page at a certain index position. Includes deleted pages,
+   * but respects order.
    *
-   * @param {idx} The position of the page in the list.
+   * @param {number} idx - The position of the page in the list.
    *
    * @return {PDFPage} The page at the certain page index in the list.
    */
@@ -898,6 +939,11 @@ export default class PDFReorganizer extends HTMLElement {
     return alldocs;
   }
 
+  /**
+   * Embed CSS in shadow DOM.
+   *
+   * @private
+   */
   _embedCSS() {
     let cssData = `
 :host {
@@ -1183,6 +1229,8 @@ canvas {
 
   /**
    * Add item to navigation.
+   *
+   * @private
    */
   _addNavItem (type, symbol, desc) {
 
@@ -1205,8 +1253,10 @@ canvas {
   
   /**
    * Embed material design icons.
+   *
+   * @private
    */
-  svgSymbols() {
+  _svgSymbols() {
     const svgData = `
   <!-- published under the Apache License 2.0 https://www.apache.org/licenses/LICENSE-2.0.html -->
   <symbol viewBox="0 -960 960 960" id="play_arrow">

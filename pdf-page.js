@@ -9,6 +9,8 @@ const desiredHeight = 100;
 /**
  * A PDFPage represents a single page of a PDF file.
  *
+ * @class
+ * @classdesc PDFPage represents a single page of a PDF file.
  * @exports
  */
 export default class PDFPage extends HTMLElement {
@@ -16,8 +18,8 @@ export default class PDFPage extends HTMLElement {
   /**
    * @constructor
    *
-   * @param pagenum Number of the page.
-   * @param parent PDFReorganizer that arranges this page.
+   * @param {number} pagenum - Number of the page.
+   * @param {PDFReorganizer} parent - Parant reorganizer that orchestrates this page.
    */
   constructor(pagenum, parent) {
     super();
@@ -57,8 +59,14 @@ export default class PDFPage extends HTMLElement {
     
     // Click
     this.addEventListener('click', this._clickHandler.bind(this));
-  };
+  }
 
+  /**
+   * Event handler triggered on drag start.
+   *
+   * @param {DragEvent} ev - The drag event.
+   * @private
+   */
   _dragStartHandler (ev) {
 
     // TODO:
@@ -89,8 +97,14 @@ export default class PDFPage extends HTMLElement {
 
     ev.dataTransfer.setDragImage(newCanvas, -15, -15);
     ev.dataTransfer.dropEffect = "move";
-  };
+  }
 
+  /**
+   * Event handler triggered on drag end.
+   *
+   * @param {DragEvent} ev - The drag event.
+   * @private
+   */
   _dragEndHandler (ev) {     
     if (!this._parent)
       return;
@@ -98,16 +112,28 @@ export default class PDFPage extends HTMLElement {
       obj.classList.remove("dragged");
     });
     this._parent.dropTarget = null;
-  };
+  }
 
+  /**
+   * Event handler triggered on drag leave.
+   *
+   * @param {DragEvent} ev - The drag event.
+   * @private
+   */
   _dragLeaveHandler (ev) {
     ev.preventDefault();
     if (this._parent)
       this._parent.dropTarget = null;
     
     this.classList.remove("drag-left","drag-right");
-  };
+  }
 
+  /**
+   * Event handler triggered on drag over.
+   *
+   * @param {DragEvent} ev - The drag event.
+   * @private
+   */
   _dragOverHandler (ev) {
     ev.preventDefault();
     // Set the dropEffect to move
@@ -124,8 +150,14 @@ export default class PDFPage extends HTMLElement {
     
     if (this._parent)
       this._parent.dropTarget = this;
-  };
+  }
 
+  /**
+   * Event handler triggered on drop.
+   *
+   * @param {DragEvent} ev - The drag event.
+   * @private
+   */
   _dropHandler (ev) {
     ev.preventDefault();
 
@@ -148,6 +180,12 @@ export default class PDFPage extends HTMLElement {
     };
   };
 
+  /**
+   * Event handler triggered on mouse click.
+   *
+   * @param {MouseEvent} ev - The click event.
+   * @private
+   */
   _clickHandler (ev) {
     if (this._parent &&
         !ev.ctrlKey &&
@@ -170,13 +208,13 @@ export default class PDFPage extends HTMLElement {
 
     this.showInViewport();
     this.selectToggle();
-  };
+  }
   
   /**
    * Renders the referenced PDF page using PDF.js.
    *
-   * @param {pdfpage} The PDF.js-page.
-   * @param zf {number} the zoom factor.
+   * @param {PDFPageProxy} pdfpage - The PDF.js-page.
+   * @param {number} zf - The zoom factor.
    */
   render(pdfpage) {
 
@@ -235,7 +273,7 @@ export default class PDFPage extends HTMLElement {
       // Page rendered!
       this.classList.remove("load");
     }).bind(this));
-  };
+  }
 
   /**
    * Remove page from selection, if selected.
@@ -247,7 +285,7 @@ export default class PDFPage extends HTMLElement {
     } else {
       this.selectOn();
     }
-  };
+  }
 
   /**
    * Add page to selection.
@@ -262,7 +300,7 @@ export default class PDFPage extends HTMLElement {
     this.classList.add('selected');
     if (this._parent)
       this._parent.addSelect(this);
-  };
+  }
 
   /**
    * Remove page from selection.
@@ -273,7 +311,7 @@ export default class PDFPage extends HTMLElement {
     this.classList.remove('selected','dragged');
     if (this._parent)
       this._parent.delSelect(this);
-  };
+  }
 
   /**
    * Mark page as a document splitter.
@@ -285,17 +323,17 @@ export default class PDFPage extends HTMLElement {
     if (this.splittedBefore) {
       this.splittedBefore = false;
       this.classList.remove('split-before');
-      this._parent?.calcSplitCount();
+      this._parent?._calcSplitCount();
       this.selectOff();
       return false;
     };
 
     this.splittedBefore = true;
     this.classList.add('split-before');
-    this._parent?.calcSplitCount();
+    this._parent?._calcSplitCount();
     this.selectOff();
     return true;
-  };
+  }
 
   /**
    * Mark page as removed from PDF.
@@ -308,7 +346,7 @@ export default class PDFPage extends HTMLElement {
     this.splittedBefore = false;
     this.classList.remove('split-before');
     this.selectOff();
-  };
+  }
 
   /**
    * Unremove page.
@@ -320,10 +358,10 @@ export default class PDFPage extends HTMLElement {
     this.classList.remove('deleted');
     this.setAttribute('draggable', true);
     this.selectOff();
-  };
+  }
   
   /**
-   * Rotate page to the right.
+   * Rotate page to the right (clockwise).
    */
   rotateRight() {
     if (this.deleted)
@@ -333,7 +371,7 @@ export default class PDFPage extends HTMLElement {
   };
   
   /**
-   * Rotate page to the left.
+   * Rotate page to the left (counter-clockwise).
    */
   rotateLeft() {
     if (this.deleted)
@@ -342,18 +380,38 @@ export default class PDFPage extends HTMLElement {
     this._setRotationStyle();
   };
 
+  /**
+   * Set rotation on style.
+   *
+   * @private
+   */
   _setRotationStyle () {
     this.canvas.style.rotate = this._rotation + 'deg';
   };
 
+  /**
+   * Set scale on style.
+   *
+   * @param {number} s - The scale.
+   *
+   * @private
+   */
   _setScaleStyle (s) {
     this.canvas.style.scale = s;
   };
 
+  /**
+   * Indicator if the page is shown magnified.
+   *
+   * @readonly
+   */
   get magnified() {
     return this.classList.contains('magnify');
   }
-  
+
+  /**
+   * Show the page magnified.
+   */
   magnify() {
     if (this.deleted)
       return false;
@@ -373,6 +431,9 @@ export default class PDFPage extends HTMLElement {
     return true;
   }
 
+  /**
+   * Show the page unmagnified.
+   */
   unmagnify() {
     if (!this.magnified)
       return false;
@@ -384,7 +445,11 @@ export default class PDFPage extends HTMLElement {
   }
   
   /**
-   * Degree of rotation.
+   * Get the degree of rotation.
+   *
+   * @return {number] The degree of rotation normalized to 360 degree.
+   *
+   * @readonly
    */
   get rotation() {
     let deg = this._rotation % 360;
@@ -404,6 +469,9 @@ export default class PDFPage extends HTMLElement {
     return 0;
   }
 
+  /**
+   * Move the viewport to make the page visible.
+   */
   showInViewport() {
 
     // TODO: Only do this, if necessary!
@@ -422,8 +490,12 @@ export default class PDFPage extends HTMLElement {
  * Check if the pointer is on the left (true)
  * side of an object.
  *
- * @param obj The reference object.
- * @param ev The pointer event.
+ * @param {HTMLElement} obj - The reference object.
+ * @param {MouseEvent} ev - The pointer event.
+ *
+ * @return {boolean} True, if the ponter is left of the object.
+ *
+ * @private
  */
 function _pointerBefore (obj, ev) {
   let rect = obj.getBoundingClientRect();
