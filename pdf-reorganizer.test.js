@@ -1,5 +1,5 @@
 import 'pdfjs-dist';
-import PDFPage from './pdf-page.js';
+import PDFReorganizerPage from './pdf-reorganizer-page.js';
 import PDFReorganizer from './pdf-reorganizer.js';
 import { describe, it, expect, vi, test } from 'vitest'
 import { resolve } from 'path'
@@ -9,7 +9,7 @@ window = global;
 describe('PDF Page', () => {
 
   it('should be constructable', () => {
-    let page = new PDFPage(4, null);
+    let page = new PDFReorganizerPage(4, null);
     expect(page.num).toBe(4);
     expect(page.deleted).toBe(false);
     expect(page.splittedBefore).toBe(false);
@@ -19,7 +19,7 @@ describe('PDF Page', () => {
   });
 
   it('should have the right element structure', () => {
-    let page = new PDFPage(4, null);
+    let page = new PDFReorganizerPage(4, null);
     expect(page.tagName).toBe('PDF-PAGE');
 
     expect(page.children.length).toBe(1);
@@ -36,7 +36,7 @@ describe('PDF Page', () => {
   });
 
   it('should swap selections', () => {
-    let page = new PDFPage(4, null);
+    let page = new PDFReorganizerPage(4, null);
     expect(page.selected).toBe(false);
 
     let cl = page.classList;
@@ -72,7 +72,7 @@ describe('PDF Page', () => {
   });
 
   it('should be removable', () => {
-    let page = new PDFPage(4, null);
+    let page = new PDFReorganizerPage(4, null);
     expect(page.selected).toBe(false);
     expect(page.deleted).toBe(false);
 
@@ -85,7 +85,7 @@ describe('PDF Page', () => {
     expect(page.getAttribute("draggable")).toBe("false");
 
     // Unselect if selected
-    page = new PDFPage(4, null);
+    page = new PDFReorganizerPage(4, null);
     expect(page.selected).toBe(false);
     expect(page.deleted).toBe(false);
 
@@ -118,7 +118,7 @@ describe('PDF Page', () => {
   });
 
   it('should be rotatable', () => {
-    let page = new PDFPage(4, null);
+    let page = new PDFReorganizerPage(4, null);
     expect(page.rotation).toBe(0);
 
     page.rotateRight();
@@ -194,7 +194,7 @@ describe('PDF Page', () => {
   });
 
   it('should split before', () => {
-    let page = new PDFPage(4, null);
+    let page = new PDFReorganizerPage(4, null);
    
     expect(page.deleted).toBeFalsy();
     expect(page.classList.contains("split-before")).toBeFalsy();
@@ -226,7 +226,7 @@ describe('PDF Page', () => {
   });
 
   it('should be magnifiable', () => {
-    let page = new PDFPage(4, null);
+    let page = new PDFReorganizerPage(4, null);
    
     expect(page.deleted).toBeFalsy();
     expect(page.classList.contains("split-before")).toBeFalsy();
@@ -257,7 +257,7 @@ describe('PDF Page', () => {
   });
 
   it('should be draggable (wo parent)', () => {
-    let page = new PDFPage(4, null);
+    let page = new PDFReorganizerPage(4, null);
     let dragEv = new Object();
     dragEv.dataTransfer = {
       "dropEffect" : "ok",
@@ -307,7 +307,7 @@ describe('PDF Page', () => {
   });
 
   it('should be clickable (with limited parent)', () => {
-    let page = new PDFPage(4, null);
+    let page = new PDFReorganizerPage(4, null);
     let clickEv = new Object();
     clickEv.ctrlKey = false;
 

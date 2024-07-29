@@ -7,13 +7,13 @@ const desiredHeight = 100;
 // - Change selectOn/selectOff to select(true) and select(false)
 
 /**
- * A PDFPage represents a single page of a PDF file.
+ * A PDFReorganizerPage represents a single page of a PDF file.
  *
  * @class
- * @classdesc PDFPage represents a single page of a PDF file.
+ * @classdesc PDFReorganizerPage represents a single page of a PDF file.
  * @exports
  */
-export default class PDFPage extends HTMLElement {
+export default class PDFReorganizerPage extends HTMLElement {
 
   /**
    * @constructor
@@ -506,4 +506,4 @@ function _pointerBefore (obj, ev) {
   return false;
 };
 
-customElements.define('pdf-page', PDFPage);
+customElements.define('pdf-page', PDFReorganizerPage);

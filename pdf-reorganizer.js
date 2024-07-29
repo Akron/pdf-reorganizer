@@ -2,7 +2,7 @@
 import {getDocument, GlobalWorkerOptions} from 'pdfjs-dist';
 import * as PdfjsWorker from "pdfjs-dist/build/pdf.worker.mjs";
 
-import PDFPage from './pdf-page.js';
+import PDFReorganizerPage from './pdf-reorganizer-page.js';
 
 // The workerSrc property shall be specified.
 GlobalWorkerOptions.workerSrc = "pdfjs-dist/build/pdf.worker.mjs";
@@ -677,7 +677,7 @@ export default class PDFReorganizer extends HTMLElement {
   /**
    * Add a single page to the selection.
    *
-   * @param {page} The PDFPage object.
+   * @param {page} The PDFReorganizerPage object.
    */
   addSelect(page) {
     this.selected.add(page);
@@ -687,7 +687,7 @@ export default class PDFReorganizer extends HTMLElement {
   /**
    * Remove a single page from the selection.
    *
-   * @param {page} The PDFPage object.
+   * @param {page} The PDFReorganizerPage object.
    */
   delSelect(page) {
     this.selected.delete(page);
@@ -698,7 +698,7 @@ export default class PDFReorganizer extends HTMLElement {
    * Remove all pages from the selection,
    * except for one single page.
    *
-   * @param {PDFPage} page - Single page to be excluded from clearance.
+   * @param {PDFReorganizerPage} page - Single page to be excluded from clearance.
    */
   delSelectAllExceptFor(page) {
     this.forEachSelected(function (page1) {
@@ -710,7 +710,7 @@ export default class PDFReorganizer extends HTMLElement {
   /**
    * Single page selected for key navigation.
    * 
-   * @param {PDFPage} page - Page to be excluded from selection.
+   * @param {PDFReorganizerPage} page - Page to be excluded from selection.
    */
   set cursor (page) {
     if (this._cursor === page)
@@ -729,7 +729,7 @@ export default class PDFReorganizer extends HTMLElement {
   /**
    * Single page selected for key navigation.
    *
-   * @return {PDFPage} The cursor page.
+   * @return {PDFReorganizerPage} The cursor page.
    */
   get cursor () {
     return this._cursor;
@@ -739,7 +739,7 @@ export default class PDFReorganizer extends HTMLElement {
   /**
    * Set dropTarget for page moving.
    *
-   * @param {PDFPage} page - The target for drop actions.
+   * @param {PDFReorganizerPage} page - The target for drop actions.
    */
   set dropTarget (page) {
     if (this._dropTarget != null && this._dropTarget != page) {
@@ -752,7 +752,7 @@ export default class PDFReorganizer extends HTMLElement {
   /**
    * Get dropTarget for page moving.
    *
-   * @return {PDFPage} The target for drop actions.
+   * @return {PDFReorganizerPage} The target for drop actions.
    */
   get dropTarget () {
     return this._dropTarget;
@@ -789,7 +789,7 @@ export default class PDFReorganizer extends HTMLElement {
   /**
    * Move all selected pages in front of a target page (aka dropping).
    *
-   * @param {PDFPage} page - The target page.
+   * @param {PDFReorganizerPage} page - The target page.
    */
   moveBefore(page) {
     page.before(...this._selectedSort())
@@ -798,7 +798,7 @@ export default class PDFReorganizer extends HTMLElement {
   /**
    * Move all selected behind a target page (aka dropping).
    *
-   * @param {PDFPage} page - The target page.
+   * @param {PDFReorganizerPage} page - The target page.
    */
   moveAfter(page) {
     page.after(...this._selectedSort())
@@ -856,7 +856,7 @@ export default class PDFReorganizer extends HTMLElement {
      
       let page;
       for (var i = 0; i < instance.numPages; i++) {
-        page  = new PDFPage(i+1, instance);
+        page  = new PDFReorganizerPage(i+1, instance);
         //// instance.pages[i] = page;
         instance.viewport.appendChild(page);
         instance.observeViewport?.observe(page);
@@ -877,7 +877,7 @@ export default class PDFReorganizer extends HTMLElement {
    *
    * @param {number} idx - The position of the page in the list.
    *
-   * @return {PDFPage} The page at the certain page index in the list.
+   * @return {PDFReorganizerPage} The page at the certain page index in the list.
    */
   getPage(idx) {
     return this.viewport.childNodes[idx];
@@ -890,6 +890,8 @@ export default class PDFReorganizer extends HTMLElement {
    * object that has a `detail` object containing a `docs`
    * array representing all rearranged documents and a `src`
    * array containing all associated filenames.
+   *
+   * @return {Object} The detail object.
    */
   process () {
     let nodeList = this.viewport.childNodes;
