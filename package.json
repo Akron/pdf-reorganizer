@@ -8,7 +8,7 @@
   "module": "pdf-reorganizer.js",
   "scripts": {
     "test": "vitest --silent=false",
-    "analyze-custom-elements": "npx @custom-elements-manifest/analyzer analyze",
+    "analyze-custom-elements": "npx @custom-elements-manifest/analyzer analyze --exclude coverage",
     "switch-latest": "nvm use node",
     "dev": "vite",
     "coverage": "vitest run --coverage"

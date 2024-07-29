@@ -13,18 +13,118 @@
           "members": [
             {
               "kind": "method",
+              "name": "_dragStartHandler",
+              "parameters": [
+                {
+                  "name": "ev",
+                  "description": "The drag event.",
+                  "type": {
+                    "text": "DragEvent"
+                  }
+                }
+              ],
+              "description": "Event handler triggered on drag start.",
+              "privacy": "private"
+            },
+            {
+              "kind": "method",
+              "name": "_dragEndHandler",
+              "parameters": [
+                {
+                  "name": "ev",
+                  "description": "The drag event.",
+                  "type": {
+                    "text": "DragEvent"
+                  }
+                }
+              ],
+              "description": "Event handler triggered on drag end.",
+              "privacy": "private"
+            },
+            {
+              "kind": "method",
+              "name": "_dragLeaveHandler",
+              "parameters": [
+                {
+                  "name": "ev",
+                  "description": "The drag event.",
+                  "type": {
+                    "text": "DragEvent"
+                  }
+                }
+              ],
+              "description": "Event handler triggered on drag leave.",
+              "privacy": "private"
+            },
+            {
+              "kind": "method",
+              "name": "_dragOverHandler",
+              "parameters": [
+                {
+                  "name": "ev",
+                  "description": "The drag event.",
+                  "type": {
+                    "text": "DragEvent"
+                  }
+                }
+              ],
+              "description": "Event handler triggered on drag over.",
+              "privacy": "private"
+            },
+            {
+              "kind": "method",
+              "name": "_dropHandler",
+              "parameters": [
+                {
+                  "name": "ev",
+                  "description": "The drag event.",
+                  "type": {
+                    "text": "DragEvent"
+                  }
+                }
+              ],
+              "description": "Event handler triggered on drop.",
+              "privacy": "private"
+            },
+            {
+              "kind": "method",
+              "name": "_clickHandler",
+              "parameters": [
+                {
+                  "name": "ev",
+                  "description": "The click event.",
+                  "type": {
+                    "text": "MouseEvent"
+                  }
+                }
+              ],
+              "description": "Event handler triggered on mouse click.",
+              "privacy": "private"
+            },
+            {
+              "kind": "method",
               "name": "render",
               "parameters": [
                 {
                   "name": "pdfpage",
-                  "description": "The PDF.js-page."
+                  "description": "The PDF.js-page.",
+                  "type": {
+                    "text": "PDFPageProxy"
+                  }
+                },
+                {
+                  "description": "The zoom factor.",
+                  "name": "zf",
+                  "type": {
+                    "text": "number"
+                  }
                 }
               ],
               "description": "Renders the referenced PDF page using PDF.js."
             },
             {
               "kind": "method",
-              "name": "swapSelected",
+              "name": "selectToggle",
               "description": "Remove page from selection, if selected.\nOtherwise select."
             },
             {
@@ -55,18 +155,65 @@
             {
               "kind": "method",
               "name": "rotateRight",
-              "description": "Rotate page to the right."
+              "description": "Rotate page to the right (clockwise)."
             },
             {
               "kind": "method",
               "name": "rotateLeft",
-              "description": "Rotate page to the left."
+              "description": "Rotate page to the left (counter-clockwise)."
+            },
+            {
+              "kind": "method",
+              "name": "_setRotationStyle",
+              "description": "Set rotation on style.",
+              "privacy": "private"
+            },
+            {
+              "kind": "method",
+              "name": "_setScaleStyle",
+              "parameters": [
+                {
+                  "name": "s",
+                  "description": "The scale.",
+                  "type": {
+                    "text": "number"
+                  }
+                }
+              ],
+              "description": "Set scale on style.",
+              "privacy": "private"
+            },
+            {
+              "kind": "field",
+              "name": "magnified",
+              "description": "Indicator if the page is shown magnified.",
+              "readonly": true
+            },
+            {
+              "kind": "method",
+              "name": "magnify",
+              "description": "Show the page magnified."
+            },
+            {
+              "kind": "method",
+              "name": "unmagnify",
+              "description": "Show the page unmagnified."
             },
             {
               "kind": "field",
               "name": "rotation",
-              "description": "Degree of rotation.",
+              "description": "Get the degree of rotation.",
+              "return": {
+                "type": {
+                  "text": "number"
+                }
+              },
               "readonly": true
+            },
+            {
+              "kind": "method",
+              "name": "showInViewport",
+              "description": "Move the viewport to make the page visible."
             },
             {
               "kind": "field",
@@ -76,6 +223,14 @@
             {
               "kind": "field",
               "name": "deleted",
+              "type": {
+                "text": "boolean"
+              },
+              "default": "false"
+            },
+            {
+              "kind": "field",
+              "name": "selected",
               "type": {
                 "text": "boolean"
               },
@@ -99,14 +254,6 @@
             },
             {
               "kind": "field",
-              "name": "_selected",
-              "type": {
-                "text": "boolean"
-              },
-              "default": "false"
-            },
-            {
-              "kind": "field",
               "name": "_pdfjsref",
               "type": {
                 "text": "null"
@@ -117,6 +264,14 @@
               "kind": "field",
               "name": "_parent",
               "default": "parent"
+            },
+            {
+              "kind": "field",
+              "name": "_translate",
+              "type": {
+                "text": "string"
+              },
+              "default": "\"\""
             },
             {
               "kind": "field",
@@ -163,13 +318,59 @@
       "declarations": [
         {
           "kind": "class",
-          "description": "",
+          "description": "PDFReorganizer extends an HTMLElement\nthat allows to rearrange, split, and\nmodify PDFs.",
           "name": "PDFReorganizer",
           "members": [
             {
               "kind": "method",
+              "name": "init",
+              "description": "Initialize the element.\nThis will setup the navigation structure\nwhen embedded by connectedCallback(), but can also\nbe called independently of the DOM.",
+              "return": {
+                "type": {
+                  "text": "PDFReorganizer"
+                }
+              }
+            },
+            {
+              "kind": "method",
               "name": "_selectedSort",
-              "description": "Return selected elements in order of appearance\nin the viewport."
+              "description": "Return selected elements in order of appearance\nin the viewport.",
+              "privacy": "private"
+            },
+            {
+              "kind": "method",
+              "name": "_keyHandler",
+              "parameters": [
+                {
+                  "name": "ev"
+                }
+              ],
+              "description": "Handle key presses.",
+              "privacy": "private"
+            },
+            {
+              "kind": "method",
+              "name": "_moveLeft",
+              "description": "Move cursor to left.",
+              "privacy": "private"
+            },
+            {
+              "kind": "method",
+              "name": "_moveRight",
+              "description": "Move cursor to right.",
+              "privacy": "private"
+            },
+            {
+              "kind": "method",
+              "name": "_moveUp",
+              "description": "Move cursor up.",
+              "privacy": "private"
+            },
+            {
+              "kind": "method",
+              "name": "_moveDown",
+              "description": "Move cursor down.",
+              "privacy": "private"
             },
             {
               "kind": "method",
@@ -183,8 +384,71 @@
             },
             {
               "kind": "method",
+              "name": "toggleSelector",
+              "description": "Starts or ends the selector."
+            },
+            {
+              "kind": "field",
+              "name": "selectorActive",
+              "description": "Check if the selector is active.",
+              "return": {
+                "type": {
+                  "text": "bool"
+                }
+              },
+              "readonly": true
+            },
+            {
+              "kind": "method",
+              "name": "toggleMagnifier",
+              "description": "Starts or ends the magnifier."
+            },
+            {
+              "kind": "field",
+              "name": "magnifierActive",
+              "description": "Check if magnifier is active.",
+              "return": {
+                "type": {
+                  "text": "bool"
+                }
+              },
+              "readonly": true
+            },
+            {
+              "kind": "method",
               "name": "rotateLeft",
               "description": "Rotates all selected pages from the\nPDF 90 degrees to the left.",
+              "return": {
+                "type": {
+                  "text": "number"
+                }
+              }
+            },
+            {
+              "kind": "method",
+              "name": "rotateRight",
+              "description": "Rotates all selected pages from the\nPDF 90 degrees to the right.",
+              "return": {
+                "type": {
+                  "text": "number"
+                }
+              }
+            },
+            {
+              "kind": "method",
+              "name": "selectAll",
+              "parameters": [
+                {
+                  "name": "opt",
+                  "default": "1",
+                  "description": "Optional value.\nIf numerical type:\nopt == 0 will deselect, opt < 0 will inverse,\notherwise will select all.\nIf event type:\nIn case the ctrlKey is clicked, will deselect.",
+                  "optional": true,
+                  "type": {
+                    "text": "(number|Event)"
+                  }
+                }
+              ],
+              "description": "Select all pages.",
               "return": {
                 "type": {
                   "text": "number"
@@ -196,8 +460,14 @@
               "name": "addSelect",
               "parameters": [
                 {
-                  "name": "page",
-                  "description": "The PDFPage object."
+                  "name": "page"
+                },
+                {
+                  "description": "PDFPage object.",
+                  "name": "The",
+                  "type": {
+                    "text": "page"
+                  }
                 }
               ],
               "description": "Add a single page to the selection."
@@ -207,8 +477,14 @@
               "name": "delSelect",
               "parameters": [
                 {
-                  "name": "page",
-                  "description": "The PDFPage object."
+                  "name": "page"
+                },
+                {
+                  "description": "PDFPage object.",
+                  "name": "The",
+                  "type": {
+                    "text": "page"
+                  }
                 }
               ],
               "description": "Remove a single page from the selection."
@@ -224,15 +500,72 @@
               "parameters": [
                 {
                   "name": "page",
-                  "description": "Single page to be excluded from clearance."
+                  "description": "Single page to be excluded from clearance.",
+                  "type": {
+                    "text": "PDFPage"
+                  }
                 }
               ],
               "description": "Remove all pages from the selection,\nexcept for one single page."
             },
             {
+              "kind": "field",
+              "name": "cursor",
+              "description": "Single page selected for key navigation.",
+              "parameters": [
+                {
+                  "description": "Page to be excluded from selection.",
+                  "name": "page",
+                  "type": {
+                    "text": "PDFPage"
+                  }
+                }
+              ],
+              "return": {
+                "type": {
+                  "text": "PDFPage"
+                }
+              }
+            },
+            {
+              "kind": "field",
+              "name": "dropTarget",
+              "description": "Get dropTarget for page moving.",
+              "parameters": [
+                {
+                  "description": "The target for drop actions.",
+                  "name": "page",
+                  "type": {
+                    "text": "PDFPage"
+                  }
+                }
+              ],
+              "return": {
+                "type": {
+                  "text": "PDFPage"
+                }
+              }
+            },
+            {
               "kind": "method",
               "name": "splitBefore",
-              "description": "Add splits before all pages in the selection."
+              "description": "Add splits before all pages in the selection.",
+              "return": {
+                "type": {
+                  "text": "number"
+                }
+              }
+            },
+            {
+              "kind": "method",
+              "name": "_calcSplitCount",
+              "description": "Calculate the number of splits in the document.",
+              "return": {
+                "type": {
+                  "text": "number"
+                }
+              },
+              "privacy": "private"
             },
             {
               "kind": "method",
@@ -240,10 +573,13 @@
               "parameters": [
                 {
                   "name": "page",
-                  "description": "The target page."
+                  "description": "The target page.",
+                  "type": {
+                    "text": "PDFPage"
+                  }
                 }
               ],
-              "description": "Move all selected pages in front of a target page."
+              "description": "Move all selected pages in front of a target page (aka dropping)."
             },
             {
               "kind": "method",
@@ -251,10 +587,13 @@
               "parameters": [
                 {
                   "name": "page",
-                  "description": "The target page."
+                  "description": "The target page.",
+                  "type": {
+                    "text": "PDFPage"
+                  }
                 }
               ],
-              "description": "Move all selected behind a target page."
+              "description": "Move all selected behind a target page (aka dropping)."
             },
             {
               "kind": "method",
@@ -262,21 +601,13 @@
               "parameters": [
                 {
                   "name": "cb",
-                  "description": "Callback function."
+                  "description": "Callback function.",
+                  "type": {
+                    "text": "function"
+                  }
                 }
               ],
               "description": "Helper function to iterate through all selected objects."
-            },
-            {
-              "kind": "method",
-              "name": "loadCSS",
-              "parameters": [
-                {
-                  "name": "url",
-                  "description": "URL of the CSS file."
-                }
-              ],
-              "description": "Load CSS file and add it to the shadow dom."
             },
             {
               "kind": "method",
@@ -284,71 +615,66 @@
               "parameters": [
                 {
                   "name": "url",
-                  "description": "URL or Int array representing the document."
+                  "description": "URL or Int array representing the document.",
+                  "type": {
+                    "text": "string"
+                  }
                 }
               ],
               "description": "Load a PDF document."
             },
             {
               "kind": "method",
-              "name": "process",
-              "description": "Create a JSON array representing the modified document(s)\nto generate.\nThis dispatches a custom event `processed` on the PDFReorganizer\nobject that has a `detail` objects containing a `directive`\nobject representing the JSON object."
+              "name": "getPage",
+              "parameters": [
+                {
+                  "name": "idx",
+                  "description": "The position of the page in the list.",
+                  "type": {
+                    "text": "number"
+                  }
+                }
+              ],
+              "description": "Get a page at a certain index position. Includes deleted pages,\nbut respects order.",
+              "return": {
+                "type": {
+                  "text": "PDFPage"
+                }
+              }
             },
             {
               "kind": "method",
-              "name": "embedCSS"
+              "name": "process",
+              "description": "Create a JSON array representing the modified document(s)\nto generate.\nThis dispatches a custom event `processed` on the PDFReorganizer\nobject that has a `detail` object containing a `docs`\narray representing all rearranged documents and a `src`\narray containing all associated filenames."
             },
             {
-              "kind": "field",
-              "name": "numpages",
-              "default": "undefined"
+              "kind": "method",
+              "name": "_embedCSS",
+              "description": "Embed CSS in shadow DOM.",
+              "privacy": "private"
             },
             {
-              "kind": "field",
-              "name": "pdfDoc",
-              "default": "undefined"
+              "kind": "method",
+              "name": "_addNavItem",
+              "parameters": [
+                {
+                  "name": "type"
+                },
+                {
+                  "name": "symbol"
+                },
+                {
+                  "name": "desc"
+                }
+              ],
+              "description": "Add item to navigation.",
+              "privacy": "private"
             },
             {
-              "kind": "field",
-              "name": "selected",
-              "default": "new Set()"
-            },
-            {
-              "kind": "field",
-              "name": "pages",
-              "default": "new Array()"
-            },
-            {
-              "kind": "field",
-              "name": "shadow"
-            },
-            {
-              "kind": "field",
-              "name": "delElem"
-            },
-            {
-              "kind": "field",
-              "name": "innerText",
-              "type": {
-                "text": "string"
-              },
-              "default": "'process'"
-            },
-            {
-              "kind": "field",
-              "name": "rotateLeftElem"
-            },
-            {
-              "kind": "field",
-              "name": "splitBeforeElem"
-            },
-            {
-              "kind": "field",
-              "name": "processElem"
-            },
-            {
-              "kind": "field",
-              "name": "viewport"
+              "kind": "method",
+              "name": "_svgSymbols",
+              "description": "Embed material design icons.",
+              "privacy": "private"
             }
           ],
           "events": [
@@ -364,10 +690,28 @@
               "name": "url"
             },
             {
-              "name": "css"
+              "name": "split-before-button"
             },
             {
-              "name": "onprocess"
+              "name": "rotate-left-button"
+            },
+            {
+              "name": "rotate-right-button"
+            },
+            {
+              "name": "select-button"
+            },
+            {
+              "name": "select-all-button"
+            },
+            {
+              "name": "delete-button"
+            },
+            {
+              "name": "magnify-button"
+            },
+            {
+              "name": "process-button"
             }
           ],
           "superclass": {
