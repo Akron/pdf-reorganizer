@@ -563,23 +563,21 @@ export default class PDFReorganizer extends HTMLElement {
   }
 
   /**
+   * Check if a specific mode ("magnify","select","split-before") is active.
+   *
+   * @readonly
+   */
+  isMode(m) {
+    return this.viewport.classList.contains(m);
+  }
+  
+  /**
    * Starts or ends the selector.
    */
   toggleSelector() {
     this.selElem?.classList.toggle("active");
-    this.viewport.classList.remove("magnify");
+    this.viewport.classList.remove("magnify","split-before");
     this.viewport.classList.toggle("select");
-  }
-
-  /**
-   * Check if the selector is active.
-   *
-   * @return {bool} Activity state.
-   *
-   * @readonly
-   */
-  get selectorActive() {
-    return this.viewport.classList.contains("select");
   }
 
   /**
@@ -587,21 +585,16 @@ export default class PDFReorganizer extends HTMLElement {
    */
   toggleMagnifier() {
     this.magElem?.classList.toggle("active");
-    this.viewport.classList.remove("select");
+    this.viewport.classList.remove("select","split-before");
     this.viewport.classList.toggle("magnify");
   }
-
-  /**
-   * Check if magnifier is active.
-   *
-   * @return {bool} Activity state.
-   *
-   * @readonly
-   */
-  get magnifierActive() {
-    return this.viewport.classList.contains("magnify");
+  
+  toggleSplitter() {
+    this.splitBeforeElem?.classList.toggle("active");
+    this.viewport.classList.remove('magnify',"select");
+    this.viewport.classList.toggle("split-before");
   }
-
+  
   /**
    * Rotates all selected pages from the
    * PDF 90 degrees to the left.
@@ -764,6 +757,11 @@ export default class PDFReorganizer extends HTMLElement {
    * @return {number} The number of introduced page splits.
    */
   splitBefore() {
+    if (this.selected.size == 0) {
+      this.toggleSplitter();
+      return 0;
+    };
+    
     let i = 0;
     this.forEachSelected(function (page) {
       i = page.splitBefore() ? i+1 : i;
@@ -1004,7 +1002,7 @@ nav > div {
   border-radius: 3px;
 }
 
-nav > :where(div:hover, div.active) {
+nav > div:hover, nav > div.active {
   background-color: var(--pdfro-selected-bg-color);
   color: var(--pdfro-selected-color);
   fill: var(--pdfro-selected-color);

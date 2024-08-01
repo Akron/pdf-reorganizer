@@ -189,8 +189,8 @@ export default class PDFReorganizerPage extends HTMLElement {
   _clickHandler (ev) {
     if (this._parent &&
         !ev.ctrlKey &&
-        !this._parent.magnifierActive &&
-        !this._parent.selectorActive) {
+        !this._parent.isMode("magnify") &&
+        !this._parent.isMode("select")) {
       this._parent.delSelectAllExceptFor(this);
     };
 
@@ -199,9 +199,17 @@ export default class PDFReorganizerPage extends HTMLElement {
       this._parent.cursor = this;
       this.classList.remove("cursor","move");
 
-      if (this._parent.magnifierActive) {
+      // Magnifier mode is active
+      if (this._parent.isMode("magnify")) {
         this.magnify();
         this._parent.toggleMagnifier();
+        return;
+      }
+
+      // Splitter mode is active
+      else if (this._parent.isMode("split-before")) {
+        this.splitBefore();
+        this._parent.toggleSplitter();
         return;
       };
     };
