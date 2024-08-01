@@ -38,7 +38,7 @@
     "dms"
   ],
   "customElements": "./custom-elements.json",
-  "license": "",
+  "license": "Apache-2.0",
   "bugs": {
     "url": "https://github.com/Akron/pdf-reorganizer/issues"
   },
