@@ -1,6 +1,6 @@
 {
   "name": "pdf-reorganizer",
-  "version": "0.1.3",
+  "version": "0.1.4",
   "author": "Nils Diewald",
   "description": "Web Component for PDF reorganization",
   "type": "module",
@@ -26,7 +26,7 @@
     "pdfjs-dist": "^4.4.168"
   },
   "imports": {
-    "pdf-page": "./pdf-page.js"
+    "pdf-reorganizer-page": "./pdf-reorganizer-page.js"
   },
   "repository": {
     "type": "git",

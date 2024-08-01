@@ -1,4 +1,3 @@
-//import * as pdfjsLib from 'pdfjs-dist';
 import {getDocument, GlobalWorkerOptions} from 'pdfjs-dist';
 import * as PdfjsWorker from "pdfjs-dist/build/pdf.worker.mjs";
 

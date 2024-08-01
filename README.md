@@ -16,8 +16,15 @@ Reorganization supports:
 
 # Integration
 
-```html
+Install the package:
 
+```shell
+npm i pdf-reorganizer
+```
+
+Import the package in your code:
+
+```html
 <html>
   <head>
     <script type="module">
