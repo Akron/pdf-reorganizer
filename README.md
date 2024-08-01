@@ -118,6 +118,42 @@ If no file prefix is given, the first file (0) is assumed.
 
 # Customization
 
+The following CSS variables can be overwritten and are resepected by the web component.
+It's best to overwrite them in a `pdf-reorganizer` selector rule.
+
+```css
+pdf-reorganizer {
+
+  /* Main color for fonts and borders */
+  --pdfro-main-color: #555;
+  
+  /* Colors for selected pages */
+  --pdfro-selected-color: #fff;
+  --pdfro-selected-bg-color: #07d;
+  
+  /* Colors for the split marker */
+  --pdfro-split-marker-border-color: #696;
+  --pdfro-split-marker-bg-color: #6b6;
+  --pdfro-split-marker-counter-color: #fff;
+
+  /* Color of the load spinner */
+  --pdfro-loader-color: blue;
+
+  /* Color of deleted pages */
+  --pdfro-deleted-bg-color: #777;
+
+  /* Color of highlighted pages for mouseover */
+  --pdfro-hover-bg-color: #aaa;
+  
+  /* Color of dragged pages and drag-markers */
+  --pdfro-dragged-color: #7bf;
+
+  /* Colors for navigation menu */
+  --pdfro-nav-bg-color: #fff;
+  --pdfro-nav-color: var(--pdfro-main-color);
+}
+```
+
 # Planned Features
 - Copy instead of moving
 - Add files per drag and drop (if embedded in a service)

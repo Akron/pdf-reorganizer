@@ -938,18 +938,17 @@ export default class PDFReorganizer extends HTMLElement {
     let cssData = `
 :host {
   --pdfro-main-color: #555;
-  --pdfro-white: #ffffff;
-  --pdfro-deleted-color: #777;
-  --pdfro-hover-color: #aaa;
-
   --pdfro-selected-bg-color: #07d;
-  --pdfro-selected-color: var(--pdfro-white);
-
-  --pdfro-split-before-border-color: #696;
-  --pdfro-split-before-bg-color: #6b6;
-  --pdfro-split-before-counter-color: #fff;
+  --pdfro-selected-color: #fff;
+  --pdfro-split-marker-border-color: #696;
+  --pdfro-split-marker-bg-color: #6b6;
+  --pdfro-split-marker-counter-color: #fff;
+  --pdfro-loader-color: var(--pdfro-selected-bg-color);
+  --pdfro-deleted-bg-color: #777;
+  --pdfro-hover-bg-color: #aaa;
   --pdfro-dragged-color: #7bf;
-  --pdfro-loader: var(--pdfro-selected-bg-color);
+  --pdfro-nav-color: var(--pdfro-main-color); 
+  --pdfro-nav-bg-color: var(--pdfro-selected-color);
   --pdfro-viewport-height: 244px;
   --pdfro-viewport-width: 232px;
   display: block;
@@ -988,8 +987,8 @@ nav {
 /*  font-size: 80%; */
   display: block;
   border-radius: 5px;
-  border: 1px solid var(--pdfro-main-color);
-  background-color: var(--pdfro-white);
+  border: 1px solid var(--pdfro-nav-color);
+  background-color: var(--pdfro-nav-bg-color);
   box-shadow: rgba(50, 50, 50, 0.5) 2px 2px 2px 1px;
   margin:4pt;
   width: 28px;
@@ -1001,21 +1000,21 @@ nav > div {
   padding: 2pt;
   padding-bottom: 0;
   margin: 2pt;
-  fill: var(--pdfro-main-color);
+  fill: var(--pdfro-nav-color);
   border-radius: 3px;
 }
 
 nav > :where(div:hover, div.active) {
   background-color: var(--pdfro-selected-bg-color);
-  color: var(--pdfro-white);
-  fill: var(--pdfro-white);
+  color: var(--pdfro-selected-color);
+  fill: var(--pdfro-selected-color);
 }
 
 nav > div::after {
- position: absolute;
+  position: absolute;
   font-size: 8pt;
   background-color: var(--pdfro-selected-bg-color);
-  color: var(--pdfro-white);
+  color: var(--pdfro-selected-color);
   border-radius: 8pt;
   padding: 0 3pt;
   margin-top: -6pt;
@@ -1121,7 +1120,7 @@ pdf-page.load::before {
   margin-top: -10px;
   margin-left: -10px;
   border-radius: 50%;
-  border-top: 2px solid var(--pdfro-loader);
+  border-top: 2px solid var(--pdfro-loader-color);
   border-right: 2px solid transparent;
   animation: rotation .6s linear infinite;
 }
@@ -1140,17 +1139,17 @@ pdf-page.load canvas {
 }
 
 pdf-page.deleted {
-  background-color: var(--pdfro-deleted-color);
-  border-color: var(--pdfro-deleted-color);
+  background-color: var(--pdfro-deleted-bg-color);
+  border-color: var(--pdfro-deleted-bg-color);
 }
 
 pdf-page:not(.deleted):not(.selected):hover {
-  background-color: var(--pdfro-hover-color);
+  background-color: var(--pdfro-hover-bg-color);
 }
 
 pdf-page.cursor.move {
   outline-offset: 1px;
-  outline: 3px dashed var(--pdfro-hover-color);
+  outline: 3px dashed var(--pdfro-hover-bg-color);
 }
 
 pdf-page.deleted canvas {
@@ -1167,16 +1166,16 @@ pdf-page.split-before div.container::before {
   counter-increment: splite;
   top:0;
   left:0;
-  color: var(--pdfro-split-before-counter-color);
-  border: 1px solid var(--pdfro-split-before-border-color);
-  background-color: var(--pdfro-split-before-bg-color);
+  color: var(--pdfro-split-marker-counter-color);
+  border: 1px solid var(--pdfro-split-marker-border-color);
+  background-color: var(--pdfro-split-marker-bg-color);
   width: 16px;
   height: 16px;
   font-size: 9pt;
   border-radius: 10px;
   text-align: center;
   line-height: 11pt;
-  text-shadow: var(--pdfro-split-before-border-color) 1px 1px 4px;
+  text-shadow: var(--pdfro-split-marker-border-color) 1px 1px 4px;
 }
 
 pdf-page.selected {
