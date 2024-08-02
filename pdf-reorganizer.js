@@ -26,7 +26,7 @@ export default class PDFReorganizer extends HTMLElement {
     "rotate-right-button",
     "select-button",
     "select-all-button",
-    "delete-button",
+    "remove-button",
     "magnify-button",
     "process-button",
   ];
@@ -85,8 +85,8 @@ export default class PDFReorganizer extends HTMLElement {
       "select-all": this._addNavItem(
         "select-all", "#select_all", "Select all pages (Ctrl+a)"
       ),
-      "delete": this._addNavItem(
-        "delete", "#scan_delete", "Delete selected pages (Delete+Shift)"
+      "remove": this._addNavItem(
+        "remove", "#scan_delete", "Remove selected pages (Delete+Shift)"
       ),
       "magnify": this._addNavItem(
         "magnify", "#zoom_in", "Start magnifying mode"
@@ -118,7 +118,7 @@ export default class PDFReorganizer extends HTMLElement {
     if (this.url != undefined)
       this.loadDocument(this.url);
 
-    this.button["delete"].addEventListener('click', this.remove.bind(this));
+    this.button["remove"].addEventListener('click', this.remove.bind(this));
     this.button["rotate-left"].addEventListener('click', this.rotateLeft.bind(this));
     this.button["rotate-right"].addEventListener('click', this.rotateRight.bind(this));
     this.button["split-before"].addEventListener('click', this.splitBefore.bind(this));
@@ -198,7 +198,7 @@ export default class PDFReorganizer extends HTMLElement {
   _keyHandler (ev) {
     var letter = String.fromCharCode(ev.which);
 
-    // delete
+    // Remove
     switch (ev.key) {
     case "Delete":
       ev.preventDefault();
@@ -581,20 +581,20 @@ export default class PDFReorganizer extends HTMLElement {
     // TODO: Remove select
     const cl = this.viewport.classList;
     let exists = cl.contains(m);
-    cl.remove("magnify","delete","select","split-before","rotate-left","rotate-right");
+    cl.remove("magnify","remove","select","split-before","rotate-left","rotate-right");
     if (!exists)
       cl.add(m);
   }
 
   /**
    * Removes all selected pages from the
-   * PDF or activates the delete mode, if none selected.
+   * PDF or activates the remove mode, if none selected.
    *
-   * @return {number} The number of deleted pages.
+   * @return {number} The number of removed pages.
    */
   remove() {
     if (this.selected.size == 0) {
-      this.toggleMode("delete");
+      this.toggleMode("remove");
       return 0;
     };
 
@@ -656,7 +656,7 @@ export default class PDFReorganizer extends HTMLElement {
    *        If event type:
    *        In case the ctrlKey is clicked, will deselect.
    *
-   * @return {number} The number of selected pages (excludes deleted pages).
+   * @return {number} The number of selected pages (excludes removed pages).
    */
   selectAll(opt = 1) {
     let i = 0;
@@ -672,7 +672,7 @@ export default class PDFReorganizer extends HTMLElement {
     
     let nodeList = this.viewport.childNodes;
     nodeList.forEach((page) => {
-      if (page.deleted)
+      if (page.removed)
         return;
       if (!opt)
         page.selectOff();
@@ -890,7 +890,7 @@ export default class PDFReorganizer extends HTMLElement {
   }
 
   /**
-   * Get a page at a certain index position. Includes deleted pages,
+   * Get a page at a certain index position. Includes removed pages,
    * but respects order.
    *
    * @param {number} idx - The position of the page in the list.
@@ -917,8 +917,8 @@ export default class PDFReorganizer extends HTMLElement {
     let splitdocs = new Array();
     nodeList.forEach((page) => {
 
-      // Skip deleted pages
-      if (page.deleted)
+      // Skip removed pages
+      if (page.removed)
         return;
 
       let val = page.num + "";
@@ -963,7 +963,7 @@ export default class PDFReorganizer extends HTMLElement {
   --pdfro-split-marker-bg-color: #6b6;
   --pdfro-split-marker-counter-color: #fff;
   --pdfro-loader-color: var(--pdfro-selected-bg-color);
-  --pdfro-deleted-bg-color: #777;
+  --pdfro-removed-bg-color: #777;
   --pdfro-hover-bg-color: #aaa;
   --pdfro-dragged-color: #7bf;
   --pdfro-nav-color: var(--pdfro-main-color); 
@@ -1157,12 +1157,12 @@ pdf-page.load canvas {
   opacity: 0;
 }
 
-pdf-page.deleted {
-  background-color: var(--pdfro-deleted-bg-color);
-  border-color: var(--pdfro-deleted-bg-color);
+pdf-page.removed {
+  background-color: var(--pdfro-removed-bg-color);
+  border-color: var(--pdfro-removed-bg-color);
 }
 
-pdf-page:not(.deleted):not(.selected):hover {
+pdf-page:not(.removed):not(.selected):hover {
   background-color: var(--pdfro-hover-bg-color);
 }
 
@@ -1171,7 +1171,7 @@ pdf-page.cursor.move {
   outline: 3px dashed var(--pdfro-hover-bg-color);
 }
 
-pdf-page.deleted canvas {
+pdf-page.removed canvas {
   opacity: .2;
 }
 

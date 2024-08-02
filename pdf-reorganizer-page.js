@@ -24,7 +24,7 @@ export default class PDFReorganizerPage extends HTMLElement {
   constructor(pagenum, parent) {
     super();
     this.num = pagenum;
-    this.deleted = false;
+    this.removed = false;
     this.selected = false;
     this.splittedBefore = false;
     this._rotation = 0;
@@ -194,7 +194,7 @@ export default class PDFReorganizerPage extends HTMLElement {
     };
 
     // Remember this page as cursor
-    if (!this.deleted && this._parent != null) {
+    if (!this.removed && this._parent != null) {
       this._parent.cursor = this;
       this.classList.remove("cursor","move");
 
@@ -223,10 +223,10 @@ export default class PDFReorganizerPage extends HTMLElement {
         this._parent.toggleMode("rotate-right");
         return;
 
-        // Rotate-right mode is active
-      case "delete":
+        // Remove mode is active
+      case "remove":
         this.remove();
-        this._parent.toggleMode("delete");
+        this._parent.toggleMode("remove");
         return;
       };
     };
@@ -316,7 +316,7 @@ export default class PDFReorganizerPage extends HTMLElement {
    * Add page to selection.
    */
   selectOn() {
-    if (this.deleted) {
+    if (this.removed) {
       this.unremove();
       return;
     };
@@ -342,7 +342,7 @@ export default class PDFReorganizerPage extends HTMLElement {
    * Mark page as a document splitter.
    */
   splitBefore() {
-    if (this.deleted)
+    if (this.removed)
       return false;
 
     if (this.splittedBefore) {
@@ -365,8 +365,8 @@ export default class PDFReorganizerPage extends HTMLElement {
    */
   remove() {
     this.unmagnify();
-    this.deleted = true;
-    this.classList.add('deleted');
+    this.removed = true;
+    this.classList.add('removed');
     this.setAttribute('draggable', false);
     this.splittedBefore = false;
     this.classList.remove('split-before');
@@ -377,10 +377,10 @@ export default class PDFReorganizerPage extends HTMLElement {
    * Unremove page.
    */
   unremove() {
-    if (!this.deleted)
+    if (!this.removed)
       return;
-    this.deleted = false;
-    this.classList.remove('deleted');
+    this.removed = false;
+    this.classList.remove('removed');
     this.setAttribute('draggable', true);
     this.selectOff();
   }
@@ -389,7 +389,7 @@ export default class PDFReorganizerPage extends HTMLElement {
    * Rotate page to the right (clockwise).
    */
   rotateRight() {
-    if (this.deleted)
+    if (this.removed)
       return false;
     this._rotation += 90;
     this._setRotationStyle();
@@ -399,7 +399,7 @@ export default class PDFReorganizerPage extends HTMLElement {
    * Rotate page to the left (counter-clockwise).
    */
   rotateLeft() {
-    if (this.deleted)
+    if (this.removed)
       return false;
     this._rotation -= 90;
     this._setRotationStyle();
@@ -438,7 +438,7 @@ export default class PDFReorganizerPage extends HTMLElement {
    * Show the page magnified.
    */
   magnify() {
-    if (this.deleted)
+    if (this.removed)
       return false;
 
     // Fix the offset on rotation, when height and width are reversed

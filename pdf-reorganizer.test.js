@@ -11,7 +11,7 @@ describe('PDF Page', () => {
   it('should be constructable', () => {
     let page = new PDFReorganizerPage(4, null);
     expect(page.num).toBe(4);
-    expect(page.deleted).toBe(false);
+    expect(page.removed).toBe(false);
     expect(page.splittedBefore).toBe(false);
     expect(page.rotation).toBe(0);
     expect(page.selected).toBe(false);
@@ -74,47 +74,47 @@ describe('PDF Page', () => {
   it('should be removable', () => {
     let page = new PDFReorganizerPage(4, null);
     expect(page.selected).toBe(false);
-    expect(page.deleted).toBe(false);
+    expect(page.removed).toBe(false);
 
-    expect(page.classList.contains("deleted")).toBe(false);
+    expect(page.classList.contains("removed")).toBe(false);
     expect(page.getAttribute("draggable")).toBe("true"); 
     
     page.remove();
-    expect(page.deleted).toBe(true);
-    expect(page.classList.contains("deleted")).toBe(true);
+    expect(page.removed).toBe(true);
+    expect(page.classList.contains("removed")).toBe(true);
     expect(page.getAttribute("draggable")).toBe("false");
 
     // Unselect if selected
     page = new PDFReorganizerPage(4, null);
     expect(page.selected).toBe(false);
-    expect(page.deleted).toBe(false);
+    expect(page.removed).toBe(false);
 
     page.selectToggle();
     expect(page.selected).toBe(true);
 
-    expect(page.classList.contains("deleted")).toBe(false);
+    expect(page.classList.contains("removed")).toBe(false);
     expect(page.classList.contains("selected")).toBe(true);
     expect(page.getAttribute("draggable")).toBe("true"); 
     
     page.remove();
 
-    expect(page.deleted).toBe(true);
-    expect(page.classList.contains("deleted")).toBe(true);
+    expect(page.removed).toBe(true);
+    expect(page.classList.contains("removed")).toBe(true);
     expect(page.getAttribute("draggable")).toBe("false");
     expect(page.classList.contains("selected")).toBe(false);
     expect(page.selected).toBe(false);
 
-    // Unable to select when deleted
+    // Unable to select when removed
     page.selectToggle();
     expect(page.selected).toBe(false);
 
-    expect(page.deleted).toBe(false);
-    expect(page.classList.contains("deleted")).toBe(false);
+    expect(page.removed).toBe(false);
+    expect(page.classList.contains("removed")).toBe(false);
 
     page.unremove();
 
-    expect(page.deleted).toBe(false);
-    expect(page.classList.contains("deleted")).toBe(false);
+    expect(page.removed).toBe(false);
+    expect(page.classList.contains("removed")).toBe(false);
   });
 
   it('should be rotatable', () => {
@@ -183,7 +183,7 @@ describe('PDF Page', () => {
 
     page.remove();
 
-    // Ignore totation on deleted pages
+    // Ignore totation on removed pages
     page.rotateLeft();
     expect(page._rotation).toBe(-450);
     expect(page.rotation).toBe(270);
@@ -196,7 +196,7 @@ describe('PDF Page', () => {
   it('should split before', () => {
     let page = new PDFReorganizerPage(4, null);
    
-    expect(page.deleted).toBeFalsy();
+    expect(page.removed).toBeFalsy();
     expect(page.classList.contains("split-before")).toBeFalsy();
 
     expect(page.splitBefore()).toBeTruthy();
@@ -211,7 +211,7 @@ describe('PDF Page', () => {
     expect(page.splittedBefore).toBeTruthy();
     expect(page.classList.contains("split-before")).toBeTruthy();
 
-    // Unable to split on deleted pages
+    // Unable to split on removed pages
     page.remove();
     expect(page.splittedBefore).toBeFalsy();
     expect(page.classList.contains("split-before")).toBeFalsy();
@@ -228,7 +228,7 @@ describe('PDF Page', () => {
   it('should be magnifiable', () => {
     let page = new PDFReorganizerPage(4, null);
    
-    expect(page.deleted).toBeFalsy();
+    expect(page.removed).toBeFalsy();
     expect(page.classList.contains("split-before")).toBeFalsy();
     expect(page.classList.contains("magnify")).toBeFalsy();
 
@@ -244,7 +244,7 @@ describe('PDF Page', () => {
 
     page.remove();
 
-    expect(page.deleted).toBe(true);
+    expect(page.removed).toBe(true);
 
     expect(page.magnify()).toBeFalsy();
 
@@ -349,22 +349,22 @@ describe('PDF Page', () => {
     expect(page.classList.contains('move')).toBeFalsy();
     expect(page.classList.contains('cursor')).toBeFalsy();
 
-    expect(page.deleted).toBe(false);
-    expect(page.classList.contains("deleted")).toBe(false);
+    expect(page.removed).toBe(false);
+    expect(page.classList.contains("removed")).toBe(false);
 
     page.remove();
-    expect(page.deleted).toBeTruthy();
-    expect(page.classList.contains("deleted")).toBeTruthy();
+    expect(page.removed).toBeTruthy();
+    expect(page.classList.contains("removed")).toBeTruthy();
 
-    // Revive deleted page
+    // Revive removed page
     page._clickHandler(clickEv);
 
     expect(page.selected).toBeFalsy();
     expect(page.classList.contains('selected')).toBeFalsy();
     expect(page.classList.contains('move')).toBeFalsy();
     expect(page.classList.contains('cursor')).toBeFalsy();
-    expect(page.deleted).toBeFalsy();
-    expect(page.classList.contains("deleted")).toBeFalsy();
+    expect(page.removed).toBeFalsy();
+    expect(page.classList.contains("removed")).toBeFalsy();
     
   });
 });
@@ -832,10 +832,10 @@ describe('PDF Reorganizer', () => {
     expect(result).toBe(8);
     expect(reorganizer.selected.size).toBe(0);
 
-    expect(reorganizer.mode).not.toEqual("delete");
-    expect(reorganizer.button["delete"].classList.contains('active')).toBeFalsy();
+    expect(reorganizer.mode).not.toEqual("remove");
+    expect(reorganizer.button["remove"].classList.contains('active')).toBeFalsy();
     expect(reorganizer.viewport.classList.contains('split-before')).toBeFalsy();
-    expect(reorganizer.viewport.classList.contains('delete')).toBeFalsy();
+    expect(reorganizer.viewport.classList.contains("remove")).toBeFalsy();
     expect(reorganizer.viewport.classList.contains('rotate-left')).toBeFalsy();
     expect(reorganizer.viewport.classList.contains('rotate-right')).toBeFalsy();
     expect(reorganizer.viewport.classList.contains('magnify')).toBeFalsy();
@@ -850,9 +850,9 @@ describe('PDF Reorganizer', () => {
     
     reorganizer.remove();
     
-    expect(reorganizer.mode).toEqual("delete");
-    expect(reorganizer.button["delete"].classList.contains('active')).toBeTruthy();
-    expect(reorganizer.viewport.classList.contains('delete')).toBeTruthy();
+    expect(reorganizer.mode).toEqual("remove");
+    expect(reorganizer.button["remove"].classList.contains('active')).toBeTruthy();
+    expect(reorganizer.viewport.classList.contains("remove")).toBeTruthy();
     expect(reorganizer.viewport.classList.contains('rotate-left')).toBeFalsy();
     expect(reorganizer.viewport.classList.contains('rotate-right')).toBeFalsy();
     expect(reorganizer.viewport.classList.contains('split-before')).toBeFalsy();
@@ -860,16 +860,16 @@ describe('PDF Reorganizer', () => {
     expect(reorganizer.viewport.classList.contains('select')).toBeFalsy();
 
     page = reorganizer.getPage(3); // 4
-    expect(page.deleted).toBeFalsy();
+    expect(page.removed).toBeFalsy();
     page._clickHandler({ctrlKey:null});
     expect(reorganizer.selected.size).toBe(0);
     expect(page.classList.contains('magnify')).toBeFalsy();
     expect(page.classList.contains('split-before')).toBeFalsy();
-    expect(page.deleted).toBeTruthy();
+    expect(page.removed).toBeTruthy();
 
     // This resets the mode
-    expect(reorganizer.mode).not.toEqual("delete");
-    expect(reorganizer.button["delete"].classList.contains('active')).toBeFalsy();
+    expect(reorganizer.mode).not.toEqual("remove");
+    expect(reorganizer.button["remove"].classList.contains('active')).toBeFalsy();
     expect(reorganizer.viewport.classList.contains('rotate-right')).toBeFalsy();
     expect(reorganizer.viewport.classList.contains('rotate-left')).toBeFalsy();
     expect(reorganizer.viewport.classList.contains('magnify')).toBeFalsy();
@@ -879,9 +879,9 @@ describe('PDF Reorganizer', () => {
     let page2 = reorganizer.getPage(4); // 5
     page2._clickHandler({ctrlKey:null});
     expect(reorganizer.selected.size).toBe(1);
-    expect(page2.deleted).toBeFalsy();
+    expect(page2.removed).toBeFalsy();
 
-    expect(page.deleted).toBeTruthy();
+    expect(page.removed).toBeTruthy();
   });
   
   
@@ -989,7 +989,7 @@ describe('PDF Reorganizer (Key events)', () => {
     expect(reorganizer.cursor.num).toBe(8);
   });
 
-  it('should move and delete/undelete', async () => {
+  it('should move and remove/unremove', async () => {
     let reorganizer = new PDFReorganizer().init();
     expect(reorganizer.children.length).toBe(0);
     
@@ -1002,31 +1002,31 @@ describe('PDF Reorganizer (Key events)', () => {
 
     reorganizer._keyHandler(keyd({key: 'ArrowRight'}));
     expect(reorganizer.cursor.num).toBe(2);
-    expect(reorganizer.cursor.deleted).toBeFalsy();
+    expect(reorganizer.cursor.removed).toBeFalsy();
 
     reorganizer._keyHandler(keyd({key: 'Delete'}));
     expect(reorganizer.cursor.num).toBe(2);
-    expect(reorganizer.cursor.deleted).toBeTruthy();
+    expect(reorganizer.cursor.removed).toBeTruthy();
 
     reorganizer._keyHandler(keyd({key: 'ArrowRight'}));
     expect(reorganizer.cursor.num).toBe(3);
-    expect(reorganizer.cursor.deleted).toBeFalsy();
+    expect(reorganizer.cursor.removed).toBeFalsy();
 
     reorganizer._keyHandler(keyd({key: 'ArrowLeft'}));
     expect(reorganizer.cursor.num).toBe(2);
-    expect(reorganizer.cursor.deleted).toBeTruthy();
+    expect(reorganizer.cursor.removed).toBeTruthy();
 
     reorganizer._keyHandler(keyd({key: ' '}));
     expect(reorganizer.cursor.num).toBe(2);
-    expect(reorganizer.cursor.deleted).toBeFalsy();
+    expect(reorganizer.cursor.removed).toBeFalsy();
 
     reorganizer._keyHandler(keyd({key: 'ArrowLeft'}));
     expect(reorganizer.cursor.num).toBe(1);
-    expect(reorganizer.cursor.deleted).toBeFalsy();
+    expect(reorganizer.cursor.removed).toBeFalsy();
 
     reorganizer._keyHandler(keyd({key: 'ArrowRight'}));
     expect(reorganizer.cursor.num).toBe(2);
-    expect(reorganizer.cursor.deleted).toBeFalsy();
+    expect(reorganizer.cursor.removed).toBeFalsy();
   });
 
   it('should move and select', async () => {
@@ -1147,7 +1147,7 @@ describe('PDF Reorganizer (Key events)', () => {
     expect(JSON.stringify(reorganizer.process().docs)).toEqual('[["1"],["2","3"],["4","5","6","7","8"]]');
   });
 
-  it('should move and delete all selected', async () => {
+  it('should move and remove all selected', async () => {
     let reorganizer = new PDFReorganizer().init();
     expect(reorganizer.children.length).toBe(0);
     
@@ -1162,7 +1162,7 @@ describe('PDF Reorganizer (Key events)', () => {
 
     reorganizer._keyHandler(keyd({key: ' '}));
     expect(reorganizer.selected.size).toBe(1);
-    expect(reorganizer.cursor.deleted).toBeFalsy();
+    expect(reorganizer.cursor.removed).toBeFalsy();
 
     reorganizer._keyHandler(keyd({key: 'ArrowRight'}));
     expect(reorganizer.cursor.num).toBe(2);
@@ -1171,22 +1171,22 @@ describe('PDF Reorganizer (Key events)', () => {
     reorganizer._keyHandler(keyd({key: ' '}));
     expect(reorganizer.selected.size).toBe(2);
     
-    expect(reorganizer.cursor.deleted).toBeFalsy();
+    expect(reorganizer.cursor.removed).toBeFalsy();
     reorganizer._keyHandler(keyd({key: 'Delete', shiftKey: true}));
     expect(reorganizer.cursor.num).toBe(2);
-    expect(reorganizer.cursor.deleted).toBeTruthy();
+    expect(reorganizer.cursor.removed).toBeTruthy();
 
     reorganizer._keyHandler(keyd({key: 'ArrowRight'}));
     expect(reorganizer.cursor.num).toBe(3);
-    expect(reorganizer.cursor.deleted).toBeFalsy();
+    expect(reorganizer.cursor.removed).toBeFalsy();
 
     reorganizer._keyHandler(keyd({key: 'ArrowLeft'}));
     expect(reorganizer.cursor.num).toBe(2);
-    expect(reorganizer.cursor.deleted).toBeTruthy();
+    expect(reorganizer.cursor.removed).toBeTruthy();
 
     reorganizer._keyHandler(keyd({key: 'ArrowLeft'}));
     expect(reorganizer.cursor.num).toBe(1);
-    expect(reorganizer.cursor.deleted).toBeTruthy();
+    expect(reorganizer.cursor.removed).toBeTruthy();
 
     expect(JSON.stringify(reorganizer.process().docs)).toEqual('[["3","4","5","6","7","8"]]');
   });
@@ -1206,7 +1206,7 @@ describe('PDF Reorganizer (Key events)', () => {
 
     reorganizer._keyHandler(keyd({key: ' '}));
     expect(reorganizer.selected.size).toBe(1);
-    expect(reorganizer.cursor.deleted).toBeFalsy();
+    expect(reorganizer.cursor.removed).toBeFalsy();
 
     reorganizer._keyHandler(keyd({key: 'ArrowRight'}));
     expect(reorganizer.cursor.num).toBe(2);
@@ -1217,7 +1217,7 @@ describe('PDF Reorganizer (Key events)', () => {
     expect(reorganizer.cursor.selected).toBeTruthy();
     expect(reorganizer.cursor.rotation).toEqual(0);
     
-    expect(reorganizer.cursor.deleted).toBeFalsy();
+    expect(reorganizer.cursor.removed).toBeFalsy();
     reorganizer._keyHandler(keyd({key: 'ArrowRight', shiftKey: true, ctrlKey: true}));
     expect(reorganizer.cursor.num).toBe(2);
     expect(reorganizer.cursor.selected).toBeTruthy();
@@ -1281,7 +1281,7 @@ describe('PDF Reorganizer (Key events)', () => {
     
     reorganizer._keyHandler(keyd({key: ' '}));
     expect(reorganizer.selected.size).toBe(1);
-    expect(reorganizer.cursor.deleted).toBeFalsy();
+    expect(reorganizer.cursor.removed).toBeFalsy();
 
     reorganizer._keyHandler(keyd({key: 'ArrowRight'}));
     expect(reorganizer.cursor.num).toBe(3);

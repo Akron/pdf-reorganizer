@@ -10,7 +10,7 @@ and is based on [PDF.js](https://github.com/mozilla/pdf.js).
 
 Reorganization supports:
 - Splits
-- Deletions
+- Removals
 - Movements
 - Rotations
 
@@ -139,8 +139,8 @@ pdf-reorganizer {
   /* Color of the load spinner */
   --pdfro-loader-color: blue;
 
-  /* Color of deleted pages */
-  --pdfro-deleted-bg-color: #777;
+  /* Color of removed pages */
+  --pdfro-removed-bg-color: #777;
 
   /* Color of highlighted pages for mouseover */
   --pdfro-hover-bg-color: #aaa;
