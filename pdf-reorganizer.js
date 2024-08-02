@@ -55,7 +55,11 @@ export default class PDFReorganizer extends HTMLElement {
 
     this._cursor = null;
     this._dropTarget = null;
-    this._active; // The active mode
+
+    /**
+     * The active mode.
+     */
+    this.mode = ""; // The active mode
     this.zoomfactor = 4;
     this.scrollStep = 14;
     this.selected = new Set();
@@ -559,26 +563,17 @@ export default class PDFReorganizer extends HTMLElement {
   }
   
   /**
-   * Check if a specific mode is active.
-   *
-   * @readonly
-   */
-  isMode(m) {
-    return this.viewport.classList.contains(m);
-  }
-  
-  /**
    * Starts or ends a supported mode.
    */
   toggleMode(m) {
 
     // Was active before
     if (!this.elt[m]?.classList.toggle("active"))
-      this._active = undefined;
+      this.mode = undefined;
     else {
-      if (this._active)
-        this.elt[this._active]?.classList.remove("active");
-      this._active = m;
+      if (this.mode)
+        this.elt[this.mode]?.classList.remove("active");
+      this.mode = m;
     }
      
     // TODO: Remove select

@@ -189,8 +189,7 @@ export default class PDFReorganizerPage extends HTMLElement {
   _clickHandler (ev) {
     if (this._parent &&
         !ev.ctrlKey &&
-        !this._parent.isMode("magnify") &&
-        !this._parent.isMode("select")) {
+        !this._parent.mode) {
       this._parent.delSelectAllExceptFor(this);
     };
 
@@ -200,35 +199,32 @@ export default class PDFReorganizerPage extends HTMLElement {
       this.classList.remove("cursor","move");
 
       // Magnifier mode is active
-      if (this._parent.isMode("magnify")) {
+      switch (this._parent.mode) {
+      case "magnify":
         this.magnify();
         this._parent.toggleMode("magnify");
         return;
-      }
 
       // Splitter mode is active
-      else if (this._parent.isMode("split-before")) {
+      case "split-before":
         this.splitBefore();
         this._parent.toggleMode("split-before");
         return;
-      }
 
-      // Rotate-left mode is active
-      else if (this._parent.isMode("rotate-left")) {
+        // Rotate-left mode is active
+      case "rotate-left":
         this.rotateLeft();
         this._parent.toggleMode("rotate-left");
         return;
-      }
 
-      // Rotate-right mode is active
-      else if (this._parent.isMode("rotate-right")) {
+        // Rotate-right mode is active
+      case "rotate-right":
         this.rotateRight();
         this._parent.toggleMode("rotate-right");
         return;
-      }
 
-      // Rotate-right mode is active
-      else if (this._parent.isMode("delete")) {
+        // Rotate-right mode is active
+      case "delete":
         this.remove();
         this._parent.toggleMode("delete");
         return;
