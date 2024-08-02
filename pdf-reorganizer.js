@@ -55,6 +55,7 @@ export default class PDFReorganizer extends HTMLElement {
 
     this._cursor = null;
     this._dropTarget = null;
+    this._active; // The active mode
     this.zoomfactor = 4;
     this.scrollStep = 14;
     this.selected = new Set();
@@ -79,6 +80,16 @@ export default class PDFReorganizer extends HTMLElement {
     this.magElem = this._addNavItem("magnify", "#zoom_in", "Start magnifying mode");
     this.processElem = this._addNavItem("process", "#play_arrow", "Start processing");
 
+    
+    this.elt = {
+      "split-before": this.splitBeforeElem,
+      "rotate-left": this.rotateLeftElem,
+      "rotate-right": this.rotateRightElem,
+      "delete": this.delElem,
+      "select": this.selElem,
+      "magnify": this.magElem
+    };
+    
     this.viewport = document.createElement('div');
     this.viewport.setAttribute('id', 'pdf-viewport');
 
@@ -105,9 +116,9 @@ export default class PDFReorganizer extends HTMLElement {
     this.rotateLeftElem.addEventListener('click', this.rotateLeft.bind(this));
     this.rotateRightElem.addEventListener('click', this.rotateRight.bind(this));
     this.splitBeforeElem.addEventListener('click', this.splitBefore.bind(this));
-    this.magElem.addEventListener('click', this.toggleMagnifier.bind(this));
+    this.magElem.addEventListener('click', (function() {this.toggleMode("magnify")}).bind(this));
     this.allElem.addEventListener('click', this.selectAll.bind(this));
-    this.selElem.addEventListener('click', this.toggleSelector.bind(this));
+    this.selElem.addEventListener('click', (function() {this.toggleMode("select")}).bind(this));
     this.processElem.addEventListener('click', this.process.bind(this));
     document.addEventListener("keydown", this._keyHandler.bind(this));
 
@@ -548,22 +559,7 @@ export default class PDFReorganizer extends HTMLElement {
   }
   
   /**
-   * Removes all selected pages from the
-   * PDF.
-   *
-   * @return {number} The number of deleted pages.
-   */
-  remove() {
-    let i = 0;
-    this.forEachSelected((page) => {
-      page.remove();
-      i++;
-    });
-    return i;
-  }
-
-  /**
-   * Check if a specific mode ("magnify","select","split-before") is active.
+   * Check if a specific mode is active.
    *
    * @readonly
    */
@@ -572,27 +568,45 @@ export default class PDFReorganizer extends HTMLElement {
   }
   
   /**
-   * Starts or ends the selector.
+   * Starts or ends a supported mode.
    */
-  toggleSelector() {
-    this.selElem?.classList.toggle("active");
-    this.viewport.classList.remove("magnify","split-before");
-    this.viewport.classList.toggle("select");
+  toggleMode(m) {
+
+    // Was active before
+    if (!this.elt[m]?.classList.toggle("active"))
+      this._active = undefined;
+    else {
+      if (this._active)
+        this.elt[this._active]?.classList.remove("active");
+      this._active = m;
+    }
+     
+    // TODO: Remove select
+    const cl = this.viewport.classList;
+    let exists = cl.contains(m);
+    cl.remove("magnify","delete","select","split-before","rotate-left","rotate-right");
+    if (!exists)
+      cl.add(m);
   }
 
   /**
-   * Starts or ends the magnifier.
+   * Removes all selected pages from the
+   * PDF or activates the delete mode, if none selected.
+   *
+   * @return {number} The number of deleted pages.
    */
-  toggleMagnifier() {
-    this.magElem?.classList.toggle("active");
-    this.viewport.classList.remove("select","split-before");
-    this.viewport.classList.toggle("magnify");
-  }
-  
-  toggleSplitter() {
-    this.splitBeforeElem?.classList.toggle("active");
-    this.viewport.classList.remove('magnify',"select");
-    this.viewport.classList.toggle("split-before");
+  remove() {
+    if (this.selected.size == 0) {
+      this.toggleMode("delete");
+      return 0;
+    };
+
+    let i = 0;
+    this.forEachSelected((page) => {
+      page.remove();
+      i++;
+    });
+    return i;
   }
   
   /**
@@ -602,6 +616,11 @@ export default class PDFReorganizer extends HTMLElement {
    * @return {number} The number of rotated pages.
    */
   rotateLeft() {
+    if (this.selected.size == 0) {
+      this.toggleMode("rotate-left");
+      return 0;
+    };
+
     let i = 0;
     this.forEachSelected((page) => {
       page.rotateLeft();
@@ -617,6 +636,11 @@ export default class PDFReorganizer extends HTMLElement {
    * @return {number} The number of rotated pages.
    */
   rotateRight() {
+    if (this.selected.size == 0) {
+      this.toggleMode("rotate-right");
+      return 0;
+    };
+
     let i = 0;
     this.forEachSelected((page) => {
       page.rotateRight();
@@ -758,7 +782,7 @@ export default class PDFReorganizer extends HTMLElement {
    */
   splitBefore() {
     if (this.selected.size == 0) {
-      this.toggleSplitter();
+      this.toggleMode("split-before");
       return 0;
     };
     
@@ -852,7 +876,7 @@ export default class PDFReorganizer extends HTMLElement {
       instance.pdfDoc = pdf;
      
       let page;
-      for (var i = 0; i < instance.numPages; i++) {
+      for (let i = 0; i < instance.numPages; i++) {
         page  = new PDFReorganizerPage(i+1, instance);
         //// instance.pages[i] = page;
         instance.viewport.appendChild(page);

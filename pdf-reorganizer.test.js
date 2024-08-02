@@ -322,7 +322,7 @@ describe('PDF Page', () => {
           return this._magnifierActive;
         return false;
       },
-      toggleMagnifier : function () {
+      toggleMode : function (m) {
         this._magnifierActive = (this._magnifierActive ? false : true);
       },
       delSelectAllExceptFor : function (obj) {
@@ -594,7 +594,7 @@ describe('PDF Reorganizer', () => {
     page._clickHandler({ctrlKey:null});
     expect(reorganizer.selected.size).toBe(1);
 
-    reorganizer.toggleSelector();
+    reorganizer.toggleMode("select");
 
     page = reorganizer.getPage(3); // 4
     page._clickHandler({ctrlKey:null});
@@ -635,7 +635,7 @@ describe('PDF Reorganizer', () => {
     page.selectOff();
     expect(reorganizer.selected.size).toBe(0);
     
-    reorganizer.toggleMagnifier();
+    reorganizer.toggleMode("magnify");
     
     expect(reorganizer.isMode("magnify")).toBeTruthy();
     expect(reorganizer.magElem.classList.contains('active')).toBeTruthy();
@@ -684,7 +684,7 @@ describe('PDF Reorganizer', () => {
     page.selectOff();
     expect(reorganizer.selected.size).toBe(0);
     
-    reorganizer.toggleSplitter();
+    reorganizer.splitBefore();
     
     expect(reorganizer.isMode("split-before")).toBeTruthy();
     expect(reorganizer.splitBeforeElem.classList.contains('active')).toBeTruthy();
@@ -714,6 +714,180 @@ describe('PDF Reorganizer', () => {
     expect(page.classList.contains('split-before')).toBeTruthy();
   });
 
+  it('should use the rotate-left mode', async () => {
+    let reorganizer = new PDFReorganizer().init();
+    expect(reorganizer.children.length).toBe(0);
+    
+    // Async testing
+    let result = await reorganizer.loadDocument(examplepdf);
+    expect(result).toBe(8);
+    expect(reorganizer.selected.size).toBe(0);
+
+    expect(reorganizer.isMode("rotate-left")).toBeFalsy();
+    expect(reorganizer.rotateLeftElem.classList.contains('active')).toBeFalsy();
+    expect(reorganizer.viewport.classList.contains('split-before')).toBeFalsy();
+    expect(reorganizer.viewport.classList.contains('rotate-left')).toBeFalsy();
+    expect(reorganizer.viewport.classList.contains('magnify')).toBeFalsy();
+    expect(reorganizer.viewport.classList.contains('select')).toBeFalsy();
+
+    let page = reorganizer.getPage(3); // 4
+    page._clickHandler({ctrlKey:null});
+    expect(reorganizer.selected.size).toBe(1);
+    expect(page.rotation).toEqual(0);
+    page.selectOff();
+    expect(reorganizer.selected.size).toBe(0);
+    
+    reorganizer.rotateLeft();
+    
+    expect(reorganizer.isMode("rotate-left")).toBeTruthy();
+    expect(reorganizer.rotateLeftElem.classList.contains('active')).toBeTruthy();
+    expect(reorganizer.viewport.classList.contains('rotate-left')).toBeTruthy();
+    expect(reorganizer.viewport.classList.contains('split-before')).toBeFalsy();
+    expect(reorganizer.viewport.classList.contains('magnify')).toBeFalsy();
+    expect(reorganizer.viewport.classList.contains('select')).toBeFalsy();
+
+    page = reorganizer.getPage(3); // 4
+    page._clickHandler({ctrlKey:null});
+    expect(reorganizer.selected.size).toBe(0);
+    expect(page.classList.contains('magnify')).toBeFalsy();
+    expect(page.classList.contains('split-before')).toBeFalsy();
+    expect(page.rotation).toEqual(270);
+
+    // This resets the mode
+    expect(reorganizer.isMode("rotate-left")).toBeFalsy();
+    expect(reorganizer.rotateLeftElem.classList.contains('active')).toBeFalsy();
+    expect(reorganizer.viewport.classList.contains('rotate-left')).toBeFalsy();
+    expect(reorganizer.viewport.classList.contains('magnify')).toBeFalsy();
+    expect(reorganizer.viewport.classList.contains('select')).toBeFalsy();
+
+    // This will use the select mode
+    let page2 = reorganizer.getPage(4); // 5
+    page2._clickHandler({ctrlKey:null});
+    expect(reorganizer.selected.size).toBe(1);
+    expect(page2.rotation).toEqual(0);
+
+    expect(page.rotation).toEqual(270);
+  });
+
+  it('should use the rotate-right mode', async () => {
+    let reorganizer = new PDFReorganizer().init();
+    expect(reorganizer.children.length).toBe(0);
+    
+    // Async testing
+    let result = await reorganizer.loadDocument(examplepdf);
+    expect(result).toBe(8);
+    expect(reorganizer.selected.size).toBe(0);
+
+    expect(reorganizer.isMode("rotate-right")).toBeFalsy();
+    expect(reorganizer.rotateRightElem.classList.contains('active')).toBeFalsy();
+    expect(reorganizer.viewport.classList.contains('split-before')).toBeFalsy();
+    expect(reorganizer.viewport.classList.contains('rotate-left')).toBeFalsy();
+    expect(reorganizer.viewport.classList.contains('rotate-right')).toBeFalsy();
+    expect(reorganizer.viewport.classList.contains('magnify')).toBeFalsy();
+    expect(reorganizer.viewport.classList.contains('select')).toBeFalsy();
+
+    let page = reorganizer.getPage(3); // 4
+    page._clickHandler({ctrlKey:null});
+    expect(reorganizer.selected.size).toBe(1);
+    expect(page.rotation).toEqual(0);
+    page.selectOff();
+    expect(reorganizer.selected.size).toBe(0);
+    
+    reorganizer.rotateRight();
+    
+    expect(reorganizer.isMode("rotate-right")).toBeTruthy();
+    expect(reorganizer.rotateRightElem.classList.contains('active')).toBeTruthy();
+    expect(reorganizer.viewport.classList.contains('rotate-left')).toBeFalsy();
+    expect(reorganizer.viewport.classList.contains('rotate-right')).toBeTruthy();
+    expect(reorganizer.viewport.classList.contains('split-before')).toBeFalsy();
+    expect(reorganizer.viewport.classList.contains('magnify')).toBeFalsy();
+    expect(reorganizer.viewport.classList.contains('select')).toBeFalsy();
+
+    page = reorganizer.getPage(3); // 4
+    page._clickHandler({ctrlKey:null});
+    expect(reorganizer.selected.size).toBe(0);
+    expect(page.classList.contains('magnify')).toBeFalsy();
+    expect(page.classList.contains('split-before')).toBeFalsy();
+    expect(page.rotation).toEqual(90);
+
+    // This resets the mode
+    expect(reorganizer.isMode("rotate-right")).toBeFalsy();
+    expect(reorganizer.rotateRightElem.classList.contains('active')).toBeFalsy();
+    expect(reorganizer.viewport.classList.contains('rotate-right')).toBeFalsy();
+    expect(reorganizer.viewport.classList.contains('rotate-left')).toBeFalsy();
+    expect(reorganizer.viewport.classList.contains('magnify')).toBeFalsy();
+    expect(reorganizer.viewport.classList.contains('select')).toBeFalsy();
+
+    // This will use the select mode
+    let page2 = reorganizer.getPage(4); // 5
+    page2._clickHandler({ctrlKey:null});
+    expect(reorganizer.selected.size).toBe(1);
+    expect(page2.rotation).toEqual(0);
+
+    expect(page.rotation).toEqual(90);
+  });
+
+  it('should use the remove mode', async () => {
+    let reorganizer = new PDFReorganizer().init();
+    expect(reorganizer.children.length).toBe(0);
+    
+    // Async testing
+    let result = await reorganizer.loadDocument(examplepdf);
+    expect(result).toBe(8);
+    expect(reorganizer.selected.size).toBe(0);
+
+    expect(reorganizer.isMode("delete")).toBeFalsy();
+    expect(reorganizer.delElem.classList.contains('active')).toBeFalsy();
+    expect(reorganizer.viewport.classList.contains('split-before')).toBeFalsy();
+    expect(reorganizer.viewport.classList.contains('delete')).toBeFalsy();
+    expect(reorganizer.viewport.classList.contains('rotate-left')).toBeFalsy();
+    expect(reorganizer.viewport.classList.contains('rotate-right')).toBeFalsy();
+    expect(reorganizer.viewport.classList.contains('magnify')).toBeFalsy();
+    expect(reorganizer.viewport.classList.contains('select')).toBeFalsy();
+
+    let page = reorganizer.getPage(3); // 4
+    page._clickHandler({ctrlKey:null});
+    expect(reorganizer.selected.size).toBe(1);
+    expect(page.rotation).toEqual(0);
+    page.selectOff();
+    expect(reorganizer.selected.size).toBe(0);
+    
+    reorganizer.remove();
+    
+    expect(reorganizer.isMode("delete")).toBeTruthy();
+    expect(reorganizer.delElem.classList.contains('active')).toBeTruthy();
+    expect(reorganizer.viewport.classList.contains('delete')).toBeTruthy();
+    expect(reorganizer.viewport.classList.contains('rotate-left')).toBeFalsy();
+    expect(reorganizer.viewport.classList.contains('rotate-right')).toBeFalsy();
+    expect(reorganizer.viewport.classList.contains('split-before')).toBeFalsy();
+    expect(reorganizer.viewport.classList.contains('magnify')).toBeFalsy();
+    expect(reorganizer.viewport.classList.contains('select')).toBeFalsy();
+
+    page = reorganizer.getPage(3); // 4
+    expect(page.deleted).toBeFalsy();
+    page._clickHandler({ctrlKey:null});
+    expect(reorganizer.selected.size).toBe(0);
+    expect(page.classList.contains('magnify')).toBeFalsy();
+    expect(page.classList.contains('split-before')).toBeFalsy();
+    expect(page.deleted).toBeTruthy();
+
+    // This resets the mode
+    expect(reorganizer.isMode("rotate-right")).toBeFalsy();
+    expect(reorganizer.delElem.classList.contains('active')).toBeFalsy();
+    expect(reorganizer.viewport.classList.contains('rotate-right')).toBeFalsy();
+    expect(reorganizer.viewport.classList.contains('rotate-left')).toBeFalsy();
+    expect(reorganizer.viewport.classList.contains('magnify')).toBeFalsy();
+    expect(reorganizer.viewport.classList.contains('select')).toBeFalsy();
+
+    // This will use the select mode
+    let page2 = reorganizer.getPage(4); // 5
+    page2._clickHandler({ctrlKey:null});
+    expect(reorganizer.selected.size).toBe(1);
+    expect(page2.deleted).toBeFalsy();
+
+    expect(page.deleted).toBeTruthy();
+  });
+  
   
   it('should deselect/inverse select all', async () => {
     let reorganizer = new PDFReorganizer().init();

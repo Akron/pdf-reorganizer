@@ -168,7 +168,7 @@ export default class PDFReorganizerPage extends HTMLElement {
 
     this.classList.remove("drag-left","drag-right");
 
-    var target = this;
+    let target = this;
     
     while (target.tagName != 'PDF-PAGE')
       target = target.parentNode;
@@ -202,14 +202,35 @@ export default class PDFReorganizerPage extends HTMLElement {
       // Magnifier mode is active
       if (this._parent.isMode("magnify")) {
         this.magnify();
-        this._parent.toggleMagnifier();
+        this._parent.toggleMode("magnify");
         return;
       }
 
       // Splitter mode is active
       else if (this._parent.isMode("split-before")) {
         this.splitBefore();
-        this._parent.toggleSplitter();
+        this._parent.toggleMode("split-before");
+        return;
+      }
+
+      // Rotate-left mode is active
+      else if (this._parent.isMode("rotate-left")) {
+        this.rotateLeft();
+        this._parent.toggleMode("rotate-left");
+        return;
+      }
+
+      // Rotate-right mode is active
+      else if (this._parent.isMode("rotate-right")) {
+        this.rotateRight();
+        this._parent.toggleMode("rotate-right");
+        return;
+      }
+
+      // Rotate-right mode is active
+      else if (this._parent.isMode("delete")) {
+        this.remove();
+        this._parent.toggleMode("delete");
         return;
       };
     };
