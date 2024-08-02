@@ -574,7 +574,7 @@ describe('PDF Reorganizer', () => {
     expect(reorganizer.selected.size).toBe(0);
 
     expect(reorganizer.mode).not.toEqual("select");
-    expect(reorganizer.selElem.classList.contains('active')).toBeFalsy();
+    expect(reorganizer.button["select"].classList.contains('active')).toBeFalsy();
     expect(reorganizer.viewport.classList.contains('magnify')).toBeFalsy();
     expect(reorganizer.viewport.classList.contains('select')).toBeFalsy();
 
@@ -605,7 +605,7 @@ describe('PDF Reorganizer', () => {
     expect(reorganizer.selected.size).toBe(2);
     
     expect(reorganizer.mode).toEqual("select");
-    expect(reorganizer.selElem.classList.contains('active')).toBeTruthy();
+    expect(reorganizer.button["select"].classList.contains('active')).toBeTruthy();
     expect(reorganizer.viewport.classList.contains('magnify')).toBeFalsy();
     expect(reorganizer.viewport.classList.contains('select')).toBeTruthy();
   });
@@ -620,7 +620,7 @@ describe('PDF Reorganizer', () => {
     expect(reorganizer.selected.size).toBe(0);
 
     expect(reorganizer.mode).not.toEqual("magnify");
-    expect(reorganizer.magElem.classList.contains('active')).toBeFalsy();
+    expect(reorganizer.button["magnify"].classList.contains('active')).toBeFalsy();
     expect(reorganizer.viewport.classList.contains('magnify')).toBeFalsy();
     expect(reorganizer.viewport.classList.contains('select')).toBeFalsy();
 
@@ -634,7 +634,7 @@ describe('PDF Reorganizer', () => {
     reorganizer.toggleMode("magnify");
     
     expect(reorganizer.mode).toEqual("magnify");
-    expect(reorganizer.magElem.classList.contains('active')).toBeTruthy();
+    expect(reorganizer.button["magnify"].classList.contains('active')).toBeTruthy();
     expect(reorganizer.viewport.classList.contains('magnify')).toBeTruthy();
     expect(reorganizer.viewport.classList.contains('select')).toBeFalsy();
 
@@ -645,7 +645,7 @@ describe('PDF Reorganizer', () => {
 
     // This resets the mode
     expect(reorganizer.mode).not.toEqual("magnify");
-    expect(reorganizer.magElem.classList.contains('active')).toBeFalsy();
+    expect(reorganizer.button["magnify"].classList.contains('active')).toBeFalsy();
     expect(reorganizer.viewport.classList.contains('magnify')).toBeFalsy();
     expect(reorganizer.viewport.classList.contains('select')).toBeFalsy();
 
@@ -668,7 +668,7 @@ describe('PDF Reorganizer', () => {
     expect(reorganizer.selected.size).toBe(0);
 
     expect(reorganizer.mode).not.toEqual("split-before");
-    expect(reorganizer.splitBeforeElem.classList.contains('active')).toBeFalsy();
+    expect(reorganizer.button["split-before"].classList.contains('active')).toBeFalsy();
     expect(reorganizer.viewport.classList.contains('split-before')).toBeFalsy();
     expect(reorganizer.viewport.classList.contains('magnify')).toBeFalsy();
     expect(reorganizer.viewport.classList.contains('select')).toBeFalsy();
@@ -683,7 +683,7 @@ describe('PDF Reorganizer', () => {
     reorganizer.splitBefore();
     
     expect(reorganizer.mode).toEqual("split-before");
-    expect(reorganizer.splitBeforeElem.classList.contains('active')).toBeTruthy();
+    expect(reorganizer.button["split-before"].classList.contains('active')).toBeTruthy();
     expect(reorganizer.viewport.classList.contains('split-before')).toBeTruthy();
     expect(reorganizer.viewport.classList.contains('magnify')).toBeFalsy();
     expect(reorganizer.viewport.classList.contains('select')).toBeFalsy();
@@ -696,7 +696,7 @@ describe('PDF Reorganizer', () => {
 
     // This resets the mode
     expect(reorganizer.mode).not.toEqual("split-before");
-    expect(reorganizer.splitBeforeElem.classList.contains('active')).toBeFalsy();
+    expect(reorganizer.button["split-before"].classList.contains('active')).toBeFalsy();
     expect(reorganizer.viewport.classList.contains('split-before')).toBeFalsy();
     expect(reorganizer.viewport.classList.contains('magnify')).toBeFalsy();
     expect(reorganizer.viewport.classList.contains('select')).toBeFalsy();
@@ -720,7 +720,7 @@ describe('PDF Reorganizer', () => {
     expect(reorganizer.selected.size).toBe(0);
 
     expect(reorganizer.mode).not.toEqual("rotate-left");
-    expect(reorganizer.rotateLeftElem.classList.contains('active')).toBeFalsy();
+    expect(reorganizer.button["rotate-left"].classList.contains('active')).toBeFalsy();
     expect(reorganizer.viewport.classList.contains('split-before')).toBeFalsy();
     expect(reorganizer.viewport.classList.contains('rotate-left')).toBeFalsy();
     expect(reorganizer.viewport.classList.contains('magnify')).toBeFalsy();
@@ -736,7 +736,7 @@ describe('PDF Reorganizer', () => {
     reorganizer.rotateLeft();
     
     expect(reorganizer.mode).toEqual("rotate-left");
-    expect(reorganizer.rotateLeftElem.classList.contains('active')).toBeTruthy();
+    expect(reorganizer.button["rotate-left"].classList.contains('active')).toBeTruthy();
     expect(reorganizer.viewport.classList.contains('rotate-left')).toBeTruthy();
     expect(reorganizer.viewport.classList.contains('split-before')).toBeFalsy();
     expect(reorganizer.viewport.classList.contains('magnify')).toBeFalsy();
@@ -751,7 +751,7 @@ describe('PDF Reorganizer', () => {
 
     // This resets the mode
     expect(reorganizer.mode).not.toEqual("rotate-left");
-    expect(reorganizer.rotateLeftElem.classList.contains('active')).toBeFalsy();
+    expect(reorganizer.button["rotate-left"].classList.contains('active')).toBeFalsy();
     expect(reorganizer.viewport.classList.contains('rotate-left')).toBeFalsy();
     expect(reorganizer.viewport.classList.contains('magnify')).toBeFalsy();
     expect(reorganizer.viewport.classList.contains('select')).toBeFalsy();
@@ -775,7 +775,7 @@ describe('PDF Reorganizer', () => {
     expect(reorganizer.selected.size).toBe(0);
 
     expect(reorganizer.mode).not.toEqual("rotate-left");
-    expect(reorganizer.rotateRightElem.classList.contains('active')).toBeFalsy();
+    expect(reorganizer.button["rotate-right"].classList.contains('active')).toBeFalsy();
     expect(reorganizer.viewport.classList.contains('split-before')).toBeFalsy();
     expect(reorganizer.viewport.classList.contains('rotate-left')).toBeFalsy();
     expect(reorganizer.viewport.classList.contains('rotate-right')).toBeFalsy();
@@ -792,7 +792,7 @@ describe('PDF Reorganizer', () => {
     reorganizer.rotateRight();
     
     expect(reorganizer.mode).toEqual("rotate-right");
-    expect(reorganizer.rotateRightElem.classList.contains('active')).toBeTruthy();
+    expect(reorganizer.button["rotate-right"].classList.contains('active')).toBeTruthy();
     expect(reorganizer.viewport.classList.contains('rotate-left')).toBeFalsy();
     expect(reorganizer.viewport.classList.contains('rotate-right')).toBeTruthy();
     expect(reorganizer.viewport.classList.contains('split-before')).toBeFalsy();
@@ -808,7 +808,7 @@ describe('PDF Reorganizer', () => {
 
     // This resets the mode
     expect(reorganizer.mode).not.toEqual("rotate-right");
-    expect(reorganizer.rotateRightElem.classList.contains('active')).toBeFalsy();
+    expect(reorganizer.button["rotate-right"].classList.contains('active')).toBeFalsy();
     expect(reorganizer.viewport.classList.contains('rotate-right')).toBeFalsy();
     expect(reorganizer.viewport.classList.contains('rotate-left')).toBeFalsy();
     expect(reorganizer.viewport.classList.contains('magnify')).toBeFalsy();
@@ -833,7 +833,7 @@ describe('PDF Reorganizer', () => {
     expect(reorganizer.selected.size).toBe(0);
 
     expect(reorganizer.mode).not.toEqual("delete");
-    expect(reorganizer.delElem.classList.contains('active')).toBeFalsy();
+    expect(reorganizer.button["delete"].classList.contains('active')).toBeFalsy();
     expect(reorganizer.viewport.classList.contains('split-before')).toBeFalsy();
     expect(reorganizer.viewport.classList.contains('delete')).toBeFalsy();
     expect(reorganizer.viewport.classList.contains('rotate-left')).toBeFalsy();
@@ -851,7 +851,7 @@ describe('PDF Reorganizer', () => {
     reorganizer.remove();
     
     expect(reorganizer.mode).toEqual("delete");
-    expect(reorganizer.delElem.classList.contains('active')).toBeTruthy();
+    expect(reorganizer.button["delete"].classList.contains('active')).toBeTruthy();
     expect(reorganizer.viewport.classList.contains('delete')).toBeTruthy();
     expect(reorganizer.viewport.classList.contains('rotate-left')).toBeFalsy();
     expect(reorganizer.viewport.classList.contains('rotate-right')).toBeFalsy();
@@ -869,7 +869,7 @@ describe('PDF Reorganizer', () => {
 
     // This resets the mode
     expect(reorganizer.mode).not.toEqual("delete");
-    expect(reorganizer.delElem.classList.contains('active')).toBeFalsy();
+    expect(reorganizer.button["delete"].classList.contains('active')).toBeFalsy();
     expect(reorganizer.viewport.classList.contains('rotate-right')).toBeFalsy();
     expect(reorganizer.viewport.classList.contains('rotate-left')).toBeFalsy();
     expect(reorganizer.viewport.classList.contains('magnify')).toBeFalsy();

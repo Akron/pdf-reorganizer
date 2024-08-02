@@ -59,7 +59,7 @@ export default class PDFReorganizer extends HTMLElement {
     /**
      * The active mode.
      */
-    this.mode = ""; // The active mode
+    this.mode = "";
     this.zoomfactor = 4;
     this.scrollStep = 14;
     this.selected = new Set();
@@ -68,30 +68,32 @@ export default class PDFReorganizer extends HTMLElement {
    
     const nav = document.createElement('nav');
     this.navElem = nav;
-
-    this.splitBeforeElem = this._addNavItem(
-      "split-before", "#splitscreen_vertical_add", "Split before selected pages (Ctrl+Shift+S)"
-    );
-    this.rotateLeftElem = this._addNavItem(
-      "rotate-left", "#rotate_90_degrees_ccw", "Rotate 90deg ccw (Ctrl+left arrow"
-    );
-    this.rotateRightElem = this._addNavItem(
-      "rotate-right", "#rotate_90_degrees_cw", "Rotate 90deg cw (Ctrl+right arrow)"
-    );
-    this.selElem = this._addNavItem("select", "#select", "Start selection mode");
-    this.allElem = this._addNavItem("select-all", "#select_all", "Select all pages (Ctrl+a)");
-    this.delElem = this._addNavItem("delete", "#scan_delete", "Delete selected pages (Delete+Shift)");
-    this.magElem = this._addNavItem("magnify", "#zoom_in", "Start magnifying mode");
-    this.processElem = this._addNavItem("process", "#play_arrow", "Start processing");
-
-    
-    this.elt = {
-      "split-before": this.splitBeforeElem,
-      "rotate-left": this.rotateLeftElem,
-      "rotate-right": this.rotateRightElem,
-      "delete": this.delElem,
-      "select": this.selElem,
-      "magnify": this.magElem
+   
+    this.button = {
+      "split-before": this._addNavItem(
+        "split-before", "#splitscreen_vertical_add", "Split before selected pages (Ctrl+Shift+S)"
+      ),
+      "rotate-left": this._addNavItem(
+        "rotate-left", "#rotate_90_degrees_ccw", "Rotate 90deg ccw (Ctrl+left arrow"
+      ),
+      "rotate-right": this._addNavItem(
+        "rotate-right", "#rotate_90_degrees_cw", "Rotate 90deg cw (Ctrl+right arrow)"
+      ),
+      "select": this._addNavItem(
+        "select", "#select", "Start selection mode"
+      ),
+      "select-all": this._addNavItem(
+        "select-all", "#select_all", "Select all pages (Ctrl+a)"
+      ),
+      "delete": this._addNavItem(
+        "delete", "#scan_delete", "Delete selected pages (Delete+Shift)"
+      ),
+      "magnify": this._addNavItem(
+        "magnify", "#zoom_in", "Start magnifying mode"
+      ),
+      "process": this._addNavItem(
+        "process", "#play_arrow", "Start processing"
+      )
     };
     
     this.viewport = document.createElement('div');
@@ -116,14 +118,14 @@ export default class PDFReorganizer extends HTMLElement {
     if (this.url != undefined)
       this.loadDocument(this.url);
 
-    this.delElem.addEventListener('click', this.remove.bind(this));
-    this.rotateLeftElem.addEventListener('click', this.rotateLeft.bind(this));
-    this.rotateRightElem.addEventListener('click', this.rotateRight.bind(this));
-    this.splitBeforeElem.addEventListener('click', this.splitBefore.bind(this));
-    this.magElem.addEventListener('click', (function() {this.toggleMode("magnify")}).bind(this));
-    this.allElem.addEventListener('click', this.selectAll.bind(this));
-    this.selElem.addEventListener('click', (function() {this.toggleMode("select")}).bind(this));
-    this.processElem.addEventListener('click', this.process.bind(this));
+    this.button["delete"].addEventListener('click', this.remove.bind(this));
+    this.button["rotate-left"].addEventListener('click', this.rotateLeft.bind(this));
+    this.button["rotate-right"].addEventListener('click', this.rotateRight.bind(this));
+    this.button["split-before"].addEventListener('click', this.splitBefore.bind(this));
+    this.button["magnify"].addEventListener('click', (function() {this.toggleMode("magnify")}).bind(this));
+    this.button["select-all"].addEventListener('click', this.selectAll.bind(this));
+    this.button["select"].addEventListener('click', (function() {this.toggleMode("select")}).bind(this));
+    this.button["process"].addEventListener('click', this.process.bind(this));
     document.addEventListener("keydown", this._keyHandler.bind(this));
 
     // Lazy loading
@@ -568,11 +570,11 @@ export default class PDFReorganizer extends HTMLElement {
   toggleMode(m) {
 
     // Was active before
-    if (!this.elt[m]?.classList.toggle("active"))
+    if (!this.button[m]?.classList.toggle("active"))
       this.mode = undefined;
     else {
       if (this.mode)
-        this.elt[this.mode]?.classList.remove("active");
+        this.button[this.mode]?.classList.remove("active");
       this.mode = m;
     }
      
@@ -692,7 +694,7 @@ export default class PDFReorganizer extends HTMLElement {
    */
   addSelect(page) {
     this.selected.add(page);
-    this.selElem?.setAttribute('data-count',this.selected.size);
+    this.button["select"]?.setAttribute('data-count',this.selected.size);
   }
   
   /**
@@ -702,7 +704,7 @@ export default class PDFReorganizer extends HTMLElement {
    */
   delSelect(page) {
     this.selected.delete(page);
-    this.selElem?.setAttribute('data-count',this.selected.size);
+    this.button["select"]?.setAttribute('data-count',this.selected.size);
   }
 
   /**
@@ -796,9 +798,9 @@ export default class PDFReorganizer extends HTMLElement {
    * @private
    */
   _calcSplitCount () {
-    if (this.splitBeforeElem) {
+    if (this.button["split-before"]) {
       const count = this.viewport.getElementsByClassName("split-before").length;
-      this.splitBeforeElem.setAttribute("data-count",count);
+      this.button["split-before"].setAttribute("data-count",count);
     };
   }
   
