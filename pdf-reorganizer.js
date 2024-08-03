@@ -92,6 +92,9 @@ export default class PDFReorganizer extends HTMLElement {
       "select-all": this._addNavItem(
         "select-all", "#select_all", "Select all pages (Ctrl+a)"
       ),
+      "comment": this._addNavItem(
+        "comment", "#add_comment", "Introduce a comment to the page (Ctrl+c)"
+      ),
       "remove": this._addNavItem(
         "remove", "#scan_delete", "Remove selected pages (Delete+Shift)"
       ),
@@ -129,6 +132,7 @@ export default class PDFReorganizer extends HTMLElement {
     this.button["rotate-left"].addEventListener('click', this.rotateLeft.bind(this));
     this.button["rotate-right"].addEventListener('click', this.rotateRight.bind(this));
     this.button["split-before"].addEventListener('click', this.splitBefore.bind(this));
+    this.button["comment"].addEventListener('click', this.comment.bind(this));
     this.button["magnify"].addEventListener('click', (function() {this.toggleMode("magnify")}).bind(this));
     this.button["select-all"].addEventListener('click', this.selectAll.bind(this));
     this.button["select"].addEventListener('click', (function() {this.toggleMode("select")}).bind(this));
@@ -352,9 +356,7 @@ export default class PDFReorganizer extends HTMLElement {
     case "c":
       if (ev.ctrlKey && this.cursor != null) {
         ev.preventDefault();
-        let comment = window.prompt("Comment");
-        if (comment)
-          this.cursor.comment = comment;
+        this.comment();
         break;
       };
 
@@ -604,6 +606,14 @@ export default class PDFReorganizer extends HTMLElement {
       cl.add(m);
   }
 
+  /**
+   */
+  comment() {
+    let comment = window.prompt("Comment");
+    if (comment && this.cursor)
+      this.cursor.comment = comment;
+  }
+  
   /**
    * Removes all selected pages from the
    * PDF or activates the remove mode, if none selected.
@@ -1328,6 +1338,8 @@ canvas {
   </symbol>
   <symbol viewBox="0 -960 960 960" id="zoom_in">
     <path d="M784-120 532-372q-30 24-69 38t-83 14q-109 0-184.5-75.5T120-580q0-109 75.5-184.5T380-840q109 0 184.5 75.5T640-580q0 44-14 83t-38 69l252 252-56 56ZM380-400q75 0 127.5-52.5T560-580q0-75-52.5-127.5T380-760q-75 0-127.5 52.5T200-580q0 75 52.5 127.5T380-400Zm-40-60v-80h-80v-80h80v-80h80v80h80v80h-80v80h-80Z"></path>
+  <symbol viewBox="0 -960 960 960" id="add_comment">
+    <path d="M440-400h80v-120h120v-80H520v-120h-80v120H320v80h120v120ZM80-80v-720q0-33 23.5-56.5T160-880h640q33 0 56.5 23.5T880-800v480q0 33-23.5 56.5T800-240H240L80-80Zm126-240h594v-480H160v525l46-45Zm-46 0v-480 480Z"/>
   </symbol>`;
     const svg = document.createElementNS('http://www.w3.org/2000/svg','svg');
     svg.setAttribute('width',0);
