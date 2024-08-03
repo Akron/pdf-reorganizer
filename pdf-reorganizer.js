@@ -26,6 +26,7 @@ export default class PDFReorganizer extends HTMLElement {
     "rotate-right-button",
     "select-button",
     "select-all-button",
+    "comment-button",
     "remove-button",
     "magnify-button",
     "process-button",
@@ -609,9 +610,10 @@ export default class PDFReorganizer extends HTMLElement {
   /**
    */
   comment() {
-    let comment = window.prompt("Comment");
-    if (comment && this.cursor)
-      this.cursor.comment = comment;
+    if (!this.cursor)
+      return;
+    let comment = window.prompt("Comment", this.cursor.comment);
+    this.cursor.comment = comment;
   }
   
   /**
@@ -903,7 +905,6 @@ export default class PDFReorganizer extends HTMLElement {
       let page;
       for (let i = 0; i < instance.numPages; i++) {
         page  = new PDFReorganizerPage(i+1, instance);
-        //// instance.pages[i] = page;
         instance.viewport.appendChild(page);
         instance.observeViewport?.observe(page);
       };
@@ -955,6 +956,9 @@ export default class PDFReorganizer extends HTMLElement {
       if (page.rotation != 0)
         val += '@' + page.rotation;
 
+      if (page.comment)
+        val += '#' + page.comment;
+      
       if (page.splittedBefore && splitdocs.length > 0) {
         alldocs.push(splitdocs);
         splitdocs = new Array();
@@ -1022,8 +1026,8 @@ pdf-reorganizer {
   align-content: start;
 /* from page: desired width + 2 * padding (8px) + 2 * border (5px) + 2x margin (3px) */
   min-width: 232px;
-/* as above, + bottom padding (24px) */
-  min-height: 256px;
+/* as above, + bottom padding (32px) */
+  min-height: 264px;
   overflow-y: scroll;
   overflow-x: hidden;
   resize: both;
@@ -1091,7 +1095,7 @@ pdf-page {
   border: 5px solid transparent;
   cursor: pointer;
   padding: 8px;
-  padding-bottom: 24px;
+  padding-bottom: 32px;
   z-index: 1;
   color: var(--pdfro-main-color);
   /* Relevant for drag target */
@@ -1112,6 +1116,7 @@ pdf-page div.container {
 
 pdf-page div.container::after {
   position: absolute;
+  box-sizing: border-box;
   text-align: center;
   width: 100%;
   bottom: 0;
@@ -1120,7 +1125,7 @@ pdf-page div.container::after {
   font-size: 75%;
   content: "[" attr(data-num) "]";
   padding: 1px 1px 2px 1px;
-  border-radius: 3px;
+  border-radius: 6px;
   border: 2px solid transparent;
 /*
   white-space: nowrap;
@@ -1129,7 +1134,7 @@ pdf-page div.container::after {
 */
 }
 
-pdf-page div.container[data-comment]::after {
+pdf-page div.container[data-comment]:not([data-comment=""])::after {
   background-color: var(--pdfro-comment-bg-color);
   color: var(--pdfro-comment-color);
   content: "[" attr(data-num) "] " attr(data-comment);

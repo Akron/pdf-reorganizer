@@ -64,6 +64,7 @@ In Reorganizer Viewport:
 | a      | Ctrl       | Select all pages |
 | d      | Ctrl       | Unselect all pages |
 | i/I    | Ctrl+Shift | Inverse select all pages |
+| c      | Ctrl       | Add comment to the page on cursor or edit |
 | Enter  |            | Confirm moving selected pages |
 
 In magnified view:
@@ -93,15 +94,22 @@ object.
   ],
   "docs" : [
     [1,2],
-    [3,"5@90"]
+    [3,"5@90"],
+    [6#This is a comment"]
   ]
 }
 ```
 
 The `docs` array contains a list of documents resulting from the reorganization of the
 source documents (listed in `src`). Each document is represented by a list of page
-numbers. If pages were rotated (clockwise by 90, 180 or 270 degrees) this is appended to the pagenumber
+numbers.
+
+If pages were rotated (clockwise by 90, 180 or 270 degrees) this is appended to the pagenumber
 separated by an `@` symbol (e.g. `5@180` means page 5 is rotated by 180 degree).
+
+If pages had comments, these comments are appended to the pagenumber
+separated by an `#` symbol. Comments always follow rotation marks, if they exist
+and can contain all symbols.
 
 In the future this format may allow merging PDFs. To allow for that,
 page numbers can have a reference prefix refering to the PDF in the `src`

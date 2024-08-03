@@ -388,7 +388,7 @@ export default class PDFReorganizerPage extends HTMLElement {
    * @return {string} The comment associated to the page.
    */
   get comment () {
-    return this.firstChild.getAttribute('data-comment');
+    return this.firstChild.getAttribute('data-comment') || '';
   }
   
   /**
