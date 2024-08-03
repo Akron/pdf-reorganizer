@@ -374,6 +374,24 @@ export default class PDFReorganizerPage extends HTMLElement {
   }
 
   /**
+   * Set comment to page.
+   *
+   * @param {string} text The comment associated to the page.
+   */
+  set comment(text) {
+    this.firstChild.setAttribute('data-comment', text);
+  }
+
+  /**
+   * Get comment from page.
+   *
+   * @return {string} The comment associated to the page.
+   */
+  get comment () {
+    return this.firstChild.getAttribute('data-comment');
+  }
+  
+  /**
    * Unremove page.
    */
   unremove() {

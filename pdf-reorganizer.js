@@ -29,7 +29,8 @@ export default class PDFReorganizer extends HTMLElement {
     "remove-button",
     "magnify-button",
     "process-button",
-    "zoom-factor",
+    "zoomfactor",
+    "scrollstep",
   ];
   
   /**
@@ -347,6 +348,17 @@ export default class PDFReorganizer extends HTMLElement {
         break;
       };
 
+    // Add comment
+    case "c":
+      if (ev.ctrlKey && this.cursor != null) {
+        ev.preventDefault();
+        let comment = window.prompt("Comment");
+        if (comment)
+          this.cursor.comment = comment;
+        break;
+      };
+
+      
       // Inverse select all
     case "I":
       if (ev.ctrlKey) {
@@ -974,6 +986,9 @@ export default class PDFReorganizer extends HTMLElement {
   --pdfro-dragged-color: #7bf;
   --pdfro-nav-color: var(--pdfro-main-color); 
   --pdfro-nav-bg-color: var(--pdfro-selected-color);
+  --pdfro-comment-color: var(--pdfro-main-color); 
+  --pdfro-comment-border-color: var(--pdfro-main-color);
+  --pdfro-comment-bg-color: #ff0;
   --pdfro-viewport-height: 244px;
   --pdfro-viewport-width: 232px;
   display: block;
@@ -1091,9 +1106,26 @@ pdf-page div.container::after {
   width: 100%;
   bottom: 0;
   left: 0;
+  right: 0;
   font-size: 75%;
   content: "[" attr(data-num) "]";
+  padding: 1px 1px 2px 1px;
+  border-radius: 3px;
+  border: 2px solid transparent;
+/*
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+*/
 }
+
+pdf-page div.container[data-comment]::after {
+  background-color: var(--pdfro-comment-bg-color);
+  color: var(--pdfro-comment-color);
+  content: "[" attr(data-num) "] " attr(data-comment);
+  border-color: var(--pdfro-comment-border-color);
+}
+
 
 /* Don't show page number on magnify */
 pdf-page.magnify div.container::after {
