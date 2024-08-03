@@ -1,4 +1,5 @@
-0.1.4 2024-08-02
+0.1.4 2024-08-03
         - Add License.
         - Add split-before, rotate-left, ritate-right, and remove mode.
         - rename all "delete" classes to "remove" for consistency.
+        - Configure using zoomfactor and scrollstep.

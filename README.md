@@ -80,12 +80,6 @@ In magnified view:
 | down   | Ctrl       | Move viewport to bottom |
 | Escape |            | Leave magnifier view |
 
-# Observed attributes
-
-| Key | Value |
-|-----|-------|
-| url | URL of the PDF file to be shown |
-
 # Processing instructions
 
 After reorganizing all pages into new documents, the `processed` custom event is dispatched.
@@ -117,6 +111,19 @@ array (index starts with 0), e.g. `1:2` (Page 2 of file 2) or `3:5@270`
 If no file prefix is given, the first file (0) is assumed.
 
 # Customization
+
+## Configuration
+
+The following parameters can be defined as part of the pdf-reorganizer element.
+
+| Attribute    | Description |
+|--------------|-------------|
+| `url`        | The url of the PDF document. Mandatory.|
+| `zoomfactor` | The scale for the magnifier view. Defaults to 6.|
+| `scrollstep` | The number of pixels to scroll by arrow keys in magnifier view. Defaults to 14.|
+
+
+## Styling
 
 The following CSS variables can be overwritten and are resepected by the web component.
 It's best to overwrite them in a `pdf-reorganizer` selector rule.

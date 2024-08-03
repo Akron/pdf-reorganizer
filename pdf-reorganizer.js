@@ -29,6 +29,7 @@ export default class PDFReorganizer extends HTMLElement {
     "remove-button",
     "magnify-button",
     "process-button",
+    "zoom-factor",
   ];
   
   /**
@@ -60,8 +61,13 @@ export default class PDFReorganizer extends HTMLElement {
      * The active mode.
      */
     this.mode = "";
-    this.zoomfactor = 4;
-    this.scrollStep = 14;
+    
+    if (!this.zoomfactor)
+      this.zoomfactor = 6;
+
+    if (!this.scrollstep)
+      this.scrollstep = 14;
+
     this.selected = new Set();
     
     this.attachShadow({ mode: "open" });
@@ -216,7 +222,7 @@ export default class PDFReorganizer extends HTMLElement {
         if (ev.ctrlKey)
             this.cursor.scrollLeft = 0;
           else
-            this.cursor.scrollLeft -= this.scrollStep;
+            this.cursor.scrollLeft -= this.scrollstep;
         break;
       };      
 
@@ -252,7 +258,7 @@ export default class PDFReorganizer extends HTMLElement {
         if (ev.ctrlKey)
             this.cursor.scrollTop = 0;
           else
-            this.cursor.scrollTop -= this.scrollStep;
+            this.cursor.scrollTop -= this.scrollstep;
         break;
       };
       
@@ -268,7 +274,7 @@ export default class PDFReorganizer extends HTMLElement {
         if (ev.ctrlKey)
             c.scrollLeft = c.scrollWidth - c.clientWidth;
         else
-          c.scrollLeft += this.scrollStep;
+          c.scrollLeft += this.scrollstep;
         break;
       };
 
@@ -304,7 +310,7 @@ export default class PDFReorganizer extends HTMLElement {
         if (ev.ctrlKey)
           c.scrollTop = c.scrollHeight - c.clientHeight;
         else
-          c.scrollTop += this.scrollStep;
+          c.scrollTop += this.scrollstep;
         break;
       };
       

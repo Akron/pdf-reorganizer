@@ -1370,45 +1370,45 @@ describe('PDF Reorganizer (Key events)', () => {
     reorganizer._keyHandler(keyd({key: 'ArrowRight'}));
     expect(reorganizer.cursor.num).toBe(3);
     expect(reorganizer.cursor.magnified).toBeTruthy();
-    expect(reorganizer.cursor.scrollLeft).toEqual(1*reorganizer.scrollStep); 
+    expect(reorganizer.cursor.scrollLeft).toEqual(1*reorganizer.scrollstep); 
     expect(reorganizer.cursor.scrollTop).toEqual(0); 
 
     reorganizer._keyHandler(keyd({key: 'ArrowRight'}));
     expect(reorganizer.cursor.num).toBe(3);
     expect(reorganizer.cursor.magnified).toBeTruthy();
-    expect(reorganizer.cursor.scrollLeft).toEqual(2*reorganizer.scrollStep); 
+    expect(reorganizer.cursor.scrollLeft).toEqual(2*reorganizer.scrollstep); 
     expect(reorganizer.cursor.scrollTop).toEqual(0); 
 
     reorganizer._keyHandler(keyd({key: 'ArrowLeft'}));
     expect(reorganizer.cursor.num).toBe(3);
     expect(reorganizer.cursor.magnified).toBeTruthy();
-    expect(reorganizer.cursor.scrollLeft).toEqual(1*reorganizer.scrollStep); 
+    expect(reorganizer.cursor.scrollLeft).toEqual(1*reorganizer.scrollstep); 
     expect(reorganizer.cursor.scrollTop).toEqual(0); 
 
     reorganizer._keyHandler(keyd({key: 'ArrowDown'}));
     expect(reorganizer.cursor.num).toBe(3);
     expect(reorganizer.cursor.magnified).toBeTruthy();
-    expect(reorganizer.cursor.scrollLeft).toEqual(1*reorganizer.scrollStep); 
-    expect(reorganizer.cursor.scrollTop).toEqual(1*reorganizer.scrollStep); 
+    expect(reorganizer.cursor.scrollLeft).toEqual(1*reorganizer.scrollstep); 
+    expect(reorganizer.cursor.scrollTop).toEqual(1*reorganizer.scrollstep); 
 
     reorganizer._keyHandler(keyd({key: 'ArrowDown'}));
     expect(reorganizer.cursor.num).toBe(3);
     expect(reorganizer.cursor.magnified).toBeTruthy();
-    expect(reorganizer.cursor.scrollLeft).toEqual(1*reorganizer.scrollStep); 
-    expect(reorganizer.cursor.scrollTop).toEqual(2*reorganizer.scrollStep); 
+    expect(reorganizer.cursor.scrollLeft).toEqual(1*reorganizer.scrollstep); 
+    expect(reorganizer.cursor.scrollTop).toEqual(2*reorganizer.scrollstep); 
 
     reorganizer._keyHandler(keyd({key: 'ArrowUp'}));
     expect(reorganizer.cursor.num).toBe(3);
     expect(reorganizer.cursor.magnified).toBeTruthy();
-    expect(reorganizer.cursor.scrollLeft).toEqual(1*reorganizer.scrollStep); 
-    expect(reorganizer.cursor.scrollTop).toEqual(1*reorganizer.scrollStep); 
+    expect(reorganizer.cursor.scrollLeft).toEqual(1*reorganizer.scrollstep); 
+    expect(reorganizer.cursor.scrollTop).toEqual(1*reorganizer.scrollstep); 
 
     // Jump inside magnified view
     reorganizer._keyHandler(keyd({key: 'ArrowRight', ctrlKey:true}));
     expect(reorganizer.cursor.num).toBe(3);
     expect(reorganizer.cursor.magnified).toBeTruthy();
     expect(reorganizer.cursor.scrollLeft).toEqual(reorganizer.cursor.scrollWidth - reorganizer.cursor.clientWidth); 
-    expect(reorganizer.cursor.scrollTop).toEqual(1*reorganizer.scrollStep); 
+    expect(reorganizer.cursor.scrollTop).toEqual(1*reorganizer.scrollstep); 
 
     reorganizer._keyHandler(keyd({key: 'ArrowDown', ctrlKey:true}));
     expect(reorganizer.cursor.num).toBe(3);
