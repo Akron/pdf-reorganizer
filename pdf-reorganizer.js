@@ -671,6 +671,9 @@ export default class PDFReorganizer extends HTMLElement {
     if (value)
       inp.setAttribute('value',value);
 
+    const end = value.length;
+    inp.setSelectionRange(end, end);
+    
     this.navElem.appendChild(dia);
     inp.focus();
     return dia;
@@ -1212,10 +1215,9 @@ pdf-page div.container[data-comment]:not([data-comment=""])::after {
   border-color: var(--pdfro-comment-border-color);
 }
 
-
 /* Don't show page number on magnify */
 pdf-page.magnify div.container::after {
-  content: none;
+  content: none !important;
 }
 
 pdf-page::after {
