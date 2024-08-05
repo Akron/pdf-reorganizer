@@ -2,6 +2,7 @@ import {getDocument, GlobalWorkerOptions} from 'pdfjs-dist';
 import * as PdfjsWorker from "pdfjs-dist/build/pdf.worker.mjs";
 
 import PDFReorganizerPage from './pdf-reorganizer-page.js';
+import PDFReorganizerComment from './pdf-reorganizer-comment.js';
 
 // The workerSrc property shall be specified.
 GlobalWorkerOptions.workerSrc = "pdfjs-dist/build/pdf.worker.mjs";
@@ -106,6 +107,8 @@ export default class PDFReorganizer extends HTMLElement {
         "process", "#play_arrow", "Start processing"
       )
     };
+
+    this.commentDialog = new PDFReorganizerComment(nav);
     
     this.viewport = document.createElement('div');
     this.viewport.setAttribute('id', 'pdf-viewport');
@@ -611,72 +614,15 @@ export default class PDFReorganizer extends HTMLElement {
   }
 
   /**
+   * Start comment prompt at cursor position.
    */
   comment() {
     if (!this.cursor)
       return;
-    this._commentPrompt((function (text) {
+
+    this.commentDialog.prompt((function (text) {
       this.comment = text;
-    }).bind(this.cursor), this.cursor.comment).showModal();
-  }
-
-  _commentPrompt (cb, value) {
-    const dia = document.createElement('dialog');
-
-    const form = document.createElement('form')
-    form.setAttribute('method','dialog');
-    dia.appendChild(form);
-
-    const inp = document.createElement('input');
-    inp.setAttribute('type','text');
-    inp.setAttribute('autofocus','');
-    form.appendChild(inp);
-
-    const cl = document.createElement('button');
-    cl.classList.add('close');
-    cl.setAttribute('formmethod','dialog');
-    cl.innerText = 'x';
-    dia.appendChild(cl);
-
-    const sm = document.createElement('button');
-    sm.classList.add('submit');
-    sm.setAttribute('formmethod','dialog');
-    sm.innerText = 'OK';
-    dia.appendChild(sm);
-
-    inp.addEventListener("keydown", (ev) => {
-      ev.stopPropagation();
-    });
-
-    // This is the dialog part that changes on every call:
-    
-    // Cancel
-    cl.addEventListener("click", () => {
-      cb(value);
-      dia.close();
-    });
-
-    // Submit
-    sm.addEventListener("click", (ev) => {
-      cb(inp.value);
-      dia.close();
-    });
-
-    form.addEventListener('submit', (ev) => {
-      ev.preventDefault();
-      cb(inp.value);
-      dia.close();
-    });
-
-    if (value)
-      inp.setAttribute('value',value);
-
-    const end = value.length;
-    inp.setSelectionRange(end, end);
-    
-    this.navElem.appendChild(dia);
-    inp.focus();
-    return dia;
+    }).bind(this.cursor), this.cursor.comment);
   }
   
   /**
