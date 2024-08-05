@@ -623,12 +623,6 @@ export default class PDFReorganizer extends HTMLElement {
   _commentPrompt (cb, value) {
     const dia = document.createElement('dialog');
 
-    const cl = document.createElement('button');
-    cl.classList.add('close');
-    cl.setAttribute('formmethod','dialog');
-    cl.innerText = 'x';
-    dia.appendChild(cl);
-
     const form = document.createElement('form')
     form.setAttribute('method','dialog');
     dia.appendChild(form);
@@ -638,43 +632,42 @@ export default class PDFReorganizer extends HTMLElement {
     inp.setAttribute('autofocus','');
     form.appendChild(inp);
 
+    const cl = document.createElement('button');
+    cl.classList.add('close');
+    cl.setAttribute('formmethod','dialog');
+    cl.innerText = 'x';
+    dia.appendChild(cl);
+
     const sm = document.createElement('button');
     sm.classList.add('submit');
     sm.setAttribute('formmethod','dialog');
-    sm.setAttribute('type','submit');
     sm.innerText = 'OK';
     dia.appendChild(sm);
 
     inp.addEventListener("keydown", (ev) => {
       ev.stopPropagation();
     });
+
+    // This is the dialog part that changes on every call:
     
-    dia.addEventListener("close", (ev) => {
-      console.log(ev);
-      console.log(dia.returnValue);
-      if (dia.returnValue != undefined)
-        cb(dia.returnValue);
-      else
-        cb(value);        
-    });
-
+    // Cancel
     cl.addEventListener("click", () => {
-      dia.close(value);
+      cb(value);
+      dia.close();
     });
 
+    // Submit
     sm.addEventListener("click", (ev) => {
-      ev.preventDefault();
-      form.submit();
+      cb(inp.value);
+      dia.close();
     });
 
     form.addEventListener('submit', (ev) => {
-      console.log(ev);
       ev.preventDefault();
-      dia.close(inp.value);
+      cb(inp.value);
+      dia.close();
     });
 
-
-    // This is the dialogue part that changes on every call:
     if (value)
       inp.setAttribute('value',value);
 
