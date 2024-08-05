@@ -138,7 +138,6 @@ export default class PDFReorganizer extends HTMLElement {
     this.button["select-all"].addEventListener('click', this.selectAll.bind(this));
     this.button["select"].addEventListener('click', (function() {this.toggleMode("select")}).bind(this));
     this.button["process"].addEventListener('click', this.process.bind(this));
-    document.addEventListener("keydown", this._keyHandler.bind(this));
 
     // Lazy loading
     this.observeViewport = new IntersectionObserver((entries,observer) => {
@@ -162,6 +161,10 @@ export default class PDFReorganizer extends HTMLElement {
       root: this.viewport,
       rootMargin: '10px 10px 10px 10px'
     });
+
+    this.addEventListener("keydown", this._keyHandler.bind(this));
+    this.setAttribute('tabindex',0);
+    this.focus();
   };
 
   /**
@@ -619,37 +622,64 @@ export default class PDFReorganizer extends HTMLElement {
 
   _commentPrompt (cb, value) {
     const dia = document.createElement('dialog');
+
+    const cl = document.createElement('button');
+    cl.classList.add('close');
+    cl.setAttribute('formmethod','dialog');
+    cl.innerText = 'x';
+    dia.appendChild(cl);
+
     const form = document.createElement('form')
+    form.setAttribute('method','dialog');
     dia.appendChild(form);
+
     const inp = document.createElement('input');
     inp.setAttribute('type','text');
     inp.setAttribute('autofocus','');
     form.appendChild(inp);
-    const cl = document.createElement('button');
-    cl.innerText = 'x';
-    cl.setAttribute('formmethod','dialog');
-    dia.appendChild(cl);
 
-    dia.addEventListener("close", () => {
+    const sm = document.createElement('button');
+    sm.classList.add('submit');
+    sm.setAttribute('formmethod','dialog');
+    sm.setAttribute('type','submit');
+    sm.innerText = 'OK';
+    dia.appendChild(sm);
+
+    inp.addEventListener("keydown", (ev) => {
+      ev.stopPropagation();
+    });
+    
+    dia.addEventListener("close", (ev) => {
+      console.log(ev);
+      console.log(dia.returnValue);
       if (dia.returnValue != undefined)
         cb(dia.returnValue);
+      else
+        cb(value);        
     });
 
     cl.addEventListener("click", () => {
-      dia.close(undefined);
+      dia.close(value);
+    });
+
+    sm.addEventListener("click", (ev) => {
+      ev.preventDefault();
+      form.submit();
+    });
+
+    form.addEventListener('submit', (ev) => {
+      console.log(ev);
+      ev.preventDefault();
+      dia.close(inp.value);
     });
 
 
     // This is the dialogue part that changes on every call:
     if (value)
       inp.setAttribute('value',value);
-    
-    form.addEventListener('submit', (ev) => {
-      ev.preventDefault();
-      dia.close(inp.value);
-    });
 
     this.navElem.appendChild(dia);
+    inp.focus();
     return dia;
   }
   
@@ -1044,6 +1074,7 @@ export default class PDFReorganizer extends HTMLElement {
   --pdfro-viewport-width: 232px;
   display: block;
   position: relative;
+  outline: none;
 }
 
 /* Ignored: */
@@ -1075,27 +1106,37 @@ pdf-reorganizer {
 nav {
   position: absolute;
   z-index: 10;
-/*  font-size: 80%; */
   display: block;
-  border-radius: 5px;
-  border: 1px solid var(--pdfro-nav-color);
-  background-color: var(--pdfro-nav-bg-color);
-  box-shadow: rgba(50, 50, 50, 0.5) 2px 2px 2px 1px;
   margin:4pt;
   width: 28px;
 }
 
+nav, dialog {
+  border-radius: 5px;
+  border: 1px solid var(--pdfro-nav-color);
+  background-color: var(--pdfro-nav-bg-color);
+  box-shadow: rgba(50, 50, 50, 0.5) 2px 2px 2px 1px;
+}
+
 nav > div {
-  display: inline-block;
-  cursor: pointer;
   padding: 2pt;
   padding-bottom: 0;
   margin: 2pt;
+}
+
+nav > div, dialog button {
+  display: inline-block;
+  cursor: pointer;
+  background-color: transparent;
+  border-width: 0;
+  color: var(--pdfro-nav-color);
   fill: var(--pdfro-nav-color);
   border-radius: 3px;
 }
 
-nav > div:hover, nav > div.active {
+nav > div:hover,
+nav > div.active,
+dialog button:hover {
   background-color: var(--pdfro-selected-bg-color);
   color: var(--pdfro-selected-color);
   fill: var(--pdfro-selected-color);
@@ -1307,6 +1348,27 @@ pdf-page.magnify canvas {
   box-shadow: none;
   border-width: 0;
 }
+
+nav > dialog {
+  padding: 18pt 10pt 6pt 10pt;
+}
+
+/* close button */
+dialog button.close {
+  position: absolute;
+  left: 2px;
+  top: 2px;
+  font-size: 9pt;
+  margin: 3px;
+}
+
+/* close button */
+dialog button.submit {
+  position: relative;
+  width: 100%;
+  text-align: center;
+}
+
 `;
 
     const zf = this.zoomfactor;
