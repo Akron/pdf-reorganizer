@@ -612,8 +612,45 @@ export default class PDFReorganizer extends HTMLElement {
   comment() {
     if (!this.cursor)
       return;
-    let comment = window.prompt("Comment", this.cursor.comment);
-    this.cursor.comment = comment;
+    this._commentPrompt((function (text) {
+      this.comment = text;
+    }).bind(this.cursor), this.cursor.comment).showModal();
+  }
+
+  _commentPrompt (cb, value) {
+    const dia = document.createElement('dialog');
+    const form = document.createElement('form')
+    dia.appendChild(form);
+    const inp = document.createElement('input');
+    inp.setAttribute('type','text');
+    inp.setAttribute('autofocus','');
+    form.appendChild(inp);
+    const cl = document.createElement('button');
+    cl.innerText = 'x';
+    cl.setAttribute('formmethod','dialog');
+    dia.appendChild(cl);
+
+    dia.addEventListener("close", () => {
+      if (dia.returnValue != undefined)
+        cb(dia.returnValue);
+    });
+
+    cl.addEventListener("click", () => {
+      dia.close(undefined);
+    });
+
+
+    // This is the dialogue part that changes on every call:
+    if (value)
+      inp.setAttribute('value',value);
+    
+    form.addEventListener('submit', (ev) => {
+      ev.preventDefault();
+      dia.close(inp.value);
+    });
+
+    this.navElem.appendChild(dia);
+    return dia;
   }
   
   /**
