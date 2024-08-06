@@ -4,12 +4,77 @@
   "modules": [
     {
       "kind": "javascript-module",
-      "path": "pdf-page.js",
+      "path": "pdf-reorganizer-comment.js",
       "declarations": [
         {
           "kind": "class",
-          "description": "A PDFPage represents a single page of a PDF file.",
-          "name": "PDFPage",
+          "description": "PDFReorganizerComment is a tiny class\nestablishing a comment prompt for pages.",
+          "name": "PDFReorganizerComment",
+          "members": [
+            {
+              "kind": "method",
+              "name": "prompt",
+              "parameters": [
+                {
+                  "name": "callback",
+                  "description": "Callback method to receive the prompt value.",
+                  "type": {
+                    "text": "function"
+                  }
+                },
+                {
+                  "name": "value"
+                },
+                {
+                  "description": "] value Default string value for the prompt.",
+                  "name": "",
+                  "type": {
+                    "text": "string"
+                  }
+                }
+              ],
+              "description": "Open prompt dialog for comments."
+            },
+            {
+              "kind": "field",
+              "name": "_elt",
+              "default": "elt"
+            },
+            {
+              "kind": "field",
+              "name": "input",
+              "default": "inp"
+            },
+            {
+              "kind": "field",
+              "name": "innerText",
+              "type": {
+                "text": "string"
+              },
+              "default": "'OK'"
+            }
+          ]
+        }
+      ],
+      "exports": [
+        {
+          "kind": "js",
+          "name": "default",
+          "declaration": {
+            "name": "PDFReorganizerComment",
+            "module": "pdf-reorganizer-comment.js"
+          }
+        }
+      ]
+    },
+    {
+      "kind": "javascript-module",
+      "path": "pdf-reorganizer-page.js",
+      "declarations": [
+        {
+          "kind": "class",
+          "description": "A PDFReorganizerPage represents a single page of a PDF file.",
+          "name": "PDFReorganizerPage",
           "members": [
             {
               "kind": "method",
@@ -148,6 +213,25 @@
               "description": "Mark page as removed from PDF."
             },
             {
+              "kind": "field",
+              "name": "comment",
+              "description": "Get comment from page.",
+              "parameters": [
+                {
+                  "description": "The comment associated to the page.",
+                  "name": "text",
+                  "type": {
+                    "text": "string"
+                  }
+                }
+              ],
+              "return": {
+                "type": {
+                  "text": "string"
+                }
+              }
+            },
+            {
               "kind": "method",
               "name": "unremove",
               "description": "Unremove page."
@@ -222,7 +306,7 @@
             },
             {
               "kind": "field",
-              "name": "deleted",
+              "name": "removed",
               "type": {
                 "text": "boolean"
               },
@@ -298,16 +382,16 @@
           "kind": "js",
           "name": "default",
           "declaration": {
-            "name": "PDFPage",
-            "module": "pdf-page.js"
+            "name": "PDFReorganizerPage",
+            "module": "pdf-reorganizer-page.js"
           }
         },
         {
           "kind": "custom-element-definition",
           "name": "pdf-page",
           "declaration": {
-            "name": "PDFPage",
-            "module": "pdf-page.js"
+            "name": "PDFReorganizerPage",
+            "module": "pdf-reorganizer-page.js"
           }
         }
       ]
@@ -374,45 +458,28 @@
             },
             {
               "kind": "method",
+              "name": "toggleMode",
+              "parameters": [
+                {
+                  "name": "m"
+                }
+              ],
+              "description": "Starts or ends a supported mode."
+            },
+            {
+              "kind": "method",
+              "name": "comment",
+              "description": "Start comment prompt at cursor position."
+            },
+            {
+              "kind": "method",
               "name": "remove",
-              "description": "Removes all selected pages from the\nPDF.",
+              "description": "Removes all selected pages from the\nPDF or activates the remove mode, if none selected.",
               "return": {
                 "type": {
                   "text": "number"
                 }
               }
-            },
-            {
-              "kind": "method",
-              "name": "toggleSelector",
-              "description": "Starts or ends the selector."
-            },
-            {
-              "kind": "field",
-              "name": "selectorActive",
-              "description": "Check if the selector is active.",
-              "return": {
-                "type": {
-                  "text": "bool"
-                }
-              },
-              "readonly": true
-            },
-            {
-              "kind": "method",
-              "name": "toggleMagnifier",
-              "description": "Starts or ends the magnifier."
-            },
-            {
-              "kind": "field",
-              "name": "magnifierActive",
-              "description": "Check if magnifier is active.",
-              "return": {
-                "type": {
-                  "text": "bool"
-                }
-              },
-              "readonly": true
             },
             {
               "kind": "method",
@@ -463,7 +530,7 @@
                   "name": "page"
                 },
                 {
-                  "description": "PDFPage object.",
+                  "description": "PDFReorganizerPage object.",
                   "name": "The",
                   "type": {
                     "text": "page"
@@ -480,7 +547,7 @@
                   "name": "page"
                 },
                 {
-                  "description": "PDFPage object.",
+                  "description": "PDFReorganizerPage object.",
                   "name": "The",
                   "type": {
                     "text": "page"
@@ -491,18 +558,13 @@
             },
             {
               "kind": "method",
-              "name": "delSelectAll",
-              "description": "Remove all pages from the selection,\ni.e. clear the selection."
-            },
-            {
-              "kind": "method",
               "name": "delSelectAllExceptFor",
               "parameters": [
                 {
                   "name": "page",
                   "description": "Single page to be excluded from clearance.",
                   "type": {
-                    "text": "PDFPage"
+                    "text": "PDFReorganizerPage"
                   }
                 }
               ],
@@ -517,13 +579,13 @@
                   "description": "Page to be excluded from selection.",
                   "name": "page",
                   "type": {
-                    "text": "PDFPage"
+                    "text": "PDFReorganizerPage"
                   }
                 }
               ],
               "return": {
                 "type": {
-                  "text": "PDFPage"
+                  "text": "PDFReorganizerPage"
                 }
               }
             },
@@ -536,13 +598,13 @@
                   "description": "The target for drop actions.",
                   "name": "page",
                   "type": {
-                    "text": "PDFPage"
+                    "text": "PDFReorganizerPage"
                   }
                 }
               ],
               "return": {
                 "type": {
-                  "text": "PDFPage"
+                  "text": "PDFReorganizerPage"
                 }
               }
             },
@@ -575,7 +637,7 @@
                   "name": "page",
                   "description": "The target page.",
                   "type": {
-                    "text": "PDFPage"
+                    "text": "PDFReorganizerPage"
                   }
                 }
               ],
@@ -589,7 +651,7 @@
                   "name": "page",
                   "description": "The target page.",
                   "type": {
-                    "text": "PDFPage"
+                    "text": "PDFReorganizerPage"
                   }
                 }
               ],
@@ -635,17 +697,22 @@
                   }
                 }
               ],
-              "description": "Get a page at a certain index position. Includes deleted pages,\nbut respects order.",
+              "description": "Get a page at a certain index position. Includes removed pages,\nbut respects order.",
               "return": {
                 "type": {
-                  "text": "PDFPage"
+                  "text": "PDFReorganizerPage"
                 }
               }
             },
             {
               "kind": "method",
               "name": "process",
-              "description": "Create a JSON array representing the modified document(s)\nto generate.\nThis dispatches a custom event `processed` on the PDFReorganizer\nobject that has a `detail` object containing a `docs`\narray representing all rearranged documents and a `src`\narray containing all associated filenames."
+              "description": "Create a JSON array representing the modified document(s)\nto generate.\nThis dispatches a custom event `processed` on the PDFReorganizer\nobject that has a `detail` object containing a `docs`\narray representing all rearranged documents and a `src`\narray containing all associated filenames.",
+              "return": {
+                "type": {
+                  "text": "Object"
+                }
+              }
             },
             {
               "kind": "method",
@@ -705,13 +772,22 @@
               "name": "select-all-button"
             },
             {
-              "name": "delete-button"
+              "name": "comment-button"
+            },
+            {
+              "name": "remove-button"
             },
             {
               "name": "magnify-button"
             },
             {
               "name": "process-button"
+            },
+            {
+              "name": "zoomfactor"
+            },
+            {
+              "name": "scrollstep"
             }
           ],
           "superclass": {
