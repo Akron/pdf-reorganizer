@@ -14,8 +14,12 @@ export default class PDFReorganizerComment {
    * @param {HTMLElement} parent - Parent element node to append the dialog.
    */
   constructor (parent) {
+
+    if (parent === null)
+      return;
+    
     const elt = document.createElement('dialog');
-    this.elt = elt;
+    this._elt = elt;
 
     const form = document.createElement('form')
     form.setAttribute('method','dialog');
@@ -28,7 +32,7 @@ export default class PDFReorganizerComment {
     this.input = inp;
 
     const cl = document.createElement('button');
-    cl.classList.add('close');
+    cl.classList.add('cancel');
     cl.setAttribute('formmethod','dialog');
     cl.innerText = 'x';
     elt.appendChild(cl);
@@ -79,8 +83,7 @@ export default class PDFReorganizerComment {
     const end = value.length;
     this.input.setSelectionRange(end, end);
 
-    
-    this.elt.showModal();
+    this._elt.showModal();
     this.input.focus();
   }
 }

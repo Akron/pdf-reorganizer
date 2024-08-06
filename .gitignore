@@ -22,3 +22,5 @@ todo.org
 /playwright-report/
 /blob-report/
 /playwright/.cache/
+MYMETA.*
+Makefile

@@ -1294,8 +1294,7 @@ nav > dialog {
   padding: 18pt 10pt 6pt 10pt;
 }
 
-/* close button */
-dialog button.close {
+dialog button.cancel {
   position: absolute;
   left: 2px;
   top: 2px;
@@ -1303,7 +1302,6 @@ dialog button.close {
   margin: 3px;
 }
 
-/* close button */
 dialog button.submit {
   position: relative;
   width: 100%;

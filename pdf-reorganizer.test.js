@@ -1,5 +1,6 @@
 import 'pdfjs-dist';
 import PDFReorganizerPage from './pdf-reorganizer-page.js';
+import PDFReorganizerComment from './pdf-reorganizer-comment.js';
 import PDFReorganizer from './pdf-reorganizer.js';
 import { describe, it, expect, vi, test } from 'vitest'
 import { resolve } from 'path'
@@ -1503,4 +1504,67 @@ describe('PDF Reorganizer (Key events)', () => {
   test.todo('should accept configuration');
 
   test.todo('should move and split before all selected');
+});
+
+describe('PDF Comment', () => {
+  it('should have the correct structure', async () => {
+
+    let comment = new PDFReorganizerComment(null);
+    expect(comment._elt).toBeUndefined();
+    
+    let parent = document.createElement('div');
+
+    comment = new PDFReorganizerComment(parent);
+    expect(comment._elt).not.toBeUndefined();
+    expect(comment._elt.tagName).toBe("DIALOG");
+    expect(comment.input.tagName).toBe("INPUT");
+    expect(comment.input.value).toBe("");
+    expect(comment.value).toBeUndefined();
+    expect(comment.cb).toBeUndefined();
+  });
+
+  it('should open and close a dialog', async () => {
+    let parent = document.createElement('div');
+    let comment = new PDFReorganizerComment(parent);
+
+    comment._elt["showModal"] = function () {};
+    comment._elt["close"] = function () {};
+
+    let variable = "";
+    
+    comment.prompt(function (text) {
+      variable = text;
+    },"cool");
+
+    expect(variable).toEqual("");
+    
+    expect(comment.input.value).toEqual("cool");
+    expect(comment.value).toEqual("cool");
+    
+    comment.input.value = "cool2";
+
+    expect(comment.value).toEqual("cool");
+
+    let cancel = comment._elt.children[1];
+    expect(cancel.classList.contains('cancel')).toBeTruthy();
+
+    let submit = comment._elt.children[2];
+    expect(submit.classList.contains('submit')).toBeTruthy();
+
+    // Cancel
+    cancel.click();
+
+    expect(variable).toEqual("cool");
+
+    // Submit
+    comment.prompt(function (text) {
+      variable = text;
+    },"cool");
+
+    comment.input.value = "cool3";
+    expect(comment.input.value).toEqual("cool3");
+    submit.click();
+
+    expect(variable).toEqual("cool3");
+  });
 });
