@@ -276,8 +276,10 @@ export default class PDFReorganizerPage extends HTMLElement {
 
     canvas.style.marginLeft = Math.floor(((desiredWidth*outputScale) - (canvas.width)) / 2) + "px";
     canvas.style.marginTop = Math.floor(((desiredHeight*outputScale) - (canvas.height)) / 2) + "px";
+
+    this._rotation = this.rotation;
+    this._setRotationStyle();
     
-    canvas.style.rotate = '0deg';
     canvas.style.scale = 1 / zf;
     
     let transform = outputScale !== 1

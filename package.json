@@ -1,6 +1,6 @@
 {
   "name": "pdf-reorganizer",
-  "version": "0.3.0",
+  "version": "0.3.1",
   "author": "Nils Diewald",
   "description": "Web Component for PDF reorganization",
   "type": "module",
