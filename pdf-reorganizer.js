@@ -959,15 +959,19 @@ export default class PDFReorganizer extends HTMLElement {
       if (page.removed)
         return;
 
-      let val = page.num + "";
+      let val = page.num;
 
-      // Normalize page rotation
-      if (page.rotation != 0)
-        val += '@' + page.rotation;
+      if (page.rotation != 0 || page.comment) {
+        const pagemap = {
+          'p': val
+        };
+        if (page.rotation != 0)
+          pagemap['r'] = page.rotation;
+        if (page.comment)
+          pagemap['c'] = page.comment;
+        val = pagemap;
+      }
 
-      if (page.comment)
-        val += '#' + page.comment;
-      
       if (page.splittedBefore && splitdocs.length > 0) {
         alldocs.push(splitdocs);
         splitdocs = new Array();

@@ -93,9 +93,12 @@ object.
     "mysimple.pdf"
   ],
   "docs" : [
-    [1,2],
-    [3,"5@90"],
-    [6#This is a comment"]
+    [1, 2],
+    [3, { "p":5, "r":90 }],
+    [{
+      "p":6,
+      "c":"This is a comment"
+    }]
   ]
 }
 ```
@@ -104,19 +107,17 @@ The `docs` array contains a list of documents resulting from the reorganization 
 source documents (listed in `src`). Each document is represented by a list of page
 numbers.
 
-If pages were rotated (clockwise by 90, 180 or 270 degrees) this is appended to the pagenumber
-separated by an `@` symbol (e.g. `5@180` means page 5 is rotated by 180 degree).
+If pages were modified or annotated, they are represented as a map with the following
+keys supported:
 
-If pages had comments, these comments are appended to the pagenumber
-separated by an `#` symbol. Comments always follow rotation marks, if they exist
-and can contain all symbols.
+`p`: Mandatory. The page number.
 
-In the future this format may allow merging PDFs. To allow for that,
-page numbers can have a reference prefix refering to the PDF in the `src`
-array (index starts with 0), e.g. `1:2` (Page 2 of file 2) or `3:5@270`
-(Page 5 of file 4 rotated by 270 deg).
+`r`: Optional. The page was rotated (clockwise by 90, 180 or 270 degrees).
 
-If no file prefix is given, the first file (0) is assumed.
+`c`: Optional. A comment on the page.
+
+`s`: Optional. The index to the source document in the `src` list. Defaults to `0`.
+
 
 # Customization
 
