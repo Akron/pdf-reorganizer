@@ -2,10 +2,16 @@ import 'pdfjs-dist';
 import PDFReorganizerPage from './pdf-reorganizer-page.js';
 import PDFReorganizerComment from './pdf-reorganizer-comment.js';
 import PDFReorganizer from './pdf-reorganizer.js';
-import { describe, it, expect, vi, test } from 'vitest'
+import { describe, it, expect, vi, test, beforeAll } from 'vitest'
 import { resolve } from 'path'
 
 window = global;
+
+beforeAll(() => {
+  HTMLDialogElement.prototype.show = vi.fn();
+  HTMLDialogElement.prototype.showModal = vi.fn();
+  HTMLDialogElement.prototype.close = vi.fn();
+});
 
 describe('PDF Page', () => {
 
@@ -1496,6 +1502,45 @@ describe('PDF Reorganizer (Key events)', () => {
     expect(reorganizer.cursor.selected).toBeFalsy();
   });
 
+  it('should add comments', async () => {
+    let reorganizer = new PDFReorganizer().init();
+    expect(reorganizer.children.length).toBe(0);
+    
+    // Async testing
+    let result = await reorganizer.loadDocument(examplepdf);
+    expect(result).toBe(8);
+    expect(reorganizer.selected.size).toBe(0);
+
+    reorganizer._keyHandler(keyd({key: 'ArrowRight'}));
+    reorganizer._keyHandler(keyd({key: 'ArrowRight'}));
+
+    expect(reorganizer.cursor.comment).toEqual("");
+
+    reorganizer._keyHandler(keyd({key: 'c', ctrlKey: true}));
+   
+    reorganizer.commentDialog.input.value = "Kommentar";
+
+    expect(reorganizer.cursor.comment).toEqual("");
+    
+    let submit = reorganizer.commentDialog._elt.children[2];
+    expect(submit.classList.contains('submit')).toBeTruthy();
+
+    submit.click();
+
+    expect(reorganizer.cursor.comment).toEqual("Kommentar");
+
+    reorganizer._keyHandler(keyd({key: 'ArrowRight'}));
+
+    expect(reorganizer.cursor.comment).toEqual("");
+
+    reorganizer._keyHandler(keyd({key: 'ArrowLeft'}));
+    
+    expect(reorganizer.cursor.comment).toEqual("Kommentar");
+
+    reorganizer._keyHandler(keyd({key: 'c', ctrlKey: true}));
+   
+    expect(reorganizer.commentDialog.input.value).toEqual("Kommentar");    
+  });  
   
   // I have no good idea how to test it without something like playwright,
   // as it requires a flexbox enabled viewport.
@@ -1526,10 +1571,6 @@ describe('PDF Comment', () => {
   it('should open and close a dialog', async () => {
     let parent = document.createElement('div');
     let comment = new PDFReorganizerComment(parent);
-
-    comment._elt["showModal"] = function () {};
-    comment._elt["close"] = function () {};
-
     let variable = "";
     
     comment.prompt(function (text) {
