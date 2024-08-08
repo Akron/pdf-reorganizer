@@ -884,7 +884,9 @@ export default class PDFReorganizer extends HTMLElement {
 
     // Remove all pages from the viewport
     while (this.viewport.lastChild) {
-      this.viewport.removeChild(this.viewport.lastChild);
+      let page = this.viewport.lastChild;
+      page.destroy();
+      this.viewport.removeChild(page);
     };
 
     this.viewport.scrollTop = 0;

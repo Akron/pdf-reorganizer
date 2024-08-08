@@ -529,6 +529,25 @@ export default class PDFReorganizerPage extends HTMLElement {
       });
     };
   }
+
+  destroy () {
+    this._pdfjsref = null;
+
+    // Remove eventlisteners
+    this.removeEventListener("dragstart", this._dragStartHandler.bind(this));
+    this.removeEventListener("dragend", this._dragEndHandler.bind(this));
+    this.removeEventListener("dragleave", this._dragLeaveHandler);
+    this.removeEventListener("dragover", this._dragOverHandler);
+    this.removeEventListener("drop", this._dropHandler);
+    this.removeEventListener('click', this._clickHandler.bind(this));
+
+    this.selectOff();
+
+    // Remove container
+    this.removeChild(this.lastChild);
+    
+    this._parent = null;
+  }
 };
 
 /**
