@@ -22,6 +22,7 @@ export default class PDFReorganizer extends HTMLElement {
 
   static observedAttributes = [
     "url",
+    "filename",
     "split-before-button",
     "rotate-left-button",
     "rotate-right-button",
@@ -54,6 +55,7 @@ export default class PDFReorganizer extends HTMLElement {
    */
   init () {
     this.url;
+    this.filename;
     this.numPages = 0;
     this.pdfDoc = undefined;
 
@@ -130,7 +132,7 @@ export default class PDFReorganizer extends HTMLElement {
     this._embedCSS();
 
     if (this.url != undefined)
-      this.loadDocument(this.url);
+      this.loadDocument(this.url, this.filename);
 
     this.button["remove"].addEventListener('click', this.remove.bind(this));
     this.button["rotate-left"].addEventListener('click', this.rotateLeft.bind(this));
@@ -186,6 +188,8 @@ export default class PDFReorganizer extends HTMLElement {
 
     // Overload attributes, e.g. from the element attribute list
     this[property] = newValue;
+
+    // TODO: Reload document on URL change
   }
   
   /**
@@ -874,9 +878,11 @@ export default class PDFReorganizer extends HTMLElement {
    * Load a PDF document.
    *
    * @param {string} url - URL or Int array representing the document.
+   * @param {string} [filename] - Filename for source attribution.
    */
-  loadDocument (url) {
+  loadDocument (url, filename) {
     this.url = url;
+    this.filename = filename;
     let instance = this;
     
     /* Clear possible data */
@@ -984,7 +990,7 @@ export default class PDFReorganizer extends HTMLElement {
     alldocs.push(splitdocs);
 
     const detail = {
-      "src": [this.url],
+      "src": [""+(this.filename ? this.filename : this.url)],
       "docs": alldocs
     };
     

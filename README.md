@@ -127,7 +127,8 @@ The following parameters can be defined as part of the pdf-reorganizer element.
 
 | Attribute    | Description |
 |--------------|-------------|
-| `url`        | The url of the PDF document. Mandatory.|
+| `url`        | The url of the PDF document. Can alos be represented as a Int array. Mandatory.|
+| `filename`   | The file name for source attribution. Uses the URL base name if not given.|
 | `zoomfactor` | The scale for the magnifier view. Defaults to 6.|
 | `scrollstep` | The number of pixels to scroll by arrow keys in magnifier view. Defaults to 14.|
 

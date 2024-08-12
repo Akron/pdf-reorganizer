@@ -1,5 +1,6 @@
-0.3.1 2024-08-07
+0.3.1 2024-08-12
         - Fix rotation of unrendered pages.
+        - Support additional file names.
 
 0.3.0 2024-08-07
         - Switch to structured output format.
