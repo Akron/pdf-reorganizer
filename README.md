@@ -13,6 +13,7 @@ Reorganization supports:
 - Removals
 - Movements
 - Rotations
+- Comments
 
 # Integration
 
@@ -36,6 +37,8 @@ Import the package in your code:
   </body>
 </html>
 ```
+
+See the `demo` folder for an example implementation. 
 
 # Usage
 
@@ -118,6 +121,8 @@ keys supported:
 
 `s`: Optional. The index to the source document in the `src` list. Defaults to `0`.
 
+See [pdf-reorganizer-service](https://github.com/Akron/pdf-reorganizer-service)
+for an example implementation. 
 
 # Customization
 
@@ -135,7 +140,7 @@ The following parameters can be defined as part of the pdf-reorganizer element.
 
 ## Styling
 
-The following CSS variables can be overwritten and are resepected by the web component.
+The following CSS variables can be overwritten and are respected by the web component.
 It's best to overwrite them in a `pdf-reorganizer` selector rule.
 
 ```css
