@@ -116,7 +116,9 @@ export default class PDFReorganizer extends HTMLElement {
     this.viewport.setAttribute('id', 'pdf-viewport');
 
     const shadow = this.shadowRoot;
-    shadow.appendChild(this._svgSymbols());
+    const svgSymbols = this._svgSymbols();
+    svgSymbols.style.display = 'none';
+    shadow.appendChild(svgSymbols);
     shadow.appendChild(nav);
     shadow.appendChild(this.viewport);
     return this;
