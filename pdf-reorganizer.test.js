@@ -922,6 +922,84 @@ describe('PDF Reorganizer', () => {
     expect(reorganizer.selected.size).toBe(7);
     expect(page.selected).toBeFalsy();
   });
+
+  it('should handle fit attribute properly', () => {
+    // Test default behavior (no fit attribute)
+    let reorganizer = new PDFReorganizer().init();
+    
+    // Check that fit attribute is properly observed
+    expect(PDFReorganizer.observedAttributes).toContain('fit');
+    
+    // Check default CSS behavior - viewport should have default dimensions
+    let viewport = reorganizer.viewport;
+    expect(viewport.getAttribute('id')).toBe('pdf-viewport');
+    
+    // Default behavior should not have fit styles applied
+    expect(reorganizer.hasAttribute('fit')).toBe(false);
+    
+    // Test setting fit attribute
+    reorganizer.setAttribute('fit', '');
+    expect(reorganizer.hasAttribute('fit')).toBe(true);
+    
+    // Test removing fit attribute
+    reorganizer.removeAttribute('fit');
+    expect(reorganizer.hasAttribute('fit')).toBe(false);
+    
+    // Test that the fit styles are applied when attribute is present
+    reorganizer.setAttribute('fit', '');
+    expect(reorganizer.hasAttribute('fit')).toBe(true);
+ 
+    // Test the CSS generation directly
+    let cssData = reorganizer._getCSSData();
+    
+    // Test that fit-specific CSS rules are present in the generated CSS
+    expect(cssData).toContain(':host([fit]) {');
+    expect(cssData).toContain(':host([fit]) #pdf-viewport {');
+    expect(cssData).toContain('height: 100%');
+    expect(cssData).toContain('width: 100%');
+    expect(cssData).toContain('resize: none');
+  });
+
+  it('should maintain lazy loading with fit attribute', async () => {
+    let reorganizer = new PDFReorganizer();
+    let examplepdf = "file:" + resolve(__dirname, "demo/example.pdf");
+    
+    // Set fit attribute before connecting to DOM
+    reorganizer.setAttribute('fit', '');
+    
+    // Connect to DOM to trigger connectedCallback (which calls init() and sets up IntersectionObserver)
+    document.body.appendChild(reorganizer);
+    
+    // Load document
+    const result = await reorganizer.loadDocument(examplepdf);
+    expect(result).toBe(8);
+    
+    // Verify that IntersectionObserver is set up if available
+    if (typeof IntersectionObserver !== 'undefined') {
+      expect(reorganizer.observeViewport).toBeTruthy();
+      expect(reorganizer.observeViewport.root).toBe(reorganizer.viewport);
+    } else {
+      // In test environment, IntersectionObserver might not be available
+      expect(reorganizer.observeViewport).toBeUndefined();
+    }
+    
+    // Verify that CSS is properly embedded (either via adoptedStyleSheets or style element)
+    let shadowRoot = reorganizer.shadowRoot;
+    let hasAdoptedStylesheets = shadowRoot.adoptedStyleSheets && shadowRoot.adoptedStyleSheets.length > 0;
+    let hasStyleElement = shadowRoot.querySelector('style') !== null;
+    expect(hasAdoptedStylesheets || hasStyleElement).toBe(true);
+    
+    // Verify that pages are still properly structured
+    expect(reorganizer.viewport.children.length).toBe(8);
+    
+    // Check that fit attribute doesn't break page functionality
+    let page = reorganizer.getPage(0);
+    expect(page.num).toBe(1);
+    expect(page.tagName).toBe('PDF-PAGE');
+    
+    // Clean up
+    document.body.removeChild(reorganizer);
+  });
 });
 
 describe('PDF Reorganizer (Key events)', () => {

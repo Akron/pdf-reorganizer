@@ -136,6 +136,7 @@ The following parameters can be defined as part of the pdf-reorganizer element.
 | `filename`   | The file name for source attribution. Uses the URL base name if not given.|
 | `zoomfactor` | The scale for the magnifier view. Defaults to 6.|
 | `scrollstep` | The number of pixels to scroll by arrow keys in magnifier view. Defaults to 14.|
+| `fit`        | Boolean attribute. When present, the PDF viewport fits to 100% width and height of its container.|
 
 
 ## Styling

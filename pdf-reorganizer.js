@@ -34,6 +34,7 @@ export default class PDFReorganizer extends HTMLElement {
     "process-button",
     "zoomfactor",
     "scrollstep",
+    "fit",
   ];
   
   /**
@@ -147,27 +148,29 @@ export default class PDFReorganizer extends HTMLElement {
     this.button["process"].addEventListener('click', this.process.bind(this));
 
     // Lazy loading
-    this.observeViewport = new IntersectionObserver((entries,observer) => {
-      entries.forEach(entry => {
+    if (typeof IntersectionObserver !== 'undefined') {
+      this.observeViewport = new IntersectionObserver((entries,observer) => {
+        entries.forEach(entry => {
 
-        if (!entry.isIntersecting)
-          return;
-        
-        var page = entry.target;
+          if (!entry.isIntersecting)
+            return;
+          
+          var page = entry.target;
 
-        // Render the page, when it intersects with the viewport
-        instance.pdfDoc.getPage(page.num).then((pdfPage) => {
-          // instance.pages[pdfPage._pageIndex].render(pdfPage);
-          page.render(pdfPage);
-        });
+          // Render the page, when it intersects with the viewport
+          instance.pdfDoc.getPage(page.num).then((pdfPage) => {
+            // instance.pages[pdfPage._pageIndex].render(pdfPage);
+            page.render(pdfPage);
+          });
 
-        // Forget the page
-        observer.unobserve(page);
-      })
-    }, {
-      root: this.viewport,
-      rootMargin: '10px 10px 10px 10px'
-    });
+          // Forget the page
+          observer.unobserve(page);
+        })
+      }, {
+        root: this.viewport,
+        rootMargin: '10px 10px 10px 10px'
+      });
+    }
 
     this.addEventListener("keydown", this._keyHandler.bind(this));
     this.setAttribute('tabindex',0);
@@ -178,7 +181,8 @@ export default class PDFReorganizer extends HTMLElement {
    * Clear the web component when removed from the DOM.
    */
   disconnectedCallback() {
-    this.observeViewport.disconnect();
+    if (this.observeViewport)
+      this.observeViewport.disconnect();
   };
   
   /**
@@ -1004,11 +1008,10 @@ export default class PDFReorganizer extends HTMLElement {
   }
 
   /**
-   * Embed CSS in shadow DOM.
-   *
+   * Get CSS data for testing purposes.
    * @private
    */
-  _embedCSS() {
+  _getCSSData() {
     let cssData = `
 :host {
   --pdfro-main-color: #555;
@@ -1057,6 +1060,24 @@ pdf-reorganizer {
   resize: both;
   height: var(--pdfro-viewport-height);
   width: var(--pdfro-viewport-width);
+}
+
+/* Fit attribute - boolean, fits to container */
+:host([fit]) {
+  height: 100%;
+  width: 100%;
+  box-sizing: border-box;
+  overflow: hidden;
+}
+
+:host([fit]) #pdf-viewport {
+  height: 100%;
+  width: 100%;
+  box-sizing: border-box;
+  resize: none;
+  overflow-y: scroll;
+  overflow-x: hidden;
+  border-width: 0;
 }
 
 nav {
@@ -1335,9 +1356,39 @@ canvas {
   border-width: ${1 * zf}px;
 }`;
     
-    const css = new CSSStyleSheet();
-    css.replace(cssData);
-    this.shadowRoot.adoptedStyleSheets = [css];
+    return cssData;
+  }
+
+  /**
+   * Embed CSS in shadow DOM.
+   * @private
+   */
+  _embedCSS() {
+    const cssData = this._getCSSData();
+    
+    try {
+      const css = new CSSStyleSheet();
+      if (typeof css.replace === 'function') {
+        css.replace(cssData);
+        this.shadowRoot.adoptedStyleSheets = [css];
+      } else {
+        // Fallback for test environments where CSSStyleSheet.replace is not available
+        this._embedCSSFallback(cssData);
+      }
+    } catch (e) {
+      // Fallback for environments that don't support CSSStyleSheet constructor
+      this._embedCSSFallback(cssData);
+    }
+  }
+
+  /**
+   * Fallback CSS embedding for test environments.
+   * @private
+   */
+  _embedCSSFallback(cssData) {
+    const style = document.createElement('style');
+    style.textContent = cssData;
+    this.shadowRoot.appendChild(style);
   }
 
   /**
