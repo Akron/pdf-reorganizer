@@ -82,9 +82,16 @@ export default class PDFReorganizerPage extends HTMLElement {
       
     // create drag image
     let newCanvas = document.createElement('canvas');
-    let context = newCanvas.getContext('2d');
+    let context = null;
+    
+    try {
+      context = newCanvas.getContext('2d');
+    } catch (e) {
+      // Canvas not supported in test environment
+      console.warn('Canvas not supported in test environment');
+    }
 
-    if (context) {
+    if (context && this.canvas) {
       // set dimensions
       newCanvas.width = this.canvas.width * 0.5;
       newCanvas.height = this.canvas.height * 0.5;
@@ -255,7 +262,21 @@ export default class PDFReorganizerPage extends HTMLElement {
 
     // Prepare canvas using PDF page dimensions
     let canvas = this.canvas;
-    let context = canvas.getContext('2d', { alpha: false });
+    let context = null;
+    
+    try {
+      context = canvas.getContext('2d', { alpha: false });
+    } catch (e) {
+      // Canvas not supported in test environment
+      console.warn('Canvas not supported in test environment for rendering');
+      return;
+    }
+    
+    if (!context) {
+      console.warn('Unable to get canvas context');
+      return;
+    }
+    
     let viewport = pdfpage.getViewport(viewportParam);
 
     if (viewport.width > viewport.height) {
