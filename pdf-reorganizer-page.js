@@ -246,7 +246,6 @@ export default class PDFReorganizerPage extends HTMLElement {
    * Renders the referenced PDF page using PDF.js.
    *
    * @param {PDFPageProxy} pdfpage - The PDF.js-page.
-   * @param {number} zf - The zoom factor.
    */
   render(pdfpage) {
 
@@ -295,8 +294,9 @@ export default class PDFReorganizerPage extends HTMLElement {
     const trans = parseInt((canvas.height - canvas.width) / 2);
     this._translate = `${trans}px ${-1 * trans}px`;
 
-    canvas.style.marginLeft = Math.floor(((desiredWidth*outputScale) - (canvas.width)) / 2) + "px";
-    canvas.style.marginTop = Math.floor(((desiredHeight*outputScale) - (canvas.height)) / 2) + "px";
+    // (1*zf) is the border width
+    canvas.style.marginLeft = Math.floor(((desiredWidth*outputScale) - (canvas.width)) / 2) - (1*zf)+ "px";
+    canvas.style.marginTop = Math.floor(((desiredHeight*outputScale) - (canvas.height)) / 2) - (1*zf) + "px";
 
     this._rotation = this.rotation;
     this._setRotationStyle();

@@ -1,3 +1,6 @@
+0.4.1 2025-06-23
+        - Fix centering of pages.
+
 0.4.0 2025-06-22
         - Fix spacing problem above viewport.
         - Add "fit" option.
