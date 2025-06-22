@@ -1,13 +1,32 @@
 import 'vitest-canvas-mock';
 
+// Polyfill Promise.withResolvers for environments that don't support it
+// This must be done before any PDF.js imports
+if (!Promise.withResolvers) {
+  Promise.withResolvers = function() {
+    let resolve, reject;
+    const promise = new Promise((res, rej) => {
+      resolve = res;
+      reject = rej;
+    });
+    return { promise, resolve, reject };
+  };
+}
+
+// Also set it globally for consistency
+globalThis.Promise = Promise;
+
+// Set up environment variables for PDF.js
+globalThis.process = globalThis.process || {};
+globalThis.process.env = globalThis.process.env || {};
+globalThis.process.env.NODE_ENV = 'test';
+
 // Set up PDF.js worker to avoid legacy build warnings in tests
 import { GlobalWorkerOptions } from 'pdfjs-dist';
 
 // Configure PDF.js worker for test environment
-if (typeof window !== 'undefined') {
-  // In test environment, we can use the ES module worker
-  GlobalWorkerOptions.workerSrc = 'node_modules/pdfjs-dist/build/pdf.worker.mjs';
-}
+// Use a simpler worker configuration that should work in all environments
+GlobalWorkerOptions.workerSrc = `./node_modules/pdfjs-dist/build/pdf.worker.min.mjs`;
 
 // Mock canvas-related operations for tests
 Object.defineProperty(window, 'devicePixelRatio', {
