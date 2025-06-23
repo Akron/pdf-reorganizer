@@ -33,7 +33,7 @@ export default class PDFReorganizerPage extends HTMLElement {
     this._translate = "";
 
     this.style.width = (desiredWidth*outputScale) + 'px';
-    this.style.height = (desiredWidth*outputScale) + 'px';
+    this.style.height = (desiredHeight*outputScale) + 'px';
     this.classList.add("load");
     this.setAttribute("draggable", true);
     this.setAttribute("droppable", true);
@@ -294,7 +294,7 @@ export default class PDFReorganizerPage extends HTMLElement {
     const trans = parseInt((canvas.height - canvas.width) / 2);
     this._translate = `${trans}px ${-1 * trans}px`;
 
-    // (1*zf) is the border width
+    // Center the canvas within the container, accounting for border (1*zf)
     canvas.style.marginLeft = Math.floor(((desiredWidth*outputScale) - (canvas.width)) / 2) - (1*zf)+ "px";
     canvas.style.marginTop = Math.floor(((desiredHeight*outputScale) - (canvas.height)) / 2) - (1*zf) + "px";
 

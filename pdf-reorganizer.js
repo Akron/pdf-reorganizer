@@ -1155,6 +1155,10 @@ pdf-page {
   color: var(--pdfro-main-color);
   /* Relevant for drag target */
   margin: 3px;
+  /* Prevent scaled canvases from contributing excess height to scrollable area */
+  overflow: clip;
+  /* Overflow clip for drag-and-drop bars */
+  overflow-clip-margin: 20px;
 }
 
 #pdf-viewport.magnify,
@@ -1168,6 +1172,7 @@ pdf-page {
 pdf-page div.container {
   height: 100%;
 }
+
 
 pdf-page div.container::after {
   position: absolute;

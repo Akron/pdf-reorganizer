@@ -21,13 +21,6 @@ body {
   box-shadow: 0 2px 4px rgba(0,0,0,0.1);
 }
 
-.demo-section h2 {
-  margin-top: 0;
-  color: #333;
-  border-bottom: 2px solid #e2e8f0;
-  padding-bottom: 10px;
-}
-
 .demo-container {
   border: 2px dashed #3b82f6;
   margin: 20px 0;
@@ -53,7 +46,7 @@ body {
 }
 
 .container-medium {
-  width: 500px;
+  width: 640px;
   height: 380px;
 }
 
@@ -91,13 +84,11 @@ code {
     <h1></h1>PDF Reorganizer Demo</h1>
     
     <div class="demo-section">
-      <h2>Default vs Fit Attribute Comparison</h2>
-      <p>Compare the default fixed-size behavior with the new <code>fit</code> attribute that makes the viewport responsive to its container.</p>
       
       <div class="comparison-grid">
         <div>
           <h3>Default Behavior</h3>
-          <div class="demo-container container-medium" data-size="500×380px">
+          <div class="demo-container container-medium" data-size="640x380px">
             <pdf-reorganizer url="example.pdf"></pdf-reorganizer>
           </div>
           <p><small>Fixed dimensions with resize controls</small></p>
@@ -106,7 +97,7 @@ code {
         
         <div>
           <h3>With fit Attribute</h3>
-          <div class="demo-container container-medium" data-size="500×380px">
+          <div class="demo-container container-medium" data-size="640x380px">
             <pdf-reorganizer url="example.pdf" fit></pdf-reorganizer>
           </div>
           <p><small>Fills container, no resize controls, scrollable</small></p>
