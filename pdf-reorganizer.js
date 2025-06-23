@@ -396,7 +396,7 @@ export default class PDFReorganizer extends HTMLElement {
 
     case "Escape":
       if (this.cursor.magnified) {
-        // ev.preventDefault();
+        ev.preventDefault();
         this.cursor.unmagnify();
       };
 
