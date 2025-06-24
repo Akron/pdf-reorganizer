@@ -1031,6 +1031,7 @@ export default class PDFReorganizer extends HTMLElement {
   --pdfro-comment-bg-color: #ff0;
   --pdfro-viewport-height: 244px;
   --pdfro-viewport-width: 232px;
+  --pdfro-viewport-bg-color: transparent;
   display: block;
   position: relative;
   outline: none;
@@ -1060,6 +1061,7 @@ pdf-reorganizer {
   resize: both;
   height: var(--pdfro-viewport-height);
   width: var(--pdfro-viewport-width);
+  background-color: var(--pdfro-viewport-bg-color);
 }
 
 /* Fit attribute - boolean, fits to container */

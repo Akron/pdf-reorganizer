@@ -1,3 +1,6 @@
+0.4.2 2025-06-24
+        - Introduce viewport background color.
+
 0.4.1 2025-06-23
         - Fix centering of pages.
         - Prevent default behaviour of Escape event.

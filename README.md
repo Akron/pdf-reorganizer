@@ -149,6 +149,9 @@ pdf-reorganizer {
 
   /* Main color for fonts and borders */
   --pdfro-main-color: #555;
+
+  /* Background color of the viewport */
+  --pdfro-viewport-bg-color: #bbb;
   
   /* Colors for selected pages */
   --pdfro-selected-color: #fff;
