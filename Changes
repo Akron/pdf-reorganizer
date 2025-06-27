@@ -1,5 +1,6 @@
-0.4.2 2025-06-24
+0.4.2 2025-06-27
         - Introduce viewport background color.
+        - Fix hdpi scaling.
 
 0.4.1 2025-06-23
         - Fix centering of pages.

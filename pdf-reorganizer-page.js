@@ -1,8 +1,8 @@
 // Support HiDPI-screens.
 const outputScale = window.devicePixelRatio || 1;
 
-const desiredWidth = 100;
-const desiredHeight = 100;
+const desiredWidth = 200;
+const desiredHeight = 200;
 
 // - Change selectOn/selectOff to select(true) and select(false)
 
@@ -32,8 +32,8 @@ export default class PDFReorganizerPage extends HTMLElement {
     this._parent = parent; // The reorganizer
     this._translate = "";
 
-    this.style.width = (desiredWidth*outputScale) + 'px';
-    this.style.height = (desiredHeight*outputScale) + 'px';
+    this.style.width = desiredWidth + 'px';
+    this.style.height = desiredHeight + 'px';
     this.classList.add("load");
     this.setAttribute("draggable", true);
     this.setAttribute("droppable", true);
@@ -287,16 +287,24 @@ export default class PDFReorganizerPage extends HTMLElement {
     // Reload viewport with new dimensions
     viewport = pdfpage.getViewport(viewportParam);
 
+    // Set canvas internal size (scaled for HDPI)
     canvas.height = Math.floor(viewport.height * outputScale);
     canvas.width = Math.floor(viewport.width * outputScale);
 
-    // Calculate translation when magnified after rotation
-    const trans = parseInt((canvas.height - canvas.width) / 2);
+    // Set canvas CSS size to logical size (for consistent display)
+    canvas.style.width = Math.floor(viewport.width) + 'px';
+    canvas.style.height = Math.floor(viewport.height) + 'px';
+
+    // Calculate translation when magnified after rotation (use logical dimensions)
+    const logicalWidth = Math.floor(viewport.width);
+    const logicalHeight = Math.floor(viewport.height);
+    const trans = parseInt((logicalHeight - logicalWidth) / 2);
     this._translate = `${trans}px ${-1 * trans}px`;
 
     // Center the canvas within the container, accounting for border (1*zf)
-    canvas.style.marginLeft = Math.floor(((desiredWidth*outputScale) - (canvas.width)) / 2) - (1*zf)+ "px";
-    canvas.style.marginTop = Math.floor(((desiredHeight*outputScale) - (canvas.height)) / 2) - (1*zf) + "px";
+    // Use logical dimensions for positioning (not scaled by outputScale)
+    canvas.style.marginLeft = Math.floor((desiredWidth - logicalWidth) / 2) - (1*zf)+ "px";
+    canvas.style.marginTop = Math.floor((desiredHeight - logicalHeight) / 2) - (1*zf) + "px";
 
     this._rotation = this.rotation;
     this._setRotationStyle();
@@ -586,7 +594,7 @@ function _pointerBefore (obj, ev) {
   let rect = obj.getBoundingClientRect();
   let x = ev.clientX - rect.left; //x position within the element.
   
-  if (x < ((desiredWidth*outputScale) / 2))
+  if (x < (desiredWidth / 2))
     return true;
   return false;
 };

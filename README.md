@@ -188,7 +188,6 @@ pdf-reorganizer {
 # Known issues
 - When height and width of a page are switches after rotation,
   the magnified view has an empty offset at the bottom of a page.
-- hdpi doesn't properly work across browsers.
 
 # License
 
