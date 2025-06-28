@@ -16,14 +16,6 @@ body {
   padding: 20px;
 }
 
-.demo-section {
-  margin-bottom: 40px;
-  padding: 20px;
-  background-color: white;
-  border-radius: 8px;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-}
-
 .demo-container {
   border: 2px dashed #3b82f6;
   margin: 20px 0;
@@ -32,49 +24,10 @@ body {
   border-radius: 6px;
   position: relative;
   overflow: hidden;
-}
-
-.demo-container::before {
-  content: attr(data-size);
-  position: absolute;
-  top: 5px;
-  right: 10px;
-  background-color: #3b82f6;
-  color: white;
-  padding: 2px 8px;
-  border-radius: 4px;
-  font-size: 12px;
-  font-weight: bold;
-  z-index: 100;
-}
-
-.container-medium {
   width: 640px;
   height: 380px;
 }
 
-code {
-  background-color: #f1f5f9;
-  padding: 3px 6px;
-  border-radius: 4px;
-  font-family: 'Courier New', monospace;
-  font-size: 14px;
-  color: #475569;
-  border: 1px solid #e2e8f0;
-}
-
-.comparison-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 20px;
-  margin: 20px 0;
-}
-
-@media (max-width: 768px) {
-  .comparison-grid {
-    grid-template-columns: 1fr;
-  }
-}
 
     </style>
 
@@ -84,29 +37,12 @@ code {
   </head>
 
   <body>
-    <h1></h1>PDF Reorganizer Demo</h1>
+    <h1>PDF Reorganizer Demo</h1>
     
-    <div class="demo-section">
-      
-      <div class="comparison-grid">
-        <div>
-          <h3>Default Behavior</h3>
-          <div class="demo-container container-medium" data-size="640x380px">
-            <pdf-reorganizer url="example.pdf"></pdf-reorganizer>
-          </div>
-          <p><small>Fixed dimensions with resize controls</small></p>
-          <p><code>&lt;pdf-reorganizer url="example.pdf"&gt;</code></p>
-        </div>
-        
-        <div>
-          <h3>With fit Attribute</h3>
-          <div class="demo-container container-medium" data-size="640x380px">
-            <pdf-reorganizer url="example.pdf" fit></pdf-reorganizer>
-          </div>
-          <p><small>Fills container, no resize controls, scrollable</small></p>
-          <p><code>&lt;pdf-reorganizer url="example.pdf" fit&gt;</code></p>
-        </div>
-      </div>
+    <pdf-reorganizer url="example.pdf"></pdf-reorganizer>
+
+    <div class="demo-container">
+      <pdf-reorganizer url="example.pdf" fit></pdf-reorganizer>
     </div>
   </body>
 
