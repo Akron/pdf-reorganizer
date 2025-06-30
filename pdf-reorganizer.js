@@ -137,15 +137,15 @@ export default class PDFReorganizer extends HTMLElement {
     if (this.url != undefined)
       this.loadDocument(this.url, this.filename);
 
-    this.button["remove"].addEventListener('click', this.remove.bind(this));
-    this.button["rotate-left"].addEventListener('click', this.rotateLeft.bind(this));
-    this.button["rotate-right"].addEventListener('click', this.rotateRight.bind(this));
-    this.button["split-before"].addEventListener('click', this.splitBefore.bind(this));
-    this.button["comment"].addEventListener('click', this.comment.bind(this));
-    this.button["magnify"].addEventListener('click', (function() {this.toggleMode("magnify")}).bind(this));
-    this.button["select-all"].addEventListener('click', this.selectAll.bind(this));
-    this.button["select"].addEventListener('click', (function() {this.toggleMode("select")}).bind(this));
-    this.button["process"].addEventListener('click', this.process.bind(this));
+    this.button["remove"]?.addEventListener('click', this.remove.bind(this));
+    this.button["rotate-left"]?.addEventListener('click', this.rotateLeft.bind(this));
+    this.button["rotate-right"]?.addEventListener('click', this.rotateRight.bind(this));
+    this.button["split-before"]?.addEventListener('click', this.splitBefore.bind(this));
+    this.button["comment"]?.addEventListener('click', this.comment.bind(this));
+    this.button["magnify"]?.addEventListener('click', (function() {this.toggleMode("magnify")}).bind(this));
+    this.button["select-all"]?.addEventListener('click', this.selectAll.bind(this));
+    this.button["select"]?.addEventListener('click', (function() {this.toggleMode("select")}).bind(this));
+    this.button["process"]?.addEventListener('click', this.process.bind(this));
 
     // Lazy loading
     if (typeof IntersectionObserver !== 'undefined') {
@@ -1144,6 +1144,10 @@ nav > div > svg {
   height: 18px;
 }
 
+nav:not(:has(div)) {
+  display: none;
+}
+
 pdf-page {
   position: relative;
   border-radius: 6px;
@@ -1405,9 +1409,11 @@ canvas {
    */
   _addNavItem (type, symbol, desc) {
 
-    if (this[type + '-button'])
-      return document.getElementById(this[type + '-button']);
-    
+    if (this[type + '-button'] != undefined) {
+      const elem = document.getElementById(this[type + '-button']);
+      return elem == null ? undefined : elem;
+    };
+
     const elem = document.createElement("div");
     elem.setAttribute("class",type);
     const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");

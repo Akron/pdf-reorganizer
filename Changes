@@ -1,3 +1,6 @@
+0.4.3 2025-06-30
+        - Improve testing and documentation of external toolbar.
+
 0.4.2 2025-06-27
         - Introduce viewport background color.
         - Fix hdpi scaling.

@@ -1620,11 +1620,100 @@ describe('PDF Reorganizer (Key events)', () => {
     expect(reorganizer.commentDialog.input.value).toEqual("Kommentar");    
   });  
   
+  it('should accept button configuration', async () => {
+    const container = document.createElement('div');
+
+    // Create external navigation
+    const rotateLeftButton = document.createElement('div');
+    rotateLeftButton.setAttribute('id','pdfro-rotate-left');
+    container.appendChild(rotateLeftButton);
+
+    const rotateRightButton = document.createElement('div');
+    rotateRightButton.setAttribute('id','pdfro-rotate-right');
+    container.appendChild(rotateRightButton);
+
+    const splitBeforeButton = document.createElement('div');
+    splitBeforeButton.setAttribute('id','pdfro-split-before');
+    container.appendChild(splitBeforeButton);
+
+    const selectButton = document.createElement('div');
+    selectButton.setAttribute('id','pdfro-select');
+    container.appendChild(selectButton);
+
+    const removeButton = document.createElement('div');
+    removeButton.setAttribute('id','pdfro-remove');
+    container.appendChild(removeButton);
+
+    const selectAllButton = document.createElement('div');
+    selectAllButton.setAttribute('id','pdfro-select-all');
+    container.appendChild(selectAllButton);
+    
+    // comment
+    // magnify
+    // process
+    
+    // Create reorganizer
+    const reorganizerCont = document.createElement('div');
+    reorganizerCont.innerHTML = `
+     <pdf-reorganizer rotate-left-button="pdfro-rotate-left"
+                      rotate-right-button="pdfro-rotate-right"
+                      split-before-button="pdfro-split-before"
+                      select-button="pdfro-select"
+                      remove-button="pdfro-remove"
+                      select-all-button="pdfro-select-all"></pdf-reorganizer>`
+    container.appendChild(reorganizerCont);
+    document.body.appendChild(container);
+
+    const reorg = document.getElementsByTagName('pdf-reorganizer')[0];
+
+    // Async testing
+    let result = await reorg.loadDocument(examplepdf);
+    expect(result).toBe(8);
+
+
+    // Check behaviour
+    expect(reorg.button["rotate-left"].classList.contains('active')).toBeFalsy();
+    rotateLeftButton.click();
+    expect(reorg.button["rotate-left"].classList.contains('active')).toBeTruthy(); 
+
+    expect(reorg.button["rotate-right"].classList.contains('active')).toBeFalsy();
+    rotateRightButton.click();
+    expect(reorg.button["rotate-left"].classList.contains('active')).toBeFalsy(); 
+    expect(reorg.button["rotate-right"].classList.contains('active')).toBeTruthy(); 
+
+    expect(reorg.button["split-before"].classList.contains('active')).toBeFalsy();
+    splitBeforeButton.click();
+    expect(reorg.button["rotate-right"].classList.contains('active')).toBeFalsy();
+    expect(reorg.button["rotate-left"].classList.contains('active')).toBeFalsy(); 
+    expect(reorg.button["split-before"].classList.contains('active')).toBeTruthy(); 
+
+    expect(reorg.button["select"].classList.contains('active')).toBeFalsy();
+    selectButton.click();
+    expect(reorg.button["rotate-right"].classList.contains('active')).toBeFalsy();
+    expect(reorg.button["rotate-left"].classList.contains('active')).toBeFalsy(); 
+    expect(reorg.button["select"].classList.contains('active')).toBeTruthy(); 
+
+    expect(reorg.button["remove"].classList.contains('active')).toBeFalsy();
+    removeButton.click();
+    expect(reorg.button["rotate-right"].classList.contains('active')).toBeFalsy();
+    expect(reorg.button["rotate-left"].classList.contains('active')).toBeFalsy(); 
+    expect(reorg.button["remove"].classList.contains('active')).toBeTruthy(); 
+
+    expect(reorg.button["select"].hasAttribute('data-count')).toBeFalsy();
+    selectAllButton.click();
+    expect(reorg.button["select"].getAttribute('data-count')).toEqual('8');
+    expect(reorg.button["magnify"].classList.contains('active')).toBeFalsy();
+
+    expect(reorg.button["magnify"].parentNode.tagName).toEqual('NAV');
+    expect(reorg.button["magnify"].parentNode.children.length).toEqual(4);
+
+    
+    document.body.removeChild(container);
+  });
+
   // I have no good idea how to test it without something like playwright,
   // as it requires a flexbox enabled viewport.
   test.todo('should move up/down with different rows');
-
-  test.todo('should accept configuration');
 
   test.todo('should move and split before all selected');
 });

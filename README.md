@@ -38,11 +38,11 @@ Import the package in your code:
 </html>
 ```
 
-See the `demo` folder for an example implementation. 
+See the `demo` folder for example implementations. 
 
 # Usage
 
-# Key Bindings
+## Key Bindings
 
 In Reorganizer Viewport:
 
@@ -84,7 +84,7 @@ In magnified view:
 | down   | Ctrl       | Move viewport to bottom |
 | Escape |            | Leave magnifier view |
 
-# Processing instructions
+## Processing instructions
 
 After reorganizing all pages into new documents, the `processed` custom event is dispatched.
 This event can be listened on and contains a `docs` list and a `src` list in its `detail`
@@ -137,6 +137,22 @@ The following parameters can be defined as part of the pdf-reorganizer element.
 | `fit`        | Boolean attribute. When present, the PDF viewport fits to 100% width and height of its container.|
 | `zoomfactor` | The scale for the magnifier view. Defaults to 6.|
 | `scrollstep` | The number of pixels to scroll by arrow keys in magnifier view. Defaults to 14.|
+| `split-before-button` | Bind an alternative button to `split-before`. |
+| `rotate-left-button`  | Bind an alternative button to `rotate-left`.  |
+| `rotate-right-button` | Bind an alternative button to `rotate-right`. |
+| `select-button`       | Bind an alternative button to `select`.       |
+| `select-all-button`   | Bind an alternative button to `select-all`.   |
+| `comment-button`      | Bind an alternative button to `comment`.      |
+| `remove-button`       | Bind an alternative button to `remove`.       |
+| `magnify-button`      | Bind an alternative button to `magnify`.      |
+| `process-button`      | Bind an alternative button to `process`.      |
+
+When binding an alternative button to an action by passing an element identifier,
+the original button won't be listed in the toolbar anymore.
+If the element identifier is empty or fails to be resolved, there won't be
+a button binding anymore (key bindings will still work though).
+Active buttons will get the class `active`. Numerical information will
+be stored in a `data-count` attribute.
 
 
 ## Styling

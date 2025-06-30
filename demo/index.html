@@ -28,6 +28,51 @@ body {
   height: 380px;
 }
 
+.demo-container.flex {
+  align-items: stretch;
+  display: flex;
+}
+
+.demo-container.flex .button-group {
+  list-style: none;
+  padding: .5em;
+  text-wrap: nowrap;
+}
+
+.demo-container.flex .button-group > li {
+  cursor: pointer;
+  margin: .5em;
+  border: 1px solid #3b82f6;
+  border-radius: 5px;
+  padding: 5px;
+}
+
+.demo-container.flex .button-group > li:hover {
+  background-color: #bbb;
+}
+
+.button-group > li.active {
+  background-color: #3b82f6;
+}
+
+.button-group > li::after {
+  position: absolute;
+  font-size: 8pt;
+  background-color: #3b82f6;
+  color: white;
+  border: 1px solid white;
+  border-radius: 8pt;
+  padding: 0 3pt;
+  margin-top: -6pt;
+  content: attr(data-count);
+  cursor: default;
+  pointer-events: none;
+}
+
+.button-group > li:where([data-count="0"],[data-count="1"])::after {
+  content: none;
+}
+
 
     </style>
 
@@ -44,8 +89,35 @@ body {
     <div class="demo-container">
       <pdf-reorganizer url="example.pdf" fit></pdf-reorganizer>
     </div>
+
+    <div class="demo-container flex">
+      <ul class="button-group">
+        <li id="pdfro-split-before">Split before</li>
+        <li id="pdfro-rotate-left">Rotate left</li>
+        <li id="pdfro-rotate-right">Rotate right</li>
+        <li id="pdfro-select">Select</li>
+        <li id="pdfro-select-all">Select All</li>
+        <li id="pdfro-remove">Remove</li>
+        <li id="pdfro-magnify">Magnify</li>
+        <li id="pdfro-process">Run</li>
+      </ul>
+      <div>
+        <pdf-reorganizer url="example.pdf"
+                         split-before-button="pdfro-split-before"
+                         rotate-left-button="pdfro-rotate-left"
+                         rotate-right-button="pdfro-rotate-right"
+                         select-button="pdfro-select"
+                         select-all-button="pdfro-select-all"
+                         comment-button=""
+                         remove-button="pdfro-remove"
+                         magnify-button="pdfro-magnify"
+                         process-button="pdfro-process"
+                         fit></pdf-reorganizer>
+      </div>
+    </div>
   </body>
 
+  
   <script>
    const reorgs = document.getElementsByTagName("pdf-reorganizer");
    for (let i = 0; i < reorgs.length; i++) {
