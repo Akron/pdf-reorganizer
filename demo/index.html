@@ -73,15 +73,24 @@ body {
   content: none;
 }
 
+#ribbon {
+  position: absolute;
+  top: 0;
+  right: 0;
+  border: 0;
+}
 
     </style>
 
     <script type="module">
-      import '/pdf-reorganizer.js';
+      import '../pdf-reorganizer.js';
     </script>
   </head>
 
   <body>
+
+    <a id="ribbon" href="https://github.com/Akron/pdf-reorganizer"><img loading="lazy" decoding="async" width="149" height="149" src="https://github.blog/wp-content/uploads/2008/12/forkme_right_darkblue_121621.png" class="attachment-full size-full" alt="Fork me on GitHub"></a>
+
     <h1>PDF Reorganizer Demo</h1>
     
     <pdf-reorganizer url="example.pdf"></pdf-reorganizer>

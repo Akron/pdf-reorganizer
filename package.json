@@ -10,11 +10,16 @@
     "test": "vitest --silent=false",
     "analyze-custom-elements": "npx @custom-elements-manifest/analyzer analyze --exclude coverage",
     "switch-latest": "nvm use node",
-    "dev": "vite",
-    "coverage": "vitest run --coverage"
+    "dev": "vite --open /demo/",
+    "coverage": "vitest run --coverage",
+    "build": "vite build",
+    "build:gh-pages": "GITHUB_PAGES_BUILD=true vite build",
+    "preview": "vite preview",
+    "gh-pages": "npm run build:gh-pages && gh-pages -d dist"
   },
   "devDependencies": {
     "@vitest/coverage-istanbul": "^2.0.4",
+    "gh-pages": "^6.1.1",
     "jsdom": "^24.1.1",
     "vite": "^5.3.1",
     "vitest": "^2.0.2",

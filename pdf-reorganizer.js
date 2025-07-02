@@ -1,11 +1,20 @@
 import {getDocument, GlobalWorkerOptions} from 'pdfjs-dist';
-import * as PdfjsWorker from "pdfjs-dist/build/pdf.worker.mjs";
 
 import PDFReorganizerPage from './pdf-reorganizer-page.js';
 import PDFReorganizerComment from './pdf-reorganizer-comment.js';
 
-// The workerSrc property shall be specified.
-GlobalWorkerOptions.workerSrc = "pdfjs-dist/build/pdf.worker.mjs";
+// Configure PDF.js worker for different environments
+// Only set if not already configured (e.g., by test setup)
+if (typeof window !== 'undefined' && !GlobalWorkerOptions.workerSrc) {
+  try {
+    // Use dynamic import to resolve the worker properly in all environments
+    const workerUrl = new URL('pdfjs-dist/build/pdf.worker.mjs', import.meta.url);
+    GlobalWorkerOptions.workerSrc = workerUrl.href;
+  } catch (error) {
+    // Fallback for environments where URL constructor doesn't work with import.meta.url
+    console.warn('Could not configure PDF.js worker automatically:', error);
+  }
+}
 
 
 /**
@@ -1472,3 +1481,4 @@ canvas {
 
 
 customElements.define('pdf-reorganizer', PDFReorganizer);
+// Small change to demonstrate hash changing
