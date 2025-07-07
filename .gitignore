@@ -7,7 +7,6 @@ pdfjs-*
 public
 !demo/example*.pdf
 node_modules/
-package-lock.json
 dist/
 todo.org
 \#*\#
