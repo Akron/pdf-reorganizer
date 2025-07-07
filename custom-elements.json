@@ -176,13 +176,6 @@
                   "type": {
                     "text": "PDFPageProxy"
                   }
-                },
-                {
-                  "description": "The zoom factor.",
-                  "name": "zf",
-                  "type": {
-                    "text": "number"
-                  }
                 }
               ],
               "description": "Renders the referenced PDF page using PDF.js."
@@ -298,6 +291,10 @@
               "kind": "method",
               "name": "showInViewport",
               "description": "Move the viewport to make the page visible."
+            },
+            {
+              "kind": "method",
+              "name": "destroy"
             },
             {
               "kind": "field",
@@ -681,6 +678,14 @@
                   "type": {
                     "text": "string"
                   }
+                },
+                {
+                  "name": "filename",
+                  "description": "Filename for source attribution.",
+                  "optional": true,
+                  "type": {
+                    "text": "string"
+                  }
                 }
               ],
               "description": "Load a PDF document."
@@ -716,8 +721,25 @@
             },
             {
               "kind": "method",
+              "name": "_getCSSData",
+              "description": "Get CSS data for testing purposes.",
+              "privacy": "private"
+            },
+            {
+              "kind": "method",
               "name": "_embedCSS",
               "description": "Embed CSS in shadow DOM.",
+              "privacy": "private"
+            },
+            {
+              "kind": "method",
+              "name": "_embedCSSFallback",
+              "parameters": [
+                {
+                  "name": "cssData"
+                }
+              ],
+              "description": "Fallback CSS embedding for test environments.",
               "privacy": "private"
             },
             {
@@ -757,6 +779,9 @@
               "name": "url"
             },
             {
+              "name": "filename"
+            },
+            {
               "name": "split-before-button"
             },
             {
@@ -788,6 +813,9 @@
             },
             {
               "name": "scrollstep"
+            },
+            {
+              "name": "fit"
             }
           ],
           "superclass": {
@@ -812,6 +840,499 @@
           "declaration": {
             "name": "PDFReorganizer",
             "module": "pdf-reorganizer.js"
+          }
+        }
+      ]
+    },
+    {
+      "kind": "javascript-module",
+      "path": "vitest.setup.js",
+      "declarations": [],
+      "exports": []
+    },
+    {
+      "kind": "javascript-module",
+      "path": "dist/assets/__vite-browser-external-BIHI7g3E.js",
+      "declarations": [
+        {
+          "kind": "variable",
+          "name": "e",
+          "type": {
+            "text": "object"
+          },
+          "default": "{}"
+        }
+      ],
+      "exports": [
+        {
+          "kind": "js",
+          "name": "default",
+          "declaration": {
+            "name": "e",
+            "module": "dist/assets/__vite-browser-external-BIHI7g3E.js"
+          }
+        }
+      ]
+    },
+    {
+      "kind": "javascript-module",
+      "path": "dist/assets/index-BdOwM51c.js",
+      "declarations": [
+        {
+          "kind": "class",
+          "description": "",
+          "name": "af",
+          "members": [
+            {
+              "kind": "method",
+              "name": "_dragStartHandler",
+              "parameters": [
+                {
+                  "name": "t"
+                }
+              ]
+            },
+            {
+              "kind": "method",
+              "name": "_dragEndHandler",
+              "parameters": [
+                {
+                  "name": "t"
+                }
+              ]
+            },
+            {
+              "kind": "method",
+              "name": "_dragLeaveHandler",
+              "parameters": [
+                {
+                  "name": "t"
+                }
+              ]
+            },
+            {
+              "kind": "method",
+              "name": "_dragOverHandler",
+              "parameters": [
+                {
+                  "name": "t"
+                }
+              ]
+            },
+            {
+              "kind": "method",
+              "name": "_dropHandler",
+              "parameters": [
+                {
+                  "name": "t"
+                }
+              ]
+            },
+            {
+              "kind": "method",
+              "name": "_clickHandler",
+              "parameters": [
+                {
+                  "name": "t"
+                }
+              ]
+            },
+            {
+              "kind": "method",
+              "name": "render",
+              "parameters": [
+                {
+                  "name": "t"
+                }
+              ]
+            },
+            {
+              "kind": "method",
+              "name": "selectToggle"
+            },
+            {
+              "kind": "method",
+              "name": "selectOn"
+            },
+            {
+              "kind": "method",
+              "name": "selectOff"
+            },
+            {
+              "kind": "method",
+              "name": "splitBefore"
+            },
+            {
+              "kind": "method",
+              "name": "remove"
+            },
+            {
+              "kind": "field",
+              "name": "comment"
+            },
+            {
+              "kind": "method",
+              "name": "unremove"
+            },
+            {
+              "kind": "method",
+              "name": "rotateRight"
+            },
+            {
+              "kind": "method",
+              "name": "rotateLeft"
+            },
+            {
+              "kind": "method",
+              "name": "_setRotationStyle"
+            },
+            {
+              "kind": "method",
+              "name": "_setScaleStyle",
+              "parameters": [
+                {
+                  "name": "t"
+                }
+              ]
+            },
+            {
+              "kind": "field",
+              "name": "magnified",
+              "readonly": true
+            },
+            {
+              "kind": "method",
+              "name": "magnify"
+            },
+            {
+              "kind": "method",
+              "name": "unmagnify"
+            },
+            {
+              "kind": "field",
+              "name": "rotation",
+              "readonly": true
+            },
+            {
+              "kind": "method",
+              "name": "showInViewport"
+            },
+            {
+              "kind": "method",
+              "name": "destroy"
+            },
+            {
+              "kind": "field",
+              "name": "num",
+              "default": "t"
+            },
+            {
+              "kind": "field",
+              "name": "removed",
+              "type": {
+                "text": "boolean"
+              },
+              "default": "!1"
+            },
+            {
+              "kind": "field",
+              "name": "selected",
+              "type": {
+                "text": "boolean"
+              },
+              "default": "!1"
+            },
+            {
+              "kind": "field",
+              "name": "splittedBefore",
+              "type": {
+                "text": "boolean"
+              },
+              "default": "!1"
+            },
+            {
+              "kind": "field",
+              "name": "_rotation",
+              "type": {
+                "text": "number"
+              },
+              "default": "0"
+            },
+            {
+              "kind": "field",
+              "name": "_pdfjsref",
+              "type": {
+                "text": "null"
+              },
+              "default": "null"
+            },
+            {
+              "kind": "field",
+              "name": "_parent",
+              "default": "e"
+            },
+            {
+              "kind": "field",
+              "name": "_translate",
+              "type": {
+                "text": "string"
+              },
+              "default": "\"\""
+            },
+            {
+              "kind": "field",
+              "name": "width"
+            },
+            {
+              "kind": "field",
+              "name": "height"
+            },
+            {
+              "kind": "field",
+              "name": "canvas"
+            }
+          ],
+          "superclass": {
+            "name": "HTMLElement"
+          },
+          "tagName": "pdf-page",
+          "customElement": true
+        },
+        {
+          "kind": "class",
+          "description": "",
+          "name": "of",
+          "members": [
+            {
+              "kind": "method",
+              "name": "init"
+            },
+            {
+              "kind": "method",
+              "name": "_selectedSort"
+            },
+            {
+              "kind": "method",
+              "name": "_keyHandler",
+              "parameters": [
+                {
+                  "name": "t"
+                }
+              ]
+            },
+            {
+              "kind": "method",
+              "name": "_moveLeft"
+            },
+            {
+              "kind": "method",
+              "name": "_moveRight"
+            },
+            {
+              "kind": "method",
+              "name": "_moveUp"
+            },
+            {
+              "kind": "method",
+              "name": "_moveDown"
+            },
+            {
+              "kind": "method",
+              "name": "toggleMode",
+              "parameters": [
+                {
+                  "name": "t"
+                }
+              ]
+            },
+            {
+              "kind": "method",
+              "name": "comment"
+            },
+            {
+              "kind": "method",
+              "name": "remove"
+            },
+            {
+              "kind": "method",
+              "name": "rotateLeft"
+            },
+            {
+              "kind": "method",
+              "name": "rotateRight"
+            },
+            {
+              "kind": "method",
+              "name": "selectAll",
+              "parameters": [
+                {
+                  "name": "t",
+                  "default": "1"
+                }
+              ]
+            },
+            {
+              "kind": "method",
+              "name": "addSelect",
+              "parameters": [
+                {
+                  "name": "t"
+                }
+              ]
+            },
+            {
+              "kind": "method",
+              "name": "delSelect",
+              "parameters": [
+                {
+                  "name": "t"
+                }
+              ]
+            },
+            {
+              "kind": "method",
+              "name": "delSelectAllExceptFor",
+              "parameters": [
+                {
+                  "name": "t"
+                }
+              ]
+            },
+            {
+              "kind": "field",
+              "name": "cursor"
+            },
+            {
+              "kind": "field",
+              "name": "dropTarget"
+            },
+            {
+              "kind": "method",
+              "name": "splitBefore"
+            },
+            {
+              "kind": "method",
+              "name": "_calcSplitCount"
+            },
+            {
+              "kind": "method",
+              "name": "moveBefore",
+              "parameters": [
+                {
+                  "name": "t"
+                }
+              ]
+            },
+            {
+              "kind": "method",
+              "name": "moveAfter",
+              "parameters": [
+                {
+                  "name": "t"
+                }
+              ]
+            },
+            {
+              "kind": "method",
+              "name": "forEachSelected",
+              "parameters": [
+                {
+                  "name": "t"
+                }
+              ]
+            },
+            {
+              "kind": "method",
+              "name": "loadDocument",
+              "parameters": [
+                {
+                  "name": "t"
+                },
+                {
+                  "name": "e"
+                }
+              ]
+            },
+            {
+              "kind": "method",
+              "name": "getPage",
+              "parameters": [
+                {
+                  "name": "t"
+                }
+              ]
+            },
+            {
+              "kind": "method",
+              "name": "process"
+            },
+            {
+              "kind": "method",
+              "name": "_getCSSData"
+            },
+            {
+              "kind": "method",
+              "name": "_embedCSS"
+            },
+            {
+              "kind": "method",
+              "name": "_embedCSSFallback",
+              "parameters": [
+                {
+                  "name": "t"
+                }
+              ]
+            },
+            {
+              "kind": "method",
+              "name": "_addNavItem",
+              "parameters": [
+                {
+                  "name": "t"
+                },
+                {
+                  "name": "e"
+                },
+                {
+                  "name": "s"
+                }
+              ]
+            },
+            {
+              "kind": "method",
+              "name": "_svgSymbols"
+            }
+          ],
+          "events": [
+            {
+              "name": "processed",
+              "type": {
+                "text": "CustomEvent"
+              }
+            }
+          ],
+          "superclass": {
+            "name": "HTMLElement"
+          },
+          "tagName": "pdf-reorganizer",
+          "customElement": true
+        }
+      ],
+      "exports": [
+        {
+          "kind": "custom-element-definition",
+          "name": "pdf-page",
+          "declaration": {
+            "name": "af",
+            "module": "dist/assets/index-BdOwM51c.js"
+          }
+        },
+        {
+          "kind": "custom-element-definition",
+          "name": "pdf-reorganizer",
+          "declaration": {
+            "name": "of",
+            "module": "dist/assets/index-BdOwM51c.js"
           }
         }
       ]
