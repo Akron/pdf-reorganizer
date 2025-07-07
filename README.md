@@ -15,6 +15,8 @@ Reorganization supports:
 - Rotations
 - Comments
 
+See the [demo page](https://akron.github.io/pdf-reorganizer/) for example implementations.
+
 # Integration
 
 Install the package:
@@ -37,8 +39,6 @@ Import the package in your code:
   </body>
 </html>
 ```
-
-See the `demo` folder for example implementations. 
 
 # Usage
 
