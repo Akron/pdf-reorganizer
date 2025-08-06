@@ -18,11 +18,11 @@
     "gh-pages": "npm run build:gh-pages && gh-pages -d dist"
   },
   "devDependencies": {
-    "@vitest/coverage-istanbul": "^2.0.4",
+    "@vitest/coverage-istanbul": "^3.2.4",
     "gh-pages": "^6.1.1",
     "jsdom": "^24.1.1",
-    "vite": "^5.3.1",
-    "vitest": "^2.0.2",
+    "vite": "^7.0.6",
+    "vitest": "^3.2.4",
     "vitest-canvas-mock": "^0.3.3"
   },
   "engines": {
