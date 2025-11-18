@@ -29,6 +29,7 @@
     "node": ">=22.0"
   },
   "dependencies": {
+    "glob": "^11.1.0",
     "pdfjs-dist": "^4.4.168"
   },
   "imports": {
