@@ -1,13 +1,14 @@
 {
   "name": "pdf-reorganizer",
-  "version": "0.4.3",
+  "version": "0.4.4",
   "author": "Nils Diewald",
   "description": "Web Component for PDF reorganization",
   "type": "module",
   "main": "pdf-reorganizer.js",
   "module": "pdf-reorganizer.js",
   "scripts": {
-    "test": "vitest --silent=false",
+    "test": "vitest --silent=false run",
+    "test:watch": "vitest",
     "analyze-custom-elements": "npx @custom-elements-manifest/analyzer analyze --exclude coverage",
     "switch-latest": "nvm use node",
     "dev": "vite --open /demo/",
@@ -29,7 +30,7 @@
     "node": ">=22.0"
   },
   "dependencies": {
-    "glob": "^11.1.0",
+    "glob": "^13.0.6",
     "pdfjs-dist": "^4.4.168"
   },
   "imports": {
