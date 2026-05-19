@@ -50,7 +50,7 @@ export default defineConfig(({ command, mode }) => {
     },
     build: {
       outDir: 'dist',
-      rollupOptions: {
+      rolldownOptions: {
         input: 'demo/index.html'
       },
       assetsDir: 'assets'
