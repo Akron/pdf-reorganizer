@@ -2,7 +2,14 @@ import 'vitest-canvas-mock';
 import { resolve } from 'path';
 import { pathToFileURL } from 'url';
 
-// Polyfill Promise.withResolvers for environments that don't support it
+// Polyfills for
+// - Promise.withResolvers
+// - Promise.try
+// - Map.prototype.getOrInsertComputed
+// - Uint8Array.prototype.toHex
+// - Uint8Array.fromBase64
+// - WeakMap.prototype.getOrInsertComputed
+// for environments that don't support these
 // This must be done before any PDF.js imports
 if (!Promise.withResolvers) {
   Promise.withResolvers = function() {
@@ -15,8 +22,62 @@ if (!Promise.withResolvers) {
   };
 }
 
+
 // Also set it globally for consistency
 globalThis.Promise = Promise;
+
+if (!Promise.try) {
+  Promise.try = function (callback, ...args) {
+    return new Promise((resolve, reject) => {
+      try {
+        resolve(callback(...args));
+      } catch (error) {
+        reject(error);
+      }
+    });
+  };
+}
+
+if (!Map.prototype.getOrInsertComputed) {
+  Map.prototype.getOrInsertComputed = function (key, callbackfn) {
+    if (this.has(key)) {
+      return this.get(key);
+    }
+
+    const value = callbackfn(key);
+    this.set(key, value);
+    return value;
+  };
+}
+
+if (!Uint8Array.prototype.toHex) {
+  Uint8Array.prototype.toHex = function () {
+    let hex = '';
+    for (let i = 0; i < this.length; i++) {
+      hex += this[i].toString(16).padStart(2, '0');
+    }
+    return hex;
+  };
+}
+
+if (!Uint8Array.fromBase64) {
+  Uint8Array.fromBase64 = function (base64) {
+    const buf = Buffer.from(base64, 'base64');
+    return new Uint8Array(buf.buffer, buf.byteOffset, buf.byteLength);
+  };
+}
+
+if (!WeakMap.prototype.getOrInsertComputed) {
+  WeakMap.prototype.getOrInsertComputed = function (key, callbackfn) {
+    if (this.has(key)) {
+      return this.get(key);
+    }
+
+    const value = callbackfn(key);
+    this.set(key, value);
+    return value;
+  };
+}
 
 // Set up environment variables for PDF.js
 globalThis.process = globalThis.process || {};

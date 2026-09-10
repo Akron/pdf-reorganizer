@@ -895,7 +895,7 @@ export default class PDFReorganizer extends HTMLElement {
    * @param {string} url - URL or Int array representing the document.
    * @param {string} [filename] - Filename for source attribution.
    */
-  loadDocument (url, filename) {
+  async loadDocument (url, filename) {
     this.url = url;
     this.filename = filename;
     let instance = this;
@@ -914,18 +914,25 @@ export default class PDFReorganizer extends HTMLElement {
     
     // Maybe there is a file already loaded
     if (this.pdfDoc != undefined) {
-      this.pdfDoc.cleanup().then(() => {
+      await this.pdfDoc.cleanup();
+      if (typeof instance.pdfDoc.destroy === 'function') {
         instance.pdfDoc.destroy();
-        this.observeViewport?.disconnect();
-      });
+      }
+      this.observeViewport?.disconnect();
     };
     
     this.numPages = 0;
     /* End cleaning */
 
    
-    // Asynchronous download of PDF
-    let loadingTask = getDocument(this.url);
+    // PDF.js 6 expects a document init object instead of a bare string.
+    let loadingSource = { url: this.url };
+    if (typeof this.url === 'string' && this.url.startsWith('file:')) {
+      const { readFile } = await import('node:fs/promises');
+      const { fileURLToPath } = await import('node:url');
+      loadingSource = { data: new Uint8Array(await readFile(fileURLToPath(this.url))) };
+    }
+    let loadingTask = getDocument(loadingSource);
    
     return loadingTask.promise.then(function(pdf) {
 
