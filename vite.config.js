@@ -36,7 +36,8 @@ export default defineConfig(({ command, mode }) => {
       setupFiles: ['./vitest.setup.js'],
       globals: true,
       coverage : {
-        provider : 'istanbul' // or 'v8'
+        provider : 'istanbul',
+        reporter : ['text', 'lcov'],
       },
     },
     define: {

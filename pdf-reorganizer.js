@@ -419,8 +419,7 @@ export default class PDFReorganizer extends HTMLElement {
       };    
       break;
 
-    case "Enter":
-
+    case "Enter": {
       const dt = this.dropTarget;
       if (dt != null && this.selected.size > 0) {
         if (dt.classList.contains("drag-left")) {
@@ -431,6 +430,7 @@ export default class PDFReorganizer extends HTMLElement {
         this.dropTarget = null;
         ev.preventDefault();
       };
+    }
       
       /*
     default:
