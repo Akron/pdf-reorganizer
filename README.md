@@ -3,6 +3,8 @@
 [![npm version](https://img.shields.io/npm/v/pdf-reorganizer.svg)](https://www.npmjs.com/package/pdf-reorganizer)
 [![npm downloads](https://img.shields.io/npm/dm/pdf-reorganizer.svg)](https://www.npmjs.com/package/pdf-reorganizer)
 [![License](https://img.shields.io/npm/l/pdf-reorganizer.svg)](https://www.npmjs.com/package/pdf-reorganizer)
+[![CI](https://github.com/Akron/pdf-reorganizer/actions/workflows/ci.yml/badge.svg)](https://github.com/Akron/pdf-reorganizer/actions/workflows/ci.yml)
+[![codecov](https://codecov.io/gh/Akron/pdf-reorganizer/branch/main/graph/badge.svg)](https://codecov.io/gh/Akron/pdf-reorganizer)
 
 ![pdf-reorganizer](demo/pdf-reorganizer.png)
 
