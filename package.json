@@ -6,6 +6,7 @@
   "type": "module",
   "main": "pdf-reorganizer.js",
   "module": "pdf-reorganizer.js",
+  "types": "./pdf-reorganizer.d.ts",
   "scripts": {
     "test": "vitest --silent=false run",
     "test:watch": "vitest",
