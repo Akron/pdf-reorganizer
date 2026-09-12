@@ -31,9 +31,10 @@ updates:
         update-types:
           - "minor"
           - "patch"
-      babel:
+      eslint:
         patterns:
-          - "@babel/*"
+          - "eslint"
+          - "@eslint/*"
         update-types:
           - "minor"
           - "patch"

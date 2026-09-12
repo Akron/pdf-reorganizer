@@ -233,8 +233,6 @@ export default class PDFReorganizer extends HTMLElement {
    * @private
    */
   _keyHandler (ev) {
-    var letter = String.fromCharCode(ev.which);
-
     // Remove
     switch (ev.key) {
     case "Delete":
@@ -369,6 +367,7 @@ export default class PDFReorganizer extends HTMLElement {
         this.selectAll();
         break;
       };
+      break;
 
     // Deselect all
     case "d":
@@ -377,6 +376,7 @@ export default class PDFReorganizer extends HTMLElement {
         this.selectAll(0);
         break;
       };
+      break;
 
     // Add comment
     case "c":
@@ -385,8 +385,7 @@ export default class PDFReorganizer extends HTMLElement {
         this.comment();
         break;
       };
-
-      
+      break;
       // Inverse select all
     case "I":
       if (ev.ctrlKey) {
@@ -394,6 +393,7 @@ export default class PDFReorganizer extends HTMLElement {
         this.selectAll(-1);
         break;
       };
+      break;
 
     case "+":
       if (!ev.ctrlKey)
@@ -1402,7 +1402,7 @@ canvas {
         // Fallback for test environments where CSSStyleSheet.replace is not available
         this._embedCSSFallback(cssData);
       }
-    } catch (e) {
+    } catch (_e) {
       // Fallback for environments that don't support CSSStyleSheet constructor
       this._embedCSSFallback(cssData);
     }

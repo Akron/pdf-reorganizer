@@ -7,7 +7,7 @@ import { join } from 'path'
 function demoBuildPlugin() {
   return {
     name: 'demo-build',
-    writeBundle(options, bundle) {
+    writeBundle(options, _bundle) {
       // After Vite has written all files, copy the transformed demo/index.html to the root
       const outputDir = options.dir || 'dist'
       const demoIndexPath = join(outputDir, 'demo', 'index.html')
@@ -26,7 +26,7 @@ function demoBuildPlugin() {
   }
 }
 
-export default defineConfig(({ command, mode }) => {
+export default defineConfig(({ command: _command, mode: _mode }) => {
   const isGitHubPagesBuild = process.env.GITHUB_PAGES_BUILD === 'true'
   
   return {

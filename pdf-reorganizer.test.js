@@ -325,7 +325,7 @@ describe('PDF Page', () => {
       _magnifierActive : false,
       _selectorActive : false,
       mode : "",
-      toggleMode : function (m) {
+      toggleMode : function (_m) {
         this.mode = this._magnifierActive ? "" : "magnify";
       },
       delSelectAllExceptFor : function (obj) {
@@ -1004,7 +1004,6 @@ describe('PDF Reorganizer', () => {
 
 describe('PDF Reorganizer (Key events)', () => {
   let examplepdf = "file:" + resolve(__dirname, "demo/example.pdf");
-  let examplepdf2 = "file:" + resolve(__dirname, "demo/example2.pdf");
 
   function keyd(opt) {
     return new KeyboardEvent("keydown", opt)

@@ -82,11 +82,11 @@ export default class PDFReorganizerPage extends HTMLElement {
       
     // create drag image
     let newCanvas = document.createElement('canvas');
-    let context = null;
+    let context;
     
     try {
       context = newCanvas.getContext('2d');
-    } catch (e) {
+    } catch (_e) {
       // Canvas not supported in test environment
       console.warn('Canvas not supported in test environment');
     }
@@ -112,7 +112,7 @@ export default class PDFReorganizerPage extends HTMLElement {
    * @param {DragEvent} ev - The drag event.
    * @private
    */
-  _dragEndHandler (ev) {     
+  _dragEndHandler (_ev) {     
     if (!this._parent)
       return;
     this._parent.forEachSelected(function (obj) {
@@ -261,11 +261,11 @@ export default class PDFReorganizerPage extends HTMLElement {
 
     // Prepare canvas using PDF page dimensions
     let canvas = this.canvas;
-    let context = null;
+    let context;
     
     try {
       context = canvas.getContext('2d', { alpha: false });
-    } catch (e) {
+    } catch (_e) {
       // Canvas not supported in test environment
       console.warn('Canvas not supported in test environment for rendering');
       return;

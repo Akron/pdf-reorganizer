@@ -16,11 +16,14 @@
     "build": "vite build",
     "build:gh-pages": "GITHUB_PAGES_BUILD=true vite build",
     "preview": "vite preview",
+    "lint": "eslint .",
     "gh-pages": "npm run build:gh-pages && gh-pages -d dist"
   },
   "devDependencies": {
     "@vitest/coverage-istanbul": "^5.0.0",
     "gh-pages": "^6.3.0",
+    "@eslint/js": "^10.0.1",
+    "eslint": "^10.10.0",
     "jsdom": "^30.0.1",
     "vite": "^8.3.0",
     "vitest": "^5.0.0",

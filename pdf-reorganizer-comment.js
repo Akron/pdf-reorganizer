@@ -48,13 +48,13 @@ export default class PDFReorganizerComment {
     });
 
     // Cancel
-    cl.addEventListener("click", (function(ev){
+    cl.addEventListener("click", (function(_ev){
       this.cb(this.value);
       elt.close();
     }).bind(this));
 
     // Submit
-    sm.addEventListener("click", (function(ev){
+    sm.addEventListener("click", (function(_ev){
       this.cb(inp.value);
       elt.close();
     }).bind(this));
