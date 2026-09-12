@@ -18,10 +18,11 @@ todo.org
 *.old
 .*
 !.gitignore
-!/.github
 /test-results/
 /playwright-report/
 /blob-report/
 /playwright/.cache/
 MYMETA.*
 Makefile
+
+!/.github

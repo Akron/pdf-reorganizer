@@ -1,3 +1,7 @@
+[![npm version](https://img.shields.io/npm/v/pdf-reorganizer.svg)](https://www.npmjs.com/package/pdf-reorganizer)
+[![npm downloads](https://img.shields.io/npm/dm/pdf-reorganizer.svg)](https://www.npmjs.com/package/pdf-reorganizer)
+[![License](https://img.shields.io/npm/l/pdf-reorganizer.svg)](https://www.npmjs.com/package/pdf-reorganizer)
+
 # pdf-reorganizer
 
 ![pdf-reorganizer](demo/pdf-reorganizer.png)
